@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SymfoQuizz.iml" filepath="$PROJECT_DIR$/.idea/SymfoQuizz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SymfoQuiz.iml" filepath="$PROJECT_DIR$/.idea/SymfoQuiz.iml" />
     </modules>
   </component>
 </project>

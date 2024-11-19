@@ -15,4 +15,22 @@ class QuizController extends AbstractController
     {
         return $this->render('quiz/quiz.html.twig');
     }
+
+    #[Route(path: '/quiz/add', name: 'app_quiz_add')]
+    public function add(): Response
+    {
+        return $this->render('quiz/add.html.twig');
+    }
+
+    #[Route(path: '/quiz/save', name: 'app_quiz_add')]
+    public function save(): Response
+    {
+        return $this->render('quiz/add.html.twig');
+    }
+
+    #[Route(path: '/quiz/remove', name: 'app_quiz_remove')]
+    public function remove(): Response
+    {
+        return $this->render('quiz/remove.html.twig');
+    }
 }
