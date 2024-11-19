@@ -1,0 +1,251 @@
+:root {
+    --background-color: #18181B;
+    --card-background-color: rgba(255, 255, 255, .015);
+    --card-border-color: rgba(255, 255, 255, 0.1);
+    --card-box-shadow-1: rgba(0, 0, 0, 0.05);
+    --card-box-shadow-1-y: 3px;
+    --card-box-shadow-1-blur: 6px;
+    --card-box-shadow-2: rgba(0, 0, 0, 0.1);
+    --card-box-shadow-2-y: 8px;
+    --card-box-shadow-2-blur: 15px;
+    --card-label-color: #FFFFFF;
+    --card-icon-color: #D4D4D8;
+    --card-hover-border-color: rgba(255, 255, 255, 0.2);
+    --card-hover-box-shadow-1: rgba(0, 0, 0, 0.04);
+    --card-hover-box-shadow-2: rgba(0, 0, 0, 0.3);
+    --card-hover-box-shadow-2-y: 15px;
+    --card-hover-box-shadow-2-blur: 25px;
+    --card-hover-icon-color: #29bc86;
+    --card-hover-icon-background-color: rgba(52, 211, 153, 0.1);
+    --card-hover-icon-border-color: rgba(52, 211, 153, 0.2);
+    --error-div-background-color: rgba(255, 0, 0, 0.1);
+    --error-div-border-color: rgba(255, 0, 0, 0.2);
+    --destruction-label-color: #da2515;
+    --card-size: 20rem;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.container > .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--card-background-color);
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur) var(--card-box-shadow-1), 0 var(--card-box-shadow-2-y) var(--card-box-shadow-2-blur) var(--card-box-shadow-2), 0 0 0 1px var(--card-border-color);
+    border-radius: 15px;
+    position: relative;
+    transition: 0.25s;
+    overflow: hidden;
+    width: var(--card-size);
+    height: var(--card-size);
+
+    text-decoration: none;
+}
+
+.container > .item:hover {
+    box-shadow: 0 3px 6px var(--card-hover-box-shadow-1), 0 var(--card-hover-box-shadow-2-y) var(--card-hover-box-shadow-2-blur) var(--card-hover-box-shadow-2), 0 0 0 1px var(--card-hover-border-color);
+    background-color: var(--card-hover-icon-background-color);
+    border-color: var(--card-hover-icon-border-color);
+    color: var(--card-hover-icon-color);
+    transform: scale(1.075);
+}
+
+.container > .item > .background {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 0;
+    height: 100%;
+}
+
+.container > .item > .overlay {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    color: var(--card-label-color);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.container > .item > .overlay h2 {
+    padding: 1rem 1rem 0.5rem;
+    margin: 0;
+}
+.container > .item > .overlay h3 {
+    padding: 0 1rem;
+    margin: 0;
+    font-size: 1rem;
+    color: var(--card-icon-color);
+}
+
+.search-form {
+    padding: 2rem;
+    background-color: var(--card-background-color);
+    border-bottom: 1px solid var(--card-border-color);
+    margin-bottom: 1rem;
+    margin-top: -1rem;
+}
+
+.search-form input {
+    padding: 1rem;
+    background-color: var(--card-border-color);
+    border: 1px solid var(--card-hover-border-color);
+    border-radius: 15px;
+    color: var(--card-label-color);
+    width: calc(100% - 2rem);
+}
+
+.search-form label {
+    display: none;
+}
+
+.container-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-background-color);
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
+    border-radius: 15px;
+    border: 1px solid var(--card-border-color);
+    max-width: 100rem;
+    padding: 2rem;
+}
+.container-card > img {
+    border-radius: 15px;
+}
+.container-card > * {
+    color: var(--card-label-color);
+}
+
+.centered {
+    width: 100vw;
+    height: 100vh;
+    align-content: center;
+}
+
+.centered > .container-card {
+    margin: auto;
+}
+
+.container-card.small {
+    max-width: 25rem;
+}
+
+.login-form, .register-form div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-form input {
+    padding: 0.5rem;
+    background-color: var(--card-border-color);
+    border: 1px solid var(--card-hover-border-color);
+    border-radius: 8px;
+    color: var(--card-label-color);
+    margin-bottom: 1rem;
+}
+
+.login-form button {
+    padding: 0.5rem;
+    background-color: var(--card-hover-icon-color);
+    border: 1px solid var(--card-hover-icon-border-color);
+    border-radius: 8px;
+    color: var(--card-label-color);
+    cursor: pointer;
+}
+
+.login-form h1 {
+    margin: 0 0 1rem;
+}
+
+.login-form .err_msg_container, .register-form ul {
+    display: flex;
+    justify-content: center;
+    background-color: var(--error-div-background-color);
+    border: var(--error-div-border-color);
+    margin: 1rem;
+    padding: 0.5rem;
+    border-radius: 100px;
+    list-style: none;
+}
+
+.login-form .err_msg_container > p, .register-form ul > li {
+    margin: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background-color: var(--card-background-color);
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
+    border-bottom: 1px solid var(--card-border-color);
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--card-label-color);
+    text-decoration: none;
+    text-wrap: nowrap;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--card-hover-icon-color);
+    transform: scale(1.1);
+}
+
+.nav-item.red {
+    color: var(--destruction-label-color);
+    font-weight: bold;
+}
+
+.expanded {
+    width: 100%;
+}
+
+p > a {
+    color: var(--card-hover-icon-color);
+}
+
+.action-div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    padding-top: 1rem;
+}
+
+.rounded-btn {
+    text-align: center;
+    padding: 0.5rem;
+    background-color: var(--card-hover-icon-color);
+    border: 1px solid var(--card-hover-icon-border-color);
+    border-radius: 100px;
+    color: var(--card-label-color);
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+}
+.rounded-btn:hover {
+    background-color: var(--card-hover-icon-border-color);
+}
