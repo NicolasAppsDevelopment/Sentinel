@@ -14,8 +14,8 @@ class UserQuizzAttempt
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $quizId = null;
+    #[ORM\ManyToOne(inversedBy: 'usersAttempts')]
+    private ?Quizz $quizz = null;
 
     #[ORM\Column]
     private ?int $userId = null;
@@ -34,14 +34,14 @@ class UserQuizzAttempt
         return $this->id;
     }
 
-    public function getQuizId(): ?int
+    public function getQuizz(): ?Quizz
     {
-        return $this->quizId;
+        return $this->quizz;
     }
 
-    public function setQuizId(int $quizId): static
+    public function setQuizz(?Quizz $quizz): self
     {
-        $this->quizId = $quizId;
+        $this->quizz = $quizz;
 
         return $this;
     }

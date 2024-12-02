@@ -44,8 +44,8 @@ class QuizzRepository extends ServiceEntityRepository
     public function getTrendQuizzes(): array
     {
         return $this->createQueryBuilder('quizz')
-            ->andWhere('quizz.title = :title')
-            ->setParameter('title', 10)
+            ->orderBy('count(quizz.usersAttempts)', 'DESC')
+            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
             ;
