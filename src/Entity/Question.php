@@ -18,9 +18,6 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $statement = null;
 
-    #[ORM\Column]
-    private ?int $answerId1 = null;
-
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
     private Collection $answers;
 

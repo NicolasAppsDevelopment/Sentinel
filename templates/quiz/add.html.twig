@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter quiz{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+
+        <h3>Questions</h3>
+        <ul class="questions"
+            data-index="{{ form.questions|length > 0 ? form.questions|last.vars.name + 1 : 0 }}"
+            data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}"
+        >
+            {% for question in form.questions %}
+                <li>
+                    {{ form_row(question.statement) }}
+                    <h4>Answers</h4>
+                    <ul class="answers"
+                        data-index="{{ question.answers|length > 0 ? question.answers|last.vars.name + 1 : 0 }}"
+                        data-prototype="{{ form_widget(question.answers.vars.prototype)|e('html_attr') }}"
+                    >
+                        {% for answer in question.answers %}
+                            <li>
+                                {{ form_row(answer.text) }}
+                                {{ form_row(answer.isCorrect) }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" class="rounded-btn add_answer_item_link" data-collection-holder-class="answers">Add an answer</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions">Add a question</button>
+
+        <button type="submit" class="rounded-btn">Finish & Save</button>
+        <button type="reset" class="rounded-btn">Cancel</button>
+    {{ form_end(form) }}
+
+    <script>
+        document
+            .querySelectorAll('.add_question_item_link')
+            .forEach(btn => {
+                btn.addEventListener("click", addQuestionFormToCollection)
+            });
+
+        document
+            .querySelectorAll('.add_answer_item_link')
+            .forEach(btn => {
+                btn.addEventListener("click", addAnswerFormToCollection)
+            });
+
+        document
+            .querySelectorAll('ul.questions li')
+            .forEach((question) => {
+                addQuestionFormDeleteLink(question)
+                addAnswerFormAddLink(question)
+            });
+
+        document
+            .querySelectorAll('ul.answers li')
+            .forEach((answer) => {
+                addAnswerFormDeleteLink(answer)
+            });
+
+        function addQuestionFormToCollection(e) {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+            const item = document.createElement('li');
+
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+            item.innerHTML += '<h4>Answers</h4><ul class="answers" data-index="0" data-prototype="' + collectionHolder.dataset.prototype.replace("\"", "'") + '"></ul>';
+
+            collectionHolder.appendChild(item);
+
+            collectionHolder.dataset.index++;
+
+            // add a delete link to the new form
+            addQuestionFormDeleteLink(item);
+            addAnswerFormAddLink(item);
+        }
+
+        function addAnswerFormToCollection(e) {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+            const item = document.createElement('li');
+
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+
+            collectionHolder.appendChild(item);
+
+            collectionHolder.dataset.index++;
+
+            // add a delete link to the new form
+            addAnswerFormDeleteLink(item);
+        }
+
+        function addQuestionFormDeleteLink(item) {
+            const removeQuestionFormButton = document.createElement('button');
+            removeQuestionFormButton.innerText = 'Delete the question';
+            removeQuestionFormButton.classList.add('rounded-btn');
+
+            item.append(removeQuestionFormButton);
+
+            removeQuestionFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+
+        function addAnswerFormDeleteLink(item) {
+            const removeQuestionFormButton = document.createElement('button');
+            removeQuestionFormButton.innerText = 'Delete the answer';
+            removeQuestionFormButton.classList.add('rounded-btn');
+
+            item.append(removeQuestionFormButton);
+
+            removeQuestionFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+
+        function addAnswerFormAddLink(item) {
+            const addAnswerFormButton = document.createElement('button');
+            addAnswerFormButton.innerText = 'Add an answer';
+            addAnswerFormButton.dataset.collectionHolderClass = 'answers';
+            addAnswerFormButton.classList.add('rounded-btn');
+
+            item.append(addAnswerFormButton);
+
+            addAnswerFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                addAnswerFormToCollection(e);
+            });
+        }
+    </script>
+
+{% endblock %}

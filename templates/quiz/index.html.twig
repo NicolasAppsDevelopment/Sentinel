@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des quiz{% endblock %}
+
+{% block body %}
+    <h1>Liste des quiz</h1>
+
+    <div class="search-form">
+        {{ form(searchForm) }}
+        <a href="{{ path('app_quiz_add') }}" class="rounded-btn">Créer un quiz</a>
+    </div>
+
+    <h2>Résultat de recherche</h2>
+    <div class="container">
+        {% for quiz in searchedQuiz %}
+            <div class="container-card">
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h2>🔥 Les quiz en tendance</h2>
+    <div class="container">
+        {% for quiz in trendQuiz %}
+            <div>
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h2>✨ Les derniers quiz</h2>
+    <div class="container">
+        {% for quiz in lastQuiz %}
+            <div>
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

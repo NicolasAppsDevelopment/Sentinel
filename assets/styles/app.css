@@ -249,3 +249,7 @@ p > a {
 .rounded-btn:hover {
     background-color: var(--card-hover-icon-border-color);
 }
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--card-label-color);
+}

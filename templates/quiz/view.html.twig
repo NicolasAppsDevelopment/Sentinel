@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Voir quiz{% endblock %}
+
+{% block body %}
+    <h1>{{ quiz.title }}</h1>
+    <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+    <p>Créé le {{ quiz.creationDate }}</p>
+    <a href="{{ path('app_quiz_play', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
+    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="rounded-btn">Modifier</a>
+    <a href="{{ path('app_quiz_delete', {'id': quiz.id}) }}" class="rounded-btn">Supprimer</a>
+    <a href="{{ path('app_quiz_index') }}" class="rounded-btn">Retour</a>
+
+{% endblock %}
