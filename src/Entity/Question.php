@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
@@ -19,14 +21,8 @@ class Question
     #[ORM\Column]
     private ?int $answerId1 = null;
 
-    #[ORM\Column]
-    private ?int $answerId2 = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $answerId3 = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $answerId4 = null;
+    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
+    private Collection $answers;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     private ?Quizz $quizz = null;
@@ -36,6 +32,11 @@ class Question
 
     #[ORM\Column]
     private ?int $position = 0;
+
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,50 +55,29 @@ class Question
         return $this;
     }
 
-    public function getAnswerId1(): ?int
+    public function getAnswers(): Collection
     {
-        return $this->answerId1;
+        return $this->answers;
     }
 
-    public function setAnswerId1(int $answerId1): static
+    public function addAnswer(Answer $answer): self
     {
-        $this->answerId1 = $answerId1;
+
+        if (!$this->answers->contains($answer)) {
+            $this->answers->add($answer);
+            $answer->setQuestion($this);
+        }
 
         return $this;
     }
 
-    public function getAnswerId2(): ?int
+    public function removeAnswer(Answer $answer): self
     {
-        return $this->answerId2;
-    }
-
-    public function setAnswerId2(int $answerId2): static
-    {
-        $this->answerId2 = $answerId2;
-
-        return $this;
-    }
-
-    public function getAnswerId3(): ?int
-    {
-        return $this->answerId3;
-    }
-
-    public function setAnswerId3(?int $answerId3): static
-    {
-        $this->answerId3 = $answerId3;
-
-        return $this;
-    }
-
-    public function getAnswerId4(): ?int
-    {
-        return $this->answerId4;
-    }
-
-    public function setAnswerId4(?int $answerId4): static
-    {
-        $this->answerId4 = $answerId4;
+        if ($this->answers->removeElement($answer)) {
+            if ($answer->getQuestion() === $this) {
+                $answer->setQuestion(null);
+            }
+        }
 
         return $this;
     }

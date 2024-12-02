@@ -31,13 +31,33 @@ class QuizzRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Quizz
-    //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findByTitle(string $title): array
+    {
+        return $this->createQueryBuilder('quizz')
+            ->andWhere('quizz.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getTrendQuizzes(): array
+    {
+        return $this->createQueryBuilder('quizz')
+            ->andWhere('quizz.title = :title')
+            ->setParameter('title', 10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getLastQuizzes(): array
+    {
+        return $this->createQueryBuilder('quizz')
+            ->orderBy('quizz.createdDate', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

@@ -22,8 +22,9 @@ class Answer
     #[ORM\Column]
     private ?int $numberOfTimesSelected = null;
 
-    #[ORM\Column]
-    private ?int $questionId = null;
+    #[ORM\ManyToOne(inversedBy: 'answers')]
+    private ?Question $question = null;
+
 
     public function getId(): ?int
     {
@@ -66,14 +67,14 @@ class Answer
         return $this;
     }
 
-    public function getQuestionId(): ?int
+    public function getQuestion(): ?Question
     {
-        return $this->questionId;
+        return $this->question;
     }
 
-    public function setQuestionId(int $questionId): static
+    public function setQuestion(?Question $question): self
     {
-        $this->questionId = $questionId;
+        $this->question = $question;
 
         return $this;
     }
