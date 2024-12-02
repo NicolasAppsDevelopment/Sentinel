@@ -28,14 +28,14 @@ class Question
     #[ORM\Column(nullable: true)]
     private ?int $answerId4 = null;
 
-    #[ORM\Column]
-    private ?int $quizId = null;
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    private ?Quizz $quizz = null;
 
     #[ORM\Column]
-    private ?int $type = null;
+    private ?int $type = 0;
 
     #[ORM\Column]
-    private ?int $position = null;
+    private ?int $position = 0;
 
     public function getId(): ?int
     {
@@ -102,14 +102,14 @@ class Question
         return $this;
     }
 
-    public function getQuizId(): ?int
+    public function getQuizz(): ?Quizz
     {
-        return $this->quizId;
+        return $this->quizz;
     }
 
-    public function setQuizId(int $quizId): static
+    public function setQuizz(?Quizz $quizz): self
     {
-        $this->quizId = $quizId;
+        $this->quizz = $quizz;
 
         return $this;
     }

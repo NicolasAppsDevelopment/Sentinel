@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -46,6 +48,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\OneToMany(targetEntity: Quizz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
+    private Collection $quizzes;
+
+    public function __construct()
+    {
+        $this->quizzes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -166,6 +176,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getQuizzes (): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuizz(Quizz $quizz): self
+    {
+
+        if (!$this->quizzes->contains($quizz)) {
+            $this->quizzes->add($quizz);
+            $quizz->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizz(Quizz $quizz): self
+    {
+        if ($this->quizzes->removeElement($quizz)) {
+            if ($quizz->getAuthor() === $this) {
+                $quizz->setAuthor(null);
+            }
+        }
 
         return $this;
     }

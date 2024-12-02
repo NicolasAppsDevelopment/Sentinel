@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\QuizzRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: QuizzRepository::class)]
 class Quizz
@@ -14,8 +16,11 @@ class Quizz
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $authorId = null;
+    #[ORM\ManyToOne(inversedBy: 'quizzes')]
+    private ?User $author = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
@@ -23,19 +28,27 @@ class Quizz
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $createdDate = null;
 
+    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quizz', cascade: ["persist", 'remove'])]
+    private Collection $questions;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAuthorId(): ?int
+    public function getAuthor(): ?User
     {
-        return $this->authorId;
+        return $this->author;
     }
 
-    public function setAuthorId(int $authorId): static
+    public function setAuthor(?User $author): self
     {
-        $this->authorId = $authorId;
+        $this->author = $author;
 
         return $this;
     }
@@ -52,6 +65,18 @@ class Quizz
         return $this;
     }
 
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
     public function getCreatedDate(): ?\DateTimeInterface
     {
         return $this->createdDate;
@@ -63,4 +88,32 @@ class Quizz
 
         return $this;
     }
+
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
+            $question->setQuizz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            if ($question->getQuizz() === $this) {
+                $question->setQuizz(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
