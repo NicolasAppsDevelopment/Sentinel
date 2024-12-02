@@ -52,6 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Quizz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
     private Collection $quizzes;
 
+    #[ORM\OneToOne(targetEntity: UserQuizzAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
+    private ?UserQuizzAttempt $quizzAttempt;
+
+
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
@@ -203,6 +207,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $quizz->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuizzAttempt(): ?UserQuizzAttempt
+    {
+        return $this->quizzAttempt;
+    }
+
+    public function setQuizzAttempt(?UserQuizzAttempt $quizzAttempt): self
+    {
+        $this->quizzAttempt = $quizzAttempt;
 
         return $this;
     }

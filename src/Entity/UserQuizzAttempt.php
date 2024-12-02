@@ -17,8 +17,9 @@ class UserQuizzAttempt
     #[ORM\ManyToOne(inversedBy: 'usersAttempts')]
     private ?Quizz $quizz = null;
 
-    #[ORM\Column]
-    private ?int $userId = null;
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'quizzAttempt')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
 
     #[ORM\Column]
     private ?bool $finished = null;
@@ -46,14 +47,14 @@ class UserQuizzAttempt
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(int $userId): static
+    public function setUser(?User $user): self
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
