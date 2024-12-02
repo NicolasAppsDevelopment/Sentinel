@@ -33,6 +33,22 @@ class Question
     #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
     private Collection $userQuizzAttemptAnswers;
 
+    #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: "answer1_id", referencedColumnName: "id", nullable: false)]
+    private ?Answer $answer1 = null;
+
+    #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: "answer2_id", referencedColumnName: "id", nullable: false)]
+    private ?Answer $answer2 = null;
+
+    #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: "answer3_id", referencedColumnName: "id", nullable: false)]
+    private ?Answer $answer3 = null;
+
+    #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: "answer4_id", referencedColumnName: "id", nullable: false)]
+    private ?Answer $answer4 = null;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -142,6 +158,18 @@ class Question
                 $userQuizzAttemptAnswer->setQuestion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAnswer1(): ?Answer
+    {
+        return $this->answer1;
+    }
+
+    public function setAnswer1(Answer $answer1): static
+    {
+        $this->answer1 = $answer1;
 
         return $this;
     }

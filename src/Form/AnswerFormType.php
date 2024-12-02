@@ -18,7 +18,7 @@ class AnswerFormType extends AbstractType
                 'required' => true,
             ])
             ->add('isCorrect', CheckboxType::class, [
-                'required' => true,
+                'required' => false,
             ])
         ;
     }

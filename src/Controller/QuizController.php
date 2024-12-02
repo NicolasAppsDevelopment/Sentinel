@@ -84,18 +84,18 @@ class QuizController extends AbstractController
     #[Route(path: '/add', name: 'app_quiz_add')]
     public function add(Request $request, UserInterface $user): Response
     {
-        $userInDB = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
+        $userInDB = $this->getUser();
         if (!$userInDB) {
             return new Response("Not authorized", 401);
         }
 
-        $form = $this->createForm(QuizFormType::class, new Quizz());
+        $quiz = new Quizz();
+        $form = $this->createForm(QuizFormType::class, $quiz);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $quiz = new Quizz();
             $quiz->setTitle($data['title']);
             $quiz->setDescription($data['description']);
             $quiz->setAuthor($userInDB);
@@ -108,10 +108,11 @@ class QuizController extends AbstractController
                 $question->setQuizz($quiz);
 
                 // add answers
-                foreach ($questionData['answers'] as $answerData) {
+                for ($i = 1; $i <= 4; $i++) {
+                    $answerData = $questionData['answer' . $i];
                     $answer = new Answer();
                     $answer->setText($answerData['text']);
-                    $answer->setCorrect($answerData['isCorrect']); // TODO: rename setCorrect to setIsCorrect
+                    $answer->setIsCorrect($answerData['isCorrect']);
                     $answer->setQuestion($question);
                     $question->addAnswer($answer);
                 }

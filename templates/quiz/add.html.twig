@@ -27,7 +27,6 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <button type="button" class="rounded-btn add_answer_item_link" data-collection-holder-class="answers">Add an answer</button>
                 </li>
             {% endfor %}
         </ul>
@@ -45,22 +44,10 @@
             });
 
         document
-            .querySelectorAll('.add_answer_item_link')
-            .forEach(btn => {
-                btn.addEventListener("click", addAnswerFormToCollection)
-            });
-
-        document
             .querySelectorAll('ul.questions li')
             .forEach((question) => {
                 addQuestionFormDeleteLink(question)
                 addAnswerFormAddLink(question)
-            });
-
-        document
-            .querySelectorAll('ul.answers li')
-            .forEach((answer) => {
-                addAnswerFormDeleteLink(answer)
             });
 
         function addQuestionFormToCollection(e) {
@@ -75,7 +62,6 @@
                     /__name__/g,
                     collectionHolder.dataset.index
                 );
-            item.innerHTML += '<h4>Answers</h4><ul class="answers" data-index="0" data-prototype="' + collectionHolder.dataset.prototype.replace("\"", "'") + '"></ul>';
 
             collectionHolder.appendChild(item);
 
@@ -83,28 +69,6 @@
 
             // add a delete link to the new form
             addQuestionFormDeleteLink(item);
-            addAnswerFormAddLink(item);
-        }
-
-        function addAnswerFormToCollection(e) {
-            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
-
-            const item = document.createElement('li');
-
-            item.innerHTML = collectionHolder
-                .dataset
-                .prototype
-                .replace(
-                    /__name__/g,
-                    collectionHolder.dataset.index
-                );
-
-            collectionHolder.appendChild(item);
-
-            collectionHolder.dataset.index++;
-
-            // add a delete link to the new form
-            addAnswerFormDeleteLink(item);
         }
 
         function addQuestionFormDeleteLink(item) {
@@ -118,34 +82,6 @@
                 e.preventDefault();
                 // remove the li for the tag form
                 item.remove();
-            });
-        }
-
-        function addAnswerFormDeleteLink(item) {
-            const removeQuestionFormButton = document.createElement('button');
-            removeQuestionFormButton.innerText = 'Delete the answer';
-            removeQuestionFormButton.classList.add('rounded-btn');
-
-            item.append(removeQuestionFormButton);
-
-            removeQuestionFormButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                // remove the li for the tag form
-                item.remove();
-            });
-        }
-
-        function addAnswerFormAddLink(item) {
-            const addAnswerFormButton = document.createElement('button');
-            addAnswerFormButton.innerText = 'Add an answer';
-            addAnswerFormButton.dataset.collectionHolderClass = 'answers';
-            addAnswerFormButton.classList.add('rounded-btn');
-
-            item.append(addAnswerFormButton);
-
-            addAnswerFormButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                addAnswerFormToCollection(e);
             });
         }
     </script>
