@@ -33,9 +33,13 @@ class Question
     #[ORM\Column]
     private ?int $position = 0;
 
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
+    private Collection $userQuizzAttemptAnswers;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+        $this->userQuizzAttemptAnswers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +118,33 @@ class Question
     public function setPosition(int $position): static
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    public function getUserQuizzAttemptAnswers(): Collection
+    {
+        return $this->userQuizzAttemptAnswers;
+    }
+
+    public function addUserQuizzAttemptAnswer(QuestionAnswerUserQuizzAttempt $userQuizzAttemptAnswer): self
+    {
+
+        if (!$this->userQuizzAttemptAnswers->contains($userQuizzAttemptAnswer)) {
+            $this->userQuizzAttemptAnswers->add($userQuizzAttemptAnswer);
+            $userQuizzAttemptAnswer->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserQuizzAttemptAnswer(QuestionAnswerUserQuizzAttempt $userQuizzAttemptAnswer): self
+    {
+        if ($this->userQuizzAttemptAnswers->removeElement($userQuizzAttemptAnswer)) {
+            if ($userQuizzAttemptAnswer->getQuestion() === $this) {
+                $userQuizzAttemptAnswer->setQuestion(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AnswerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
@@ -24,6 +26,14 @@ class Answer
 
     #[ORM\ManyToOne(inversedBy: 'answers')]
     private ?Question $question = null;
+
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]
+    private Collection $questionsUserQuizzAttempt;
+
+    public function __construct()
+    {
+        $this->questionsUserQuizzAttempt = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -75,6 +85,33 @@ class Answer
     public function setQuestion(?Question $question): self
     {
         $this->question = $question;
+
+        return $this;
+    }
+
+    public function getQuestionsUserQuizzAttempt(): Collection
+    {
+        return $this->questionsUserQuizzAttempt;
+    }
+
+    public function addQuestionUserQuizzAttempt(QuestionAnswerUserQuizzAttempt $questionUserQuizzAttempt): self
+    {
+
+        if (!$this->questionsUserQuizzAttempt->contains($questionUserQuizzAttempt)) {
+            $this->questionsUserQuizzAttempt->add($questionUserQuizzAttempt);
+            $questionUserQuizzAttempt->setAnswer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionUserQuizzAttempt(QuestionAnswerUserQuizzAttempt $questionUserQuizzAttempt): self
+    {
+        if ($this->questionsUserQuizzAttempt->removeElement($questionUserQuizzAttempt)) {
+            if ($questionUserQuizzAttempt->getAnswer() === $this) {
+                $questionUserQuizzAttempt->setAnswer(null);
+            }
+        }
 
         return $this;
     }

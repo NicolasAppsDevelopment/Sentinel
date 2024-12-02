@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserQuizzAttemptRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,14 @@ class UserQuizzAttempt
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $playedDate = null;
+
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'attempt', cascade: ["persist", 'remove'])]
+    private Collection $questionAnswers;
+
+    public function __construct()
+    {
+        $this->questionAnswers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +101,34 @@ class UserQuizzAttempt
     public function setPlayedDate(\DateTimeInterface $playedDate): static
     {
         $this->playedDate = $playedDate;
+
+        return $this;
+    }
+
+
+    public function getQuestionAnswers(): Collection
+    {
+        return $this->questionAnswers;
+    }
+
+    public function addQuestionAnswers(QuestionAnswerUserQuizzAttempt $questionAnswer): self
+    {
+
+        if (!$this->questionAnswers->contains($questionAnswer)) {
+            $this->questionAnswers->add($questionAnswer);
+            $questionAnswer->setAttempt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionAnswers(QuestionAnswerUserQuizzAttempt $questionAnswer): self
+    {
+        if ($this->questionAnswers->removeElement($questionAnswer)) {
+            if ($questionAnswer->getAttempt() === $this) {
+                $questionAnswer->setAttempt(null);
+            }
+        }
 
         return $this;
     }

@@ -13,52 +13,52 @@ class QuestionAnswerUserQuizzAttempt
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $attemptId = null;
+    #[ORM\ManyToOne(inversedBy: 'questionAnswers')]
+    private ?UserQuizzAttempt $attempt = null;
 
-    #[ORM\Column]
-    private ?int $questionId = null;
+    #[ORM\ManyToOne(inversedBy: 'userQuizzAttemptAnswers')]
+    private ?Question $question = null;
 
-    #[ORM\Column]
-    private ?int $answerId = null;
+    #[ORM\ManyToOne(inversedBy: 'questionsUserQuizzAttempt')]
+    private ?Answer $answer = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAttemptId(): ?int
+    public function getAttempt(): ?UserQuizzAttempt
     {
-        return $this->attemptId;
+        return $this->attempt;
     }
 
-    public function setAttemptId(int $attemptId): static
+    public function setAttempt(?UserQuizzAttempt $attempt): self
     {
-        $this->attemptId = $attemptId;
+        $this->attempt = $attempt;
 
         return $this;
     }
 
-    public function getQuestionId(): ?int
+    public function getQuestion(): ?Question
     {
-        return $this->questionId;
+        return $this->question;
     }
 
-    public function setQuestionId(int $questionId): static
+    public function setQuestion(?Question $question): self
     {
-        $this->questionId = $questionId;
+        $this->question = $question;
 
         return $this;
     }
 
-    public function getAnswerId(): ?int
+    public function getAnswer(): ?Answer
     {
-        return $this->answerId;
+        return $this->answer;
     }
 
-    public function setAnswerId(int $answerId): static
+    public function setAnswer(?Answer $answer): self
     {
-        $this->answerId = $answerId;
+        $this->answer = $answer;
 
         return $this;
     }
