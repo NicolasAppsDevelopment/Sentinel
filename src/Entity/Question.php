@@ -18,11 +18,11 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $statement = null;
 
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
-    private Collection $answers;
-
     #[ORM\ManyToOne(inversedBy: 'questions')]
     private ?Quizz $quizz = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $ressourceFilename = null;
 
     #[ORM\Column]
     private ?int $type = 0;
@@ -42,16 +42,15 @@ class Question
     private ?Answer $answer2 = null;
 
     #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: "answer3_id", referencedColumnName: "id", nullable: false)]
+    #[ORM\JoinColumn(name: "answer3_id", referencedColumnName: "id", nullable: true)]
     private ?Answer $answer3 = null;
 
     #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: "answer4_id", referencedColumnName: "id", nullable: false)]
+    #[ORM\JoinColumn(name: "answer4_id", referencedColumnName: "id", nullable: true)]
     private ?Answer $answer4 = null;
 
     public function __construct()
     {
-        $this->answers = new ArrayCollection();
         $this->userQuizzAttemptAnswers = new ArrayCollection();
     }
 
@@ -72,29 +71,14 @@ class Question
         return $this;
     }
 
-    public function getAnswers(): Collection
+    public function getRessourceFilename(): ?string
     {
-        return $this->answers;
+        return $this->ressourceFilename;
     }
 
-    public function addAnswer(Answer $answer): self
+    public function setRessourceFilename(?string $ressourceFilename): static
     {
-
-        if (!$this->answers->contains($answer)) {
-            $this->answers->add($answer);
-            $answer->setQuestion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAnswer(Answer $answer): self
-    {
-        if ($this->answers->removeElement($answer)) {
-            if ($answer->getQuestion() === $this) {
-                $answer->setQuestion(null);
-            }
-        }
+        $this->ressourceFilename = $ressourceFilename;
 
         return $this;
     }
@@ -170,6 +154,42 @@ class Question
     public function setAnswer1(Answer $answer1): static
     {
         $this->answer1 = $answer1;
+
+        return $this;
+    }
+
+    public function getAnswer2(): ?Answer
+    {
+        return $this->answer2;
+    }
+
+    public function setAnswer2(Answer $answer2): static
+    {
+        $this->answer2 = $answer2;
+
+        return $this;
+    }
+
+    public function getAnswer3(): ?Answer
+    {
+        return $this->answer3;
+    }
+
+    public function setAnswer3(Answer $answer3): static
+    {
+        $this->answer3 = $answer3;
+
+        return $this;
+    }
+
+    public function getAnswer4(): ?Answer
+    {
+        return $this->answer4;
+    }
+
+    public function setAnswer4(Answer $answer4): static
+    {
+        $this->answer4 = $answer4;
 
         return $this;
     }

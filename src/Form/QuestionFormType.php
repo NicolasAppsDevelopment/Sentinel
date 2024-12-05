@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class QuestionFormType extends AbstractType
 {
@@ -19,6 +20,26 @@ class QuestionFormType extends AbstractType
             ->add('attachement', FileType::class, [
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'audio/mp4',
+                            'audio/mpeg',
+                            'audio/ogg',
+                            'audio/wav',
+                            'image/avif',
+                            'image/gif',
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                            'video/mp4',
+                            'video/mpeg',
+                            'video/ogg',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid document',
+                    ])
+                ],
             ])
             ->add('answer1', AnswerFormType::class, [
                 'required' => true,

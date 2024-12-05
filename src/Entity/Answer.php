@@ -19,10 +19,10 @@ class Answer
     private ?string $text = null;
 
     #[ORM\Column]
-    private ?bool $isCorrect = null;
+    private ?bool $isCorrect = false;
 
     #[ORM\Column]
-    private ?int $numberOfTimesSelected = null;
+    private ?int $numberOfTimesSelected = 0;
 
 
     #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class QuizController extends AbstractController
 {
@@ -81,48 +82,55 @@ class QuizController extends AbstractController
     }
 
     #[Route(path: 'quiz/add', name: 'app_quiz_add')]
-    public function add(Request $request, UserInterface $user): Response
+    public function add(Request $request, UserInterface $user, SluggerInterface $slugger,): Response
     {
         $userInDB = $this->getUser();
         if (!$userInDB) {
             return new Response("Not authorized", 401);
         }
 
-        $quiz = new Quizz();
-        $form = $this->createForm(QuizFormType::class, $quiz);
+        $form = $this->createForm(QuizFormType::class, new Quizz());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $quiz->setTitle($data['title']);
-            $quiz->setDescription($data['description']);
+            $quiz = $form->getData();
             $quiz->setAuthor($userInDB);
             $quiz->setCreatedDate(new \DateTime());
 
-            // add questions
-            foreach ($data['questions'] as $questionData) {
-                $question = new Question();
-                $question->setStatement($questionData['statement']);
+            for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
+                $question = $quiz->getQuestions()[$questionIndex];
                 $question->setQuizz($quiz);
 
-                // add answers
-                for ($i = 1; $i <= 4; $i++) {
-                    $answerData = $questionData['answer' . $i];
-                    $answer = new Answer();
-                    $answer->setText($answerData['text']);
-                    $answer->setIsCorrect($answerData['isCorrect']);
-                    $answer->setQuestion($question);
-                    $question->addAnswer($answer);
+                $question->getAnswer1()->setQuestion($question);
+                $question->getAnswer2()->setQuestion($question);
+
+                if ($question->getAnswer3()) {
+                    $question->getAnswer3()->setQuestion($question);
+                }
+                if ($question->getAnswer4()) {
+                    $question->getAnswer4()->setQuestion($question);
                 }
 
-                $fileType = $questionData['attachement']->getMimeType();
+                $fileType = $form->get('questions')[$questionIndex]['attachement']->getData()->getMimeType();
                 if (str_contains($fileType, 'image')) {
                     $question->setType(1);
                 } elseif (str_contains($fileType, 'audio')) {
                     $question->setType(2);
                 } else {
                     $question->setType(0);
+                }
+
+                $ressourceFile = $form->get('questions')[$questionIndex]['attachement']->getData();
+                if ($ressourceFile) {
+                    $originalFilename = pathinfo($ressourceFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$ressourceFile->guessExtension();
+                    try {
+                        $ressourceFile->move("uploads", $newFilename);
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+                    $question->setRessourceFilename($newFilename);
                 }
 
                 $quiz->addQuestion($question);
