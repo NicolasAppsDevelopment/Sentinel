@@ -50,7 +50,7 @@ class QuizzRepository extends ServiceEntityRepository
             ->orderBy('userAttemptCount', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 
     public function getLastQuizzes(): array
@@ -59,7 +59,6 @@ class QuizzRepository extends ServiceEntityRepository
             ->orderBy('quizz.createdDate', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 }

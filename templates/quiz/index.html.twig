@@ -13,9 +13,11 @@
     <h2>Résultat de recherche</h2>
     <div class="container">
         {% for quiz in searchedQuiz %}
-            <div class="container-card">
+            <div>
                 <h3>{{ quiz.title }}</h3>
-                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
+                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
+                <p>{{ quiz.description }}</p>
                 <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
             </div>
         {% endfor %}
@@ -26,7 +28,9 @@
         {% for quiz in trendQuiz %}
             <div>
                 <h3>{{ quiz.title }}</h3>
-                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
+                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
+                <p>{{ quiz.description }}</p>
                 <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
             </div>
         {% endfor %}
@@ -37,7 +41,9 @@
         {% for quiz in lastQuiz %}
             <div>
                 <h3>{{ quiz.title }}</h3>
-                <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
+                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
+                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
+                <p>{{ quiz.description }}</p>
                 <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
             </div>
         {% endfor %}
