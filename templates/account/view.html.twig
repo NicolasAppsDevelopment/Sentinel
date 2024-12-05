@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+    <h1>Account</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Username</th>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td>{{ user.password }}</td>
+        </tr>
+        <tr>
+            <th>Score</th>
+            <td>{{ user.score }}</td>
+        </tr>
+        <tr>
+            <th>Date of Creation</th>
+            <td>{{ user.creationDate|date("d/m/Y") }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quiz_view_all') }}">back to Homepage</a>
+
+    <a href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
+
+    {{ include('account/_delete_form.html.twig') }}
+{% endblock %}

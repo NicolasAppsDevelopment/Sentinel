@@ -34,8 +34,8 @@ class QuizzRepository extends ServiceEntityRepository
     public function findByTitle(string $title): array
     {
         return $this->createQueryBuilder('quizz')
-            ->andWhere('quizz.title = :title')
-            ->setParameter('title', $title)
+            ->andWhere('LOWER(TRIM(quizz.title)) = :title')
+            ->setParameter('title', strtolower(trim($title)))
             ->getQuery()
             ->getResult()
         ;
@@ -44,11 +44,13 @@ class QuizzRepository extends ServiceEntityRepository
     public function getTrendQuizzes(): array
     {
         return $this->createQueryBuilder('quizz')
-            ->orderBy('count(quizz.usersAttempts)', 'DESC')
+            ->select('quizz, COUNT(usersAttempt) AS HIDDEN userAttemptCount')
+            ->leftJoin('quizz.usersAttempts', 'usersAttempt')
+            ->groupBy('quizz.id')
+            ->orderBy('userAttemptCount', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getArrayResult();
     }
 
     public function getLastQuizzes(): array
