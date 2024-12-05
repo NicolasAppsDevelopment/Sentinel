@@ -20,11 +20,17 @@ class QuestionFormType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('answers', CollectionType::class, [
-                'entry_type' => AnswerFormType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'entry_options' => ['label' => false],
+            ->add('answer1', AnswerFormType::class, [
+                'required' => true,
+            ])
+            ->add('answer2', AnswerFormType::class, [
+                'required' => true,
+            ])
+            ->add('answer3', AnswerFormType::class, [
+                'required' => false,
+            ])
+            ->add('answer4', AnswerFormType::class, [
+                'required' => false,
             ]);
     }
 

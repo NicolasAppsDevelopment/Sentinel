@@ -24,8 +24,6 @@ class Answer
     #[ORM\Column]
     private ?int $numberOfTimesSelected = null;
 
-    #[ORM\ManyToOne(inversedBy: 'answers')]
-    private ?Question $question = null;
 
     #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]
     private Collection $questionsUserQuizzAttempt;
@@ -58,7 +56,7 @@ class Answer
         return $this->isCorrect;
     }
 
-    public function setCorrect(bool $isCorrect): static
+    public function setIsCorrect(bool $isCorrect): static
     {
         $this->isCorrect = $isCorrect;
 
