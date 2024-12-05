@@ -16,14 +16,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-#[Route(path: '/quiz')]
 class QuizController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
     ) {}
 
-    #[Route(path: '/view/all', name: 'app_quiz_view_all')]
+    #[Route(path: '/', name: 'app_quiz_view_all')]
     public function viewAll(Request $request): Response
     {
         $trendQuiz = $this->entityManager->getRepository(Quizz::class)->getTrendQuizzes();
@@ -52,7 +51,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/view/{id}', name: 'app_quiz_view')]
+    #[Route(path: 'quiz/view/{id}', name: 'app_quiz_view')]
     public function view(string $id): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
@@ -65,7 +64,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/play/{id}', name: 'app_quiz_play')]
+    #[Route(path: 'quiz/play/{id}', name: 'app_quiz_play')]
     public function play(string $id): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
@@ -81,7 +80,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/add', name: 'app_quiz_add')]
+    #[Route(path: 'quiz/add', name: 'app_quiz_add')]
     public function add(Request $request, UserInterface $user): Response
     {
         $userInDB = $this->getUser();
@@ -139,7 +138,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/remove/{id}', name: 'app_quiz_remove')]
+    #[Route(path: 'quiz/remove/{id}', name: 'app_quiz_remove')]
     public function remove(string $id, UserInterface $user): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
@@ -155,7 +154,7 @@ class QuizController extends AbstractController
         return $this->render('quiz/index.html.twig');
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_quiz_edit')]
+    #[Route(path: 'quiz/edit/{id}', name: 'app_quiz_edit')]
     public function edit(string $id, UserInterface $user): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
@@ -172,7 +171,7 @@ class QuizController extends AbstractController
         return $this->render('quiz/edit.html.twig');
     }
 
-    #[Route(path: '/save/{id}', name: 'app_quiz_save')]
+    #[Route(path: 'quiz/save/{id}', name: 'app_quiz_save')]
     public function save(string $id, UserInterface $user): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
@@ -189,7 +188,7 @@ class QuizController extends AbstractController
         return $this->render('quiz/view.html.twig');
     }
 
-    #[Route(path: '/{id}/add/question', name: 'app_question_add')]
+    #[Route(path: 'quiz/{id}/add/question', name: 'app_question_add')]
     public function addQuestion(string $id, UserInterface $user): Response
     {
         $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
