@@ -4,7 +4,7 @@ namespace App\Twig\Components;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-class TopMenu
+class Navbar
 {
-    public int $index = -1;
+    public int $index = 0;
 }

@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+// TODO: add #[Route(path: '/quiz')] without breaking the redirections
 class QuizController extends AbstractController
 {
     public function __construct(

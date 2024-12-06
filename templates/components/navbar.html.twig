@@ -1,0 +1,14 @@
+<header>
+    <nav class="navbar">
+        <a class="nav-item {{ index == 0 ? "active" : ""  }}" href="{{ path('app_quiz_view_all') }}">Quizzes</a>
+        <a class="nav-item {{ index == 1 ? "active" : ""  }}" href="">Leaderboard</a>
+        <a class="nav-item {{ index == 2 ? "active" : ""  }}" href="">Stats</a>
+        <a class="nav-item {{ index == 3 ? "active" : ""  }}" href="{{ path('app_account_view', {"id": app.user.getId() }) }}">Profile</a>
+
+        <div class="expanded"></div>
+        {% if app.user %}
+            <p>{{ app.user.getUsername() }}</p>
+            <a class="nav-item red" href="{{ path('app_logout') }}">Logout</a>
+        {% endif %}
+    </nav>
+</header>

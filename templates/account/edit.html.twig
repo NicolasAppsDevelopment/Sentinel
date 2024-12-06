@@ -3,11 +3,10 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
+    {{ component('Navbar', {index: 3}) }}
     <h1>Edit Account</h1>
 
     {{ include('account/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_account_view', {'id': user.id}) }}">back to profile</a>
 
     {{ include('account/_delete_form.html.twig') }}
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block title %}Voir quiz{% endblock %}
 
 {% block body %}
+    {{ component('Navbar', {index: 0}) }}
+
     <h1>{{ quiz.title }}</h1>
     <p>{{ quiz.questions.count }} questions - par {{ quiz.author.name }}</p>
     <p>Créé le {{ quiz.creationDate }}</p>

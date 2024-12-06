@@ -34,8 +34,8 @@ class QuizzRepository extends ServiceEntityRepository
     public function findByTitle(string $title): array
     {
         return $this->createQueryBuilder('quizz')
-            ->andWhere('LOWER(TRIM(quizz.title)) = :title')
-            ->setParameter('title', strtolower(trim($title)))
+            ->andWhere('LOWER(TRIM(quizz.title)) LIKE :title')
+            ->setParameter('title', '%' . strtolower(trim($title)) . '%')
             ->getQuery()
             ->getResult()
         ;
