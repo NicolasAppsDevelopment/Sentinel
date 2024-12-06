@@ -250,6 +250,58 @@ p > a {
     background-color: var(--card-hover-icon-border-color);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, label {
     color: var(--card-label-color);
+}
+
+input {
+    padding: 0.5rem;
+    background-color: var(--card-border-color);
+    border: 1px solid var(--card-hover-border-color);
+    border-radius: 8px;
+    color: var(--card-label-color);
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.questions > div {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--card-border-color);
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
+    border-radius: 15px;
+}
+
+.questions .answer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.questions .answer > div:first-child {
+    width: 100%;
+}
+
+.rounded-btn.destructive {
+    background-color: var(--destruction-label-color);
+    border: 1px solid var(--destruction-label-color);
+}
+.rounded-btn.cancel {
+    background-color: var(--card-border-color);
+    border: 1px solid var(--card-hover-border-color);
+}
+
+.p1 {
+    padding: 1rem;
 }

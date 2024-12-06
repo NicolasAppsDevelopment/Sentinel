@@ -5,17 +5,20 @@
 {% block body %}
     {{ component('navbar', {index: 0}) }}
 
-    {{ form_start(form) }}
+    <div class="p1">
+        <h1>Create a new quiz</h1>
+
+        {{ form_start(form) }}
         {{ form_row(form.title) }}
         {{ form_row(form.description) }}
 
         <h3>Questions</h3>
-        <ul class="questions"
-            data-index="{{ form.questions|length > 0 ? form.questions|last.vars.name + 1 : 0 }}"
-            data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}"
+        <div class="questions"
+             data-index="{{ form.questions|length > 0 ? form.questions|last.vars.name + 1 : 0 }}"
+             data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}"
         >
             {% for question in form.questions %}
-                <li>
+                <div class="answers">
                     {{ form_row(question.statement) }}
                     <h4>Answers</h4>
 
@@ -23,14 +26,15 @@
                     {{ form_row(question.answer2) }}
                     {{ form_row(question.answer3) }}
                     {{ form_row(question.answer4) }}
-                </li>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
         <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions">Add a question</button>
 
         <button type="submit" class="rounded-btn">Finish & Save</button>
-        <button type="reset" class="rounded-btn">Cancel</button>
-    {{ form_end(form) }}
+        <button type="reset" class="rounded-btn cancel">Cancel</button>
+        {{ form_end(form) }}
+    </div>
 
     <script>
         document
@@ -40,16 +44,15 @@
             });
 
         document
-            .querySelectorAll('ul.questions li')
+            .querySelectorAll('div.questions div')
             .forEach((question) => {
                 addQuestionFormDeleteLink(question)
-                addAnswerFormAddLink(question)
             });
 
         function addQuestionFormToCollection(e) {
             const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
-            const item = document.createElement('li');
+            const item = document.createElement('div');
 
             item.innerHTML = collectionHolder
                 .dataset
@@ -71,6 +74,7 @@
             const removeQuestionFormButton = document.createElement('button');
             removeQuestionFormButton.innerText = 'Delete the question';
             removeQuestionFormButton.classList.add('rounded-btn');
+            removeQuestionFormButton.classList.add('destructive');
 
             item.append(removeQuestionFormButton);
 

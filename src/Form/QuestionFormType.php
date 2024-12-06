@@ -16,7 +16,10 @@ class QuestionFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('statement', TextType::class)
+            ->add('statement', TextType::class, [
+                'attr' => ['placeholder' => 'Text of the question'],
+                'required' => true,
+            ])
             ->add('attachement', FileType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -42,15 +45,19 @@ class QuestionFormType extends AbstractType
                 ],
             ])
             ->add('answer1', AnswerFormType::class, [
+                'label' => 'Answer 1',
                 'required' => true,
             ])
             ->add('answer2', AnswerFormType::class, [
+                'label' => 'Answer 2',
                 'required' => true,
             ])
             ->add('answer3', AnswerFormType::class, [
+                'label' => 'Answer 3',
                 'required' => false,
             ])
             ->add('answer4', AnswerFormType::class, [
+                'label' => 'Answer 4',
                 'required' => false,
             ]);
     }

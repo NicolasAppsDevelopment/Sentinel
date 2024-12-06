@@ -15,9 +15,12 @@ class AnswerFormType extends AbstractType
     {
         $builder
             ->add('text', TextType::class, [
+                'attr' => ['placeholder' => 'Text of the answer'],
+                'label' => false,
                 'required' => true,
             ])
             ->add('isCorrect', CheckboxType::class, [
+                'label' => false,
                 'required' => false,
             ])
         ;
@@ -27,6 +30,7 @@ class AnswerFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Answer::class,
+            'attr' => ['class' => 'answer'],
         ]);
     }
 }
