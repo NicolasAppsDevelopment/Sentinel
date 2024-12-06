@@ -10,6 +10,8 @@ use App\Form\QuizFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -95,55 +97,7 @@ class QuizController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $quiz = $form->getData();
-            $quiz->setAuthor($userInDB);
-            $quiz->setCreatedDate(new \DateTime());
-
-            for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
-                $question = $quiz->getQuestions()[$questionIndex];
-                $question->setQuizz($quiz);
-
-                $question->getAnswer1()->setQuestion($question);
-                $question->getAnswer2()->setQuestion($question);
-
-                if ($question->getAnswer3()) {
-                    $question->getAnswer3()->setQuestion($question);
-                }
-                if ($question->getAnswer4()) {
-                    $question->getAnswer4()->setQuestion($question);
-                }
-
-                $ressourceFile = $form->get('questions')[$questionIndex]['attachement']->getData();
-                if ($ressourceFile) {
-                    $fileType = $ressourceFile->getMimeType();
-                    if (str_contains($fileType, 'image')) {
-                        $question->setType(1);
-                    } elseif (str_contains($fileType, 'audio')) {
-                        $question->setType(2);
-                    } else {
-                        $question->setType(0);
-                    }
-
-                    $originalFilename = pathinfo($ressourceFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$ressourceFile->guessExtension();
-                    try {
-                        $ressourceFile->move("uploads", $newFilename);
-                    } catch (FileException $e) {
-                        // ... handle exception if something happens during file upload
-                    }
-                    $question->setRessourceFilename($newFilename);
-                } else {
-                    $question->setType(0);
-                }
-
-                $quiz->addQuestion($question);
-            }
-
-            $this->entityManager->persist($quiz);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('app_quiz_view', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
+            return $this->saveForm($form, $userInDB, $slugger);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -188,55 +142,7 @@ class QuizController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $quiz = $form->getData();
-            $quiz->setAuthor($userInDB);
-            $quiz->setCreatedDate(new \DateTime());
-
-            for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
-                $question = $quiz->getQuestions()[$questionIndex];
-                $question->setQuizz($quiz);
-
-                $question->getAnswer1()->setQuestion($question);
-                $question->getAnswer2()->setQuestion($question);
-
-                if ($question->getAnswer3()) {
-                    $question->getAnswer3()->setQuestion($question);
-                }
-                if ($question->getAnswer4()) {
-                    $question->getAnswer4()->setQuestion($question);
-                }
-
-                $ressourceFile = $form->get('questions')[$questionIndex]['attachement']->getData();
-                if ($ressourceFile) {
-                    $fileType = $ressourceFile->getMimeType();
-                    if (str_contains($fileType, 'image')) {
-                        $question->setType(1);
-                    } elseif (str_contains($fileType, 'audio')) {
-                        $question->setType(2);
-                    } else {
-                        $question->setType(0);
-                    }
-
-                    $originalFilename = pathinfo($ressourceFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$ressourceFile->guessExtension();
-                    try {
-                        $ressourceFile->move("uploads", $newFilename);
-                    } catch (FileException $e) {
-                        // ... handle exception if something happens during file upload
-                    }
-                    $question->setRessourceFilename($newFilename);
-                } else {
-                    $question->setType(0);
-                }
-
-                $quiz->addQuestion($question);
-            }
-
-            $this->entityManager->persist($quiz);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('app_quiz_view', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
+            return $this->saveForm($form, $userInDB, $slugger);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -245,37 +151,62 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: 'quiz/save/{id}', name: 'app_quiz_save')]
-    public function save(string $id, UserInterface $user): Response
+    /**
+     * @param FormInterface $form
+     * @param UserInterface $userInDB
+     * @param SluggerInterface $slugger
+     * @return RedirectResponse
+     */
+    public function saveForm(FormInterface $form, UserInterface $userInDB, SluggerInterface $slugger): RedirectResponse
     {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
-        if (!$quiz) {
-            return new Response("Not found", 404);
+        $quiz = $form->getData();
+        $quiz->setAuthor($userInDB);
+        $quiz->setCreatedDate(new \DateTime());
+
+        for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
+            $question = $quiz->getQuestions()[$questionIndex];
+            $question->setQuizz($quiz);
+
+            $question->getAnswer1()->setQuestion($question);
+            $question->getAnswer2()->setQuestion($question);
+
+            if ($question->getAnswer3()) {
+                $question->getAnswer3()->setQuestion($question);
+            }
+            if ($question->getAnswer4()) {
+                $question->getAnswer4()->setQuestion($question);
+            }
+
+            $ressourceFile = $form->get('questions')[$questionIndex]['attachement']->getData();
+            if ($ressourceFile) {
+                $fileType = $ressourceFile->getMimeType();
+                if (str_contains($fileType, 'image')) {
+                    $question->setType(1);
+                } elseif (str_contains($fileType, 'audio')) {
+                    $question->setType(2);
+                } else {
+                    $question->setType(0);
+                }
+
+                $originalFilename = pathinfo($ressourceFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $ressourceFile->guessExtension();
+                try {
+                    $ressourceFile->move("uploads", $newFilename);
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+                $question->setRessourceFilename($newFilename);
+            } else {
+                $question->setType(0);
+            }
+
+            $quiz->addQuestion($question);
         }
 
-        $userInDB = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
-        if (!$userInDB || $quiz->getAuthor()->getId() !== $userInDB->getId()) {
-            return new Response("Not authorized", 401);
-        }
+        $this->entityManager->persist($quiz);
+        $this->entityManager->flush();
 
-        // TODO: redirect to right quiz id view
-        return $this->render('quiz/view.html.twig');
-    }
-
-    #[Route(path: 'quiz/{id}/add/question', name: 'app_question_add')]
-    public function addQuestion(string $id, UserInterface $user): Response
-    {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
-        if (!$quiz) {
-            return new Response("Not found", 404);
-        }
-
-        $userInDB = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
-        if (!$userInDB || $quiz->getAuthor()->getId() !== $userInDB->getId()) {
-            return new Response("Not authorized", 401);
-        }
-
-        // just display add page, save logic in /question/save !
-        return $this->render('question/add.html.twig');
+        return $this->redirectToRoute('app_quiz_view', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
     }
 }
