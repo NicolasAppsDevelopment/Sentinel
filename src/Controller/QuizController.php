@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Answer;
-use App\Entity\Question;
 use App\Entity\Quizz;
 use App\Entity\User;
 use App\Form\QuizFormType;
@@ -16,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 // TODO: add #[Route(path: '/quiz')] without breaking the redirections
@@ -97,7 +94,7 @@ class QuizController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveForm($form, $userInDB, $slugger);
+            return $this->saveQuizForm($form, $userInDB, $slugger);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -138,11 +135,13 @@ class QuizController extends AbstractController
             return new Response("Not authorized", 401);
         }
 
+        // TODO: manage questions ressources files
+
         $form = $this->createForm(QuizFormType::class, $quiz);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveForm($form, $userInDB, $slugger);
+            return $this->saveQuizForm($form, $userInDB, $slugger);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -157,7 +156,7 @@ class QuizController extends AbstractController
      * @param SluggerInterface $slugger
      * @return RedirectResponse
      */
-    public function saveForm(FormInterface $form, UserInterface $userInDB, SluggerInterface $slugger): RedirectResponse
+    public function saveQuizForm(FormInterface $form, UserInterface $userInDB, SluggerInterface $slugger): RedirectResponse
     {
         $quiz = $form->getData();
         $quiz->setAuthor($userInDB);
