@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create quiz{% endblock %}
+{% block title %}Edit quiz{% endblock %}
 
 {% block body %}
     {{ component('navbar', {index: 0}) }}
 
     <div class="p1">
-        <h1>Create a quiz</h1>
+        <h1>Edit a quiz</h1>
 
         {{ form_start(form) }}
         {{ form_row(form.title) }}

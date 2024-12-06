@@ -21,7 +21,7 @@ class Question
     #[ORM\ManyToOne(inversedBy: 'questions')]
     private ?Quizz $quizz = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $ressourceFilename = null;
 
     #[ORM\Column]
