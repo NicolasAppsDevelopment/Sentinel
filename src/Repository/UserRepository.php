@@ -51,28 +51,37 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getUserLeaderboard(): array
+    {
+        $users = $this->createQueryBuilder('user')
+            ->select('user.username', 'user.score')
+            ->orderBy('user.score', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $rank = 1;
+        foreach ($users as &$user) {
+            $user['rank'] = $rank++;
+        }
+
+        return $users;
+    }
+
+    public function getUserRank(int $userId): ?int
+    {
+        $users = $this->createQueryBuilder('user')
+            ->select('user.id', 'user.score')
+            ->orderBy('user.score', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($users as $index => $user) {
+            if ($user['id'] === $userId) {
+                return $index + 1;
+            }
+        }
+
+        return null;
+    }
 }

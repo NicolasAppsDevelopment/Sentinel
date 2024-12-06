@@ -3,7 +3,7 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
-    {{ component('Navbar', {index: 3}) }}
+    {{ component('navbar', {index: 3}) }}
     <h1>Edit Account</h1>
 
     {{ include('account/_form.html.twig', {'button_label': 'Update'}) }}
