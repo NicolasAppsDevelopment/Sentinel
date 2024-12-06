@@ -4,30 +4,30 @@
 
 {% block body %}
     <div class="centered">
-    <div class="container-card small">
-        {{ form_errors(registrationForm) }}
+        <div class="container-card small">
+            {{ form_errors(registrationForm) }}
 
-        {{ form_start(registrationForm, {'attr': {'class': 'login-form register-form'}}) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'login-form register-form'}}) }}
 
-        {% for flash_error in app.flashes('verify_email_error') %}
-            <div class="alert err_msg_container" role="alert">{{ flash_error }}</div>
-        {% endfor %}
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert err_msg_container" role="alert">{{ flash_error }}</div>
+            {% endfor %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.email, {
-            label: 'Email'
-        }) }}
+            <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
+            {{ form_row(registrationForm.username) }}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Password'
+            }) }}
+            {{ form_row(registrationForm.email, {
+                label: 'Email'
+            }) }}
 
-        <button type="submit" class="btn">Register</button>
-        {{ form_end(registrationForm) }}
+            <button type="submit" class="btn">Register</button>
+            {{ form_end(registrationForm) }}
 
-        <p> If you already have an account, you can
-            <a href="{{ path('app_login') }}">Login</a>
-        </p>
-    </div>
+            <p> If you already have an account, you can
+                <a href="{{ path('app_login') }}">Login</a>
+            </p>
+        </div>
     </div>
 {% endblock %}

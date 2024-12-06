@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Edit Account{% endblock %}
 
 {% block body %}
     {{ component('navbar', {index: 3}) }}
-    <h1>Edit Account</h1>
 
-    {{ include('account/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="container-card small">
+        <h1>Edit Account</h1>
+        {{ include('account/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('account/_delete_form.html.twig') }}
+        {{ include('account/_delete_form.html.twig') }}
+    </div>
 {% endblock %}
