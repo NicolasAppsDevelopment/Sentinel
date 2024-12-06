@@ -6,28 +6,31 @@
     {{ component('navbar', {index: 3}) }}
     <h1>Account</h1>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Username</th>
-            <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-            <th>Score</th>
-            <td>{{ user.score }}</td>
-        </tr>
-        <tr>
-            <th>Date of Creation</th>
-            <td>{{ user.creationDate|date("d/m/Y") }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="container-card small">
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Score</th>
+                <td>{{ user.score }}</td>
+            </tr>
+            <tr>
+                <th>Date of Creation</th>
+                <td>{{ user.creationDate|date("d/m/Y") }}</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <a class="rounded-btn add_question_item_link"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
+        <a class="rounded-btn add_question_item_link"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
 
-    {{ include('account/_delete_form.html.twig') }}
+        {{ include('account/_delete_form.html.twig') }}
+
+    </div>
 {% endblock %}
