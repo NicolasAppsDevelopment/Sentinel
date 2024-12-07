@@ -135,8 +135,6 @@ class QuizController extends AbstractController
             return new Response("Not authorized", 401);
         }
 
-        // TODO: manage questions ressources files
-
         $form = $this->createForm(QuizFormType::class, $quiz);
         $form->handleRequest($request);
 
@@ -147,6 +145,7 @@ class QuizController extends AbstractController
         // just display add page, save logic in /quiz/save !
         return $this->render('quiz/edit.html.twig', [
             'form' => $form,
+            'quiz' => $quiz,
         ]);
     }
 
@@ -165,6 +164,7 @@ class QuizController extends AbstractController
         for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
             $question = $quiz->getQuestions()[$questionIndex];
             $question->setQuizz($quiz);
+            $question->setPosition($question->getPosition() ?? ($questionIndex + 1));
 
             $question->getAnswer1()->setQuestion($question);
             $question->getAnswer2()->setQuestion($question);
@@ -176,7 +176,18 @@ class QuizController extends AbstractController
                 $question->getAnswer4()->setQuestion($question);
             }
 
-            $ressourceFile = $form->get('questions')[$questionIndex]['attachement']->getData();
+            $ressourceFile = $form->get('questions')[$questionIndex]['ressourceFile']->getData();
+            $removeFile = $form->get('questions')[$questionIndex]['removeFile']->getData();
+
+            // Handle file removal
+            if ($removeFile && $question->getRessourceFilename()) {
+                $filePath = 'uploads/' . $question->getRessourceFilename();
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                $question->setRessourceFilename(null);
+            }
+
             if ($ressourceFile) {
                 $fileType = $ressourceFile->getMimeType();
                 if (str_contains($fileType, 'image')) {
@@ -195,6 +206,14 @@ class QuizController extends AbstractController
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
+
+                if ($question->getRessourceFilename()) {
+                    $oldFilePath = 'uploads/' . $question->getRessourceFilename();
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+
                 $question->setRessourceFilename($newFilename);
             } else {
                 $question->setType(0);
@@ -206,6 +225,7 @@ class QuizController extends AbstractController
         $this->entityManager->persist($quiz);
         $this->entityManager->flush();
 
+        $this->addFlash('success', 'Quiz updated successfully!');
         return $this->redirectToRoute('app_quiz_view', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
     }
 }

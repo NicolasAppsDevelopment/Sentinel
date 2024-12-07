@@ -12,13 +12,18 @@
         {{ form_row(form.title) }}
         {{ form_row(form.description) }}
 
-        <h3>Questions</h3>
+        <h2>Questions</h2>
         <div class="questions"
              data-index="{{ form.questions|length > 0 ? form.questions|last.vars.name + 1 : 0 }}"
              data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}"
         >
-            {% for question in form.questions %}
-                {{ form_row(question) }}
+            {% for i in 0..(form.questions.count() - 1) %}
+                <div>
+                    {% if quiz.questions[i].ressourceFilename %}
+                        <img src="{{ asset('uploads/' ~ quiz.questions[i].ressourceFilename) }}" class="question-img">
+                    {% endif %}
+                    {{ form_row(form.questions[i]) }}
+                </div>
             {% endfor %}
         </div>
         <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions">Add a question</button>
