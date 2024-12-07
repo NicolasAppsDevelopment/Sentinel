@@ -20,15 +20,24 @@
             {% for i in 0..(form.questions.count() - 1) %}
                 <div>
                     {% if quiz.questions[i].ressourceFilename %}
-                        <img src="{{ asset('uploads/' ~ quiz.questions[i].ressourceFilename) }}" class="question-img">
+                        {% if quiz.questions[i].type == 1 %}
+                            <img src="{{ asset('uploads/' ~ quiz.questions[i].ressourceFilename) }}" class="question-img">
+                        {% endif %}
+                        {% if quiz.questions[i].type == 2 %}
+                            <audio controls src="{{ asset('uploads/' ~ quiz.questions[i].ressourceFilename) }}"></audio>
+                        {% endif %}
+                        {% if quiz.questions[i].type == 3 %}
+                            <video controls class="question-img">
+                                <source src="{{ asset('uploads/' ~ quiz.questions[i].ressourceFilename) }}">
+                            </video>
+                        {% endif %}
                     {% endif %}
                     {{ form_row(form.questions[i]) }}
                 </div>
             {% endfor %}
         </div>
-        <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions">Add a question</button>
-
-        <button type="submit" class="rounded-btn">Finish & Save</button>
+        <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions"><i class="fa-solid fa-plus"></i> Add a question</button>
+        <button type="submit" class="rounded-btn"><i class="fa-solid fa-floppy-disk"></i> Finish & Save</button>
         <button type="reset" class="rounded-btn cancel">Cancel</button>
         {{ form_end(form) }}
     </div>
@@ -69,7 +78,7 @@
 
         function addQuestionFormDeleteLink(item) {
             const removeQuestionFormButton = document.createElement('button');
-            removeQuestionFormButton.innerText = 'Delete the question';
+            removeQuestionFormButton.innerHTML = '<i class="fa-solid fa-trash"></i> Delete the question';
             removeQuestionFormButton.classList.add('rounded-btn');
             removeQuestionFormButton.classList.add('destructive');
 

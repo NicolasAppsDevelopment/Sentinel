@@ -9,41 +9,44 @@
 
     <div class="search-form">
         {{ form(searchForm) }}
-        <a href="{{ path('app_quiz_add') }}" class="rounded-btn">Créer un quiz</a>
+        <a href="{{ path('app_quiz_add') }}" class="rounded-btn"><i class="fa-solid fa-plus"></i> Créer un quiz</a>
     </div>
 
     <h2>Résultat de recherche</h2>
     <div class="container">
         {% for quiz in searchedQuiz %}
-            <div>
+            <a class="quiz-card" href="{{ path('app_quiz_view', {'id': quiz.id}) }}">
                 <h3>{{ quiz.title }}</h3>
-                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
+                <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
+                <p>{{ quiz.questions.count() }} questions</p>
                 <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
                 <p>{{ quiz.description }}</p>
-                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
-            </div>
+            </a>
         {% endfor %}
     </div>
 
     <h2>🔥 Les quiz en tendance</h2>
     <div class="container">
         {% for quiz in trendQuiz %}
-            <div>
-                <h3>{{ quiz.title }}</h3>
-                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
-                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
-                <p>{{ quiz.description }}</p>
-                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Voir ></a>
-            </div>
+            <a class="quiz-card" href="{{ path('app_quiz_view', {'id': quiz.id}) }}">
+                <div>
+                    <h3>{{ quiz.title }}</h3>
+                    <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
+                    <p>{{ quiz.questions.count() }} questions</p>
+                    <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
+                    <p>{{ quiz.description }}</p>
+                </div>
+            </a>
         {% endfor %}
     </div>
 
     <h2>✨ Les derniers quiz</h2>
     <div class="container">
         {% for quiz in lastQuiz %}
-            <div>
+            <div class="quiz-card">
                 <h3>{{ quiz.title }}</h3>
-                <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
+                <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
+                <p>{{ quiz.questions.count() }} questions</p>
                 <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
                 <p>{{ quiz.description }}</p>
                 <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>

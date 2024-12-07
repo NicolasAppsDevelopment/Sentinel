@@ -206,6 +206,7 @@ class QuizController extends AbstractController
                     unlink($filePath);
                 }
                 $question->setRessourceFilename(null);
+                $question->setType(0);
             }
 
             if ($ressourceFile) {
@@ -214,6 +215,8 @@ class QuizController extends AbstractController
                     $question->setType(1);
                 } elseif (str_contains($fileType, 'audio')) {
                     $question->setType(2);
+                } elseif (str_contains($fileType, 'video')) {
+                    $question->setType(3);
                 } else {
                     $question->setType(0);
                 }
@@ -235,8 +238,6 @@ class QuizController extends AbstractController
                 }
 
                 $question->setRessourceFilename($newFilename);
-            } else {
-                $question->setType(0);
             }
 
             $quiz->addQuestion($question);

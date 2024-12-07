@@ -19,7 +19,7 @@ class QuestionChangedNotifier
     public function postRemove(Question $question, PostRemoveEventArgs $event): void
     {
         $ressourceFilename = $this->parameterBag->get("uploads_directory") . '/' . $question->getRessourceFilename();
-        if ($ressourceFilename && file_exists($ressourceFilename)) {
+        if ($ressourceFilename && is_file($ressourceFilename)) {
             unlink($ressourceFilename);
         }
     }

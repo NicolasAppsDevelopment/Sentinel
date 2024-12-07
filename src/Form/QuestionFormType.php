@@ -34,7 +34,7 @@ class QuestionFormType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '2M',
+                        'maxSize' => '5M',
                         'mimeTypes' => [
                             'audio/mp4',
                             'audio/mpeg',

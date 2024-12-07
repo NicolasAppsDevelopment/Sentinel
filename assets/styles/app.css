@@ -97,6 +97,8 @@ body {
     border-bottom: 1px solid var(--card-border-color);
     margin-bottom: 1rem;
     margin-top: -1rem;
+    display: flex;
+    flex-direction: row;
 }
 
 .search-form input {

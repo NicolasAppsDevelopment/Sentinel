@@ -21,9 +21,8 @@
                 {{ form_row(question) }}
             {% endfor %}
         </div>
-        <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions">Add a question</button>
-
-        <button type="submit" class="rounded-btn">Finish & Save</button>
+        <button type="button" class="rounded-btn add_question_item_link" data-collection-holder-class="questions"><i class="fa-solid fa-plus"></i> Add a question</button>
+        <button type="submit" class="rounded-btn"><i class="fa-solid fa-floppy-disk"></i> Finish & Save</button>
         <button type="reset" class="rounded-btn cancel">Cancel</button>
         {{ form_end(form) }}
     </div>
@@ -64,7 +63,7 @@
 
         function addQuestionFormDeleteLink(item) {
             const removeQuestionFormButton = document.createElement('button');
-            removeQuestionFormButton.innerText = 'Delete the question';
+            removeQuestionFormButton.innerHTML = '<i class="fa-solid fa-trash"></i> Delete the question';
             removeQuestionFormButton.classList.add('rounded-btn');
             removeQuestionFormButton.classList.add('destructive');
 
