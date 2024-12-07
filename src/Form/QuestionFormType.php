@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Question;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,7 +22,14 @@ class QuestionFormType extends AbstractType
                 'attr' => ['placeholder' => 'Text of the question'],
                 'required' => true,
             ])
-            ->add('attachement', FileType::class, [
+            ->add('position', IntegerType::class, [
+                'attr' => [
+                    'placeholder' => 'Order of the question in the quiz',
+                    'min' => 1,
+                ],
+                'required' => false,
+            ])
+            ->add('ressourceFile', FileType::class, [
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
@@ -43,6 +52,11 @@ class QuestionFormType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid document',
                     ])
                 ],
+            ])
+            ->add('removeFile', CheckboxType::class, [
+                'label' => 'Remove the current file',
+                'required' => false,
+                'mapped' => false,
             ])
             ->add('answer1', AnswerFormType::class, [
                 'label' => 'Answer 1',

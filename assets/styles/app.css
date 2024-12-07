@@ -305,3 +305,11 @@ form {
 .p1 {
     padding: 1rem;
 }
+
+.question-img {
+    border-radius: 15px;
+    max-width: 100%;
+    max-height: 15rem;
+    width: min-content;
+    margin: auto;
+}
