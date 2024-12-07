@@ -9,6 +9,7 @@ use App\Form\QuizFormType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,6 +24,7 @@ class QuizController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly ParameterBagInterface $parameterBag
     ) {}
 
     #[Route(path: '/', name: 'app_quiz_view_all')]
@@ -199,7 +201,7 @@ class QuizController extends AbstractController
 
             // Handle file removal
             if ($removeFile && $question->getRessourceFilename()) {
-                $filePath = 'uploads/' . $question->getRessourceFilename();
+                $filePath = $this->parameterBag->get("uploads_directory") . '/' . $question->getRessourceFilename();
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
@@ -220,13 +222,13 @@ class QuizController extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $ressourceFile->guessExtension();
                 try {
-                    $ressourceFile->move("uploads", $newFilename);
+                    $ressourceFile->move($this->parameterBag->get("uploads_directory"), $newFilename);
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
 
                 if ($question->getRessourceFilename()) {
-                    $oldFilePath = 'uploads/' . $question->getRessourceFilename();
+                    $oldFilePath = $this->parameterBag->get("uploads_directory") . '/' . $question->getRessourceFilename();
                     if (file_exists($oldFilePath)) {
                         unlink($oldFilePath);
                     }
