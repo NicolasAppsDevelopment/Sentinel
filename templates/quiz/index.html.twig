@@ -33,7 +33,7 @@
                 <p>Par {{ quiz.author.username }} - {{ quiz.questions.count() }} questions</p>
                 <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
                 <p>{{ quiz.description }}</p>
-                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
+                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Voir ></a>
             </div>
         {% endfor %}
     </div>

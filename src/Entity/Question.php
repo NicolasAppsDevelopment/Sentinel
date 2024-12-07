@@ -19,7 +19,7 @@ class Question
     private ?string $statement = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
-    private ?Quizz $quizz = null;
+    private ?Quiz $quiz = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ressourceFilename = null;
@@ -30,8 +30,8 @@ class Question
     #[ORM\Column]
     private ?int $position = 0;
 
-    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
-    private Collection $userQuizzAttemptAnswers;
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'question', cascade: ["persist", 'remove'])]
+    private Collection $userQuizAttemptAnswers;
 
     #[ORM\OneToOne(targetEntity: Answer::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: "answer1_id", referencedColumnName: "id", nullable: false)]
@@ -51,7 +51,7 @@ class Question
 
     public function __construct()
     {
-        $this->userQuizzAttemptAnswers = new ArrayCollection();
+        $this->userQuizAttemptAnswers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -83,14 +83,14 @@ class Question
         return $this;
     }
 
-    public function getQuizz(): ?Quizz
+    public function getQuiz(): ?Quiz
     {
-        return $this->quizz;
+        return $this->quiz;
     }
 
-    public function setQuizz(?Quizz $quizz): self
+    public function setQuiz(?Quiz $quiz): self
     {
-        $this->quizz = $quizz;
+        $this->quiz = $quiz;
 
         return $this;
     }
@@ -119,25 +119,25 @@ class Question
         return $this;
     }
 
-    public function getUserQuizzAttemptAnswers(): Collection
+    public function getUserQuizAttemptAnswers(): Collection
     {
-        return $this->userQuizzAttemptAnswers;
+        return $this->userQuizAttemptAnswers;
     }
 
-    public function addUserQuizzAttemptAnswer(QuestionAnswerUserQuizzAttempt $userQuizzAttemptAnswer): self
+    public function addUserQuizAttemptAnswer(QuestionAnswerUserQuizAttempt $userQuizzAttemptAnswer): self
     {
 
-        if (!$this->userQuizzAttemptAnswers->contains($userQuizzAttemptAnswer)) {
-            $this->userQuizzAttemptAnswers->add($userQuizzAttemptAnswer);
+        if (!$this->userQuizAttemptAnswers->contains($userQuizzAttemptAnswer)) {
+            $this->userQuizAttemptAnswers->add($userQuizzAttemptAnswer);
             $userQuizzAttemptAnswer->setQuestion($this);
         }
 
         return $this;
     }
 
-    public function removeUserQuizzAttemptAnswer(QuestionAnswerUserQuizzAttempt $userQuizzAttemptAnswer): self
+    public function removeUserQuizAttemptAnswer(QuestionAnswerUserQuizAttempt $userQuizzAttemptAnswer): self
     {
-        if ($this->userQuizzAttemptAnswers->removeElement($userQuizzAttemptAnswer)) {
+        if ($this->userQuizAttemptAnswers->removeElement($userQuizzAttemptAnswer)) {
             if ($userQuizzAttemptAnswer->getQuestion() === $this) {
                 $userQuizzAttemptAnswer->setQuestion(null);
             }

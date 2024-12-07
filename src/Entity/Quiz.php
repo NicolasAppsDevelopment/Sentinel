@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\QuizzRepository;
+use App\Repository\QuizRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-#[ORM\Entity(repositoryClass: QuizzRepository::class)]
-class Quizz
+#[ORM\Entity(repositoryClass: QuizRepository::class)]
+class Quiz
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,10 +28,10 @@ class Quizz
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $createdDate = null;
 
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quizz', cascade: ["persist", 'remove'])]
+    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quiz', cascade: ["persist", 'remove'])]
     private Collection $questions;
 
-    #[ORM\OneToMany(targetEntity: UserQuizzAttempt::class, mappedBy: 'quizz', cascade: ["persist", 'remove'])]
+    #[ORM\OneToMany(targetEntity: UserQuizAttempt::class, mappedBy: 'quiz', cascade: ["persist", 'remove'])]
     private Collection $usersAttempts;
 
     public function __construct()
@@ -103,7 +103,7 @@ class Quizz
 
         if (!$this->questions->contains($question)) {
             $this->questions->add($question);
-            $question->setQuizz($this);
+            $question->setQuiz($this);
         }
 
         return $this;
@@ -112,8 +112,8 @@ class Quizz
     public function removeQuestion(Question $question): self
     {
         if ($this->questions->removeElement($question)) {
-            if ($question->getQuizz() === $this) {
-                $question->setQuizz(null);
+            if ($question->getQuiz() === $this) {
+                $question->setQuiz(null);
             }
         }
 
@@ -125,22 +125,22 @@ class Quizz
         return $this->usersAttempts;
     }
 
-    public function addUserAttempt(UserQuizzAttempt $userAttempt): self
+    public function addUserAttempt(UserQuizAttempt $userAttempt): self
     {
 
         if (!$this->usersAttempts->contains($userAttempt)) {
             $this->usersAttempts->add($userAttempt);
-            $userAttempt->setQuizz($this);
+            $userAttempt->setQuiz($this);
         }
 
         return $this;
     }
 
-    public function removeUserAttempt(UserQuizzAttempt $userAttempt): self
+    public function removeUserAttempt(UserQuizAttempt $userAttempt): self
     {
         if ($this->usersAttempts->removeElement($userAttempt)) {
-            if ($userAttempt->getQuizz() === $this) {
-                $userAttempt->setQuizz(null);
+            if ($userAttempt->getQuiz() === $this) {
+                $userAttempt->setQuiz(null);
             }
         }
 

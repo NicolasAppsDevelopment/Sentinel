@@ -2,19 +2,19 @@
 
 namespace App\Repository;
 
-use App\Entity\UserQuizzAttempt;
+use App\Entity\UserQuizAttempt;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<UserQuizzAttempt>
+ * @extends ServiceEntityRepository<UserQuizAttempt>
  */
-class UserQuizzAttemptRepository extends ServiceEntityRepository
+class UserQuizAttemptRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserQuizzAttempt::class);
+        parent::__construct($registry, UserQuizAttempt::class);
     }
 
     //    /**

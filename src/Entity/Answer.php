@@ -25,12 +25,12 @@ class Answer
     private ?int $numberOfTimesSelected = 0;
 
 
-    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]
-    private Collection $questionsUserQuizzAttempt;
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]
+    private Collection $questionsUserQuizAttempt;
 
     public function __construct()
     {
-        $this->questionsUserQuizzAttempt = new ArrayCollection();
+        $this->questionsUserQuizAttempt = new ArrayCollection();
     }
 
 
@@ -87,27 +87,27 @@ class Answer
         return $this;
     }
 
-    public function getQuestionsUserQuizzAttempt(): Collection
+    public function getQuestionsUserQuizAttempt(): Collection
     {
-        return $this->questionsUserQuizzAttempt;
+        return $this->questionsUserQuizAttempt;
     }
 
-    public function addQuestionUserQuizzAttempt(QuestionAnswerUserQuizzAttempt $questionUserQuizzAttempt): self
+    public function addQuestionUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionUserQuizzAttempt): self
     {
 
-        if (!$this->questionsUserQuizzAttempt->contains($questionUserQuizzAttempt)) {
-            $this->questionsUserQuizzAttempt->add($questionUserQuizzAttempt);
+        if (!$this->questionsUserQuizAttempt->contains($questionUserQuizzAttempt)) {
+            $this->questionsUserQuizAttempt->add($questionUserQuizzAttempt);
             $questionUserQuizzAttempt->setAnswer($this);
         }
 
         return $this;
     }
 
-    public function removeQuestionUserQuizzAttempt(QuestionAnswerUserQuizzAttempt $questionUserQuizzAttempt): self
+    public function removeQuestionUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionUserQuizAttempt): self
     {
-        if ($this->questionsUserQuizzAttempt->removeElement($questionUserQuizzAttempt)) {
-            if ($questionUserQuizzAttempt->getAnswer() === $this) {
-                $questionUserQuizzAttempt->setAnswer(null);
+        if ($this->questionsUserQuizAttempt->removeElement($questionUserQuizAttempt)) {
+            if ($questionUserQuizAttempt->getAnswer() === $this) {
+                $questionUserQuizAttempt->setAnswer(null);
             }
         }
 

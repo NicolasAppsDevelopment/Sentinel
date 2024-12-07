@@ -2,24 +2,24 @@
 
 namespace App\Repository;
 
-use App\Entity\Quizz;
+use App\Entity\Quiz;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Quizz>
+ * @extends ServiceEntityRepository<Quiz>
  */
-class QuizzRepository extends ServiceEntityRepository
+class QuizRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Quizz::class);
+        parent::__construct($registry, Quiz::class);
     }
 
     public function findByTitle(string $title): array
     {
-        return $this->createQueryBuilder('quizz')
-            ->andWhere('LOWER(TRIM(quizz.title)) LIKE :title')
+        return $this->createQueryBuilder('quiz')
+            ->andWhere('LOWER(TRIM(quiz.title)) LIKE :title')
             ->setParameter('title', '%' . strtolower(trim($title)) . '%')
             ->getQuery()
             ->getResult()
@@ -28,10 +28,10 @@ class QuizzRepository extends ServiceEntityRepository
 
     public function getTrendQuizzes(): array
     {
-        return $this->createQueryBuilder('quizz')
-            ->select('quizz, COUNT(usersAttempt) AS HIDDEN userAttemptCount')
-            ->leftJoin('quizz.usersAttempts', 'usersAttempt')
-            ->groupBy('quizz.id')
+        return $this->createQueryBuilder('quiz')
+            ->select('quiz, COUNT(usersAttempt) AS HIDDEN userAttemptCount')
+            ->leftJoin('quiz.usersAttempts', 'usersAttempt')
+            ->groupBy('quiz.id')
             ->orderBy('userAttemptCount', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
@@ -40,8 +40,8 @@ class QuizzRepository extends ServiceEntityRepository
 
     public function getLastQuizzes(): array
     {
-        return $this->createQueryBuilder('quizz')
-            ->orderBy('quizz.createdDate', 'DESC')
+        return $this->createQueryBuilder('quiz')
+            ->orderBy('quiz.createdDate', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();

@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\UserQuizzAttemptRepository;
+use App\Repository\UserQuizAttemptRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserQuizzAttemptRepository::class)]
-class UserQuizzAttempt
+#[ORM\Entity(repositoryClass: UserQuizAttemptRepository::class)]
+class UserQuizAttempt
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,9 +17,9 @@ class UserQuizzAttempt
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'usersAttempts')]
-    private ?Quizz $quizz = null;
+    private ?Quiz $quiz = null;
 
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'quizzAttempt')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'quizAttempt')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
@@ -32,7 +32,7 @@ class UserQuizzAttempt
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $playedDate = null;
 
-    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizzAttempt::class, mappedBy: 'attempt', cascade: ["persist", 'remove'])]
+    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'attempt', cascade: ["persist", 'remove'])]
     private Collection $questionAnswers;
 
     public function __construct()
@@ -45,14 +45,14 @@ class UserQuizzAttempt
         return $this->id;
     }
 
-    public function getQuizz(): ?Quizz
+    public function getQuiz(): ?Quiz
     {
-        return $this->quizz;
+        return $this->quiz;
     }
 
-    public function setQuizz(?Quizz $quizz): self
+    public function setQuiz(?Quiz $quiz): self
     {
-        $this->quizz = $quizz;
+        $this->quiz = $quiz;
 
         return $this;
     }
@@ -111,7 +111,7 @@ class UserQuizzAttempt
         return $this->questionAnswers;
     }
 
-    public function addQuestionAnswers(QuestionAnswerUserQuizzAttempt $questionAnswer): self
+    public function addQuestionAnswers(QuestionAnswerUserQuizAttempt $questionAnswer): self
     {
 
         if (!$this->questionAnswers->contains($questionAnswer)) {
@@ -122,7 +122,7 @@ class UserQuizzAttempt
         return $this;
     }
 
-    public function removeQuestionAnswers(QuestionAnswerUserQuizzAttempt $questionAnswer): self
+    public function removeQuestionAnswers(QuestionAnswerUserQuizAttempt $questionAnswer): self
     {
         if ($this->questionAnswers->removeElement($questionAnswer)) {
             if ($questionAnswer->getAttempt() === $this) {

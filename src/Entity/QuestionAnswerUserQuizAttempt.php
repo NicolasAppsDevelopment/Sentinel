@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\QuestionAnswerUserQuizzAttemptRepository;
+use App\Repository\QuestionAnswerUserQuizAttemptRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: QuestionAnswerUserQuizzAttemptRepository::class)]
-class QuestionAnswerUserQuizzAttempt
+#[ORM\Entity(repositoryClass: QuestionAnswerUserQuizAttemptRepository::class)]
+class QuestionAnswerUserQuizAttempt
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,7 +14,7 @@ class QuestionAnswerUserQuizzAttempt
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'questionAnswers')]
-    private ?UserQuizzAttempt $attempt = null;
+    private ?UserQuizAttempt $attempt = null;
 
     #[ORM\ManyToOne(inversedBy: 'userQuizzAttemptAnswers')]
     private ?Question $question = null;
@@ -27,12 +27,12 @@ class QuestionAnswerUserQuizzAttempt
         return $this->id;
     }
 
-    public function getAttempt(): ?UserQuizzAttempt
+    public function getAttempt(): ?UserQuizAttempt
     {
         return $this->attempt;
     }
 
-    public function setAttempt(?UserQuizzAttempt $attempt): self
+    public function setAttempt(?UserQuizAttempt $attempt): self
     {
         $this->attempt = $attempt;
 

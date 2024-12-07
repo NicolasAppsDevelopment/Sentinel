@@ -49,11 +49,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
-    #[ORM\OneToMany(targetEntity: Quizz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
+    #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
     private Collection $quizzes;
 
-    #[ORM\OneToOne(targetEntity: UserQuizzAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
-    private ?UserQuizzAttempt $quizzAttempt;
+    #[ORM\OneToOne(targetEntity: UserQuizAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
+    private ?UserQuizAttempt $quizAttempt;
 
 
     public function __construct()
@@ -189,36 +189,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->quizzes;
     }
 
-    public function addQuizz(Quizz $quizz): self
+    public function addQuiz(Quiz $quiz): self
     {
 
-        if (!$this->quizzes->contains($quizz)) {
-            $this->quizzes->add($quizz);
-            $quizz->setAuthor($this);
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->setAuthor($this);
         }
 
         return $this;
     }
 
-    public function removeQuizz(Quizz $quizz): self
+    public function removeQuiz(Quiz $quiz): self
     {
-        if ($this->quizzes->removeElement($quizz)) {
-            if ($quizz->getAuthor() === $this) {
-                $quizz->setAuthor(null);
+        if ($this->quizzes->removeElement($quiz)) {
+            if ($quiz->getAuthor() === $this) {
+                $quiz->setAuthor(null);
             }
         }
 
         return $this;
     }
 
-    public function getQuizzAttempt(): ?UserQuizzAttempt
+    public function getQuizAttempt(): ?UserQuizAttempt
     {
-        return $this->quizzAttempt;
+        return $this->quizAttempt;
     }
 
-    public function setQuizzAttempt(?UserQuizzAttempt $quizzAttempt): self
+    public function setQuizAttempt(?UserQuizAttempt $quizAttempt): self
     {
-        $this->quizzAttempt = $quizzAttempt;
+        $this->quizAttempt = $quizAttempt;
 
         return $this;
     }

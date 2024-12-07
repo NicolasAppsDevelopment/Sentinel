@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Quizz;
+use App\Entity\Question;
+use App\Entity\Quiz;
 use App\Entity\User;
 use App\Form\QuizFormType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,8 +28,8 @@ class QuizController extends AbstractController
     #[Route(path: '/', name: 'app_quiz_view_all')]
     public function viewAll(Request $request): Response
     {
-        $trendQuiz = $this->entityManager->getRepository(Quizz::class)->getTrendQuizzes();
-        $lastQuiz = $this->entityManager->getRepository(Quizz::class)->getLastQuizzes();
+        $trendQuiz = $this->entityManager->getRepository(Quiz::class)->getTrendQuizzes();
+        $lastQuiz = $this->entityManager->getRepository(Quiz::class)->getLastQuizzes();
         $searchedQuiz = [];
 
         $defaultData = ['query' => ''];
@@ -41,7 +43,7 @@ class QuizController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $searchedQuiz = $this->entityManager->getRepository(Quizz::class)->findByTitle($data['query']);
+            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitle($data['query']);
         }
 
         return $this->render('quiz/index.html.twig', [
@@ -55,7 +57,7 @@ class QuizController extends AbstractController
     #[Route(path: 'quiz/view/{id}', name: 'app_quiz_view')]
     public function view(string $id): Response
     {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
@@ -68,7 +70,7 @@ class QuizController extends AbstractController
     #[Route(path: 'quiz/play/{id}', name: 'app_quiz_play')]
     public function play(string $id): Response
     {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
@@ -89,7 +91,7 @@ class QuizController extends AbstractController
             return new Response("Not authorized", 401);
         }
 
-        $quiz = new Quizz();
+        $quiz = new Quiz();
         $form = $this->createForm(QuizFormType::class, $quiz);
         $form->handleRequest($request);
 
@@ -106,7 +108,7 @@ class QuizController extends AbstractController
     #[Route(path: 'quiz/remove/{id}', name: 'app_quiz_remove')]
     public function remove(string $id, UserInterface $user): Response
     {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
@@ -125,7 +127,7 @@ class QuizController extends AbstractController
     #[Route(path: 'quiz/edit/{id}', name: 'app_quiz_edit')]
     public function edit(string $id, UserInterface $user, Request $request, SluggerInterface $slugger): Response
     {
-        $quiz = $this->entityManager->getRepository(Quizz::class)->findOneBy(['id' => $id]);
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
@@ -161,11 +163,27 @@ class QuizController extends AbstractController
         $quiz->setAuthor($userInDB);
         $quiz->setCreatedDate(new \DateTime());
 
-        for ($questionIndex = 0; $questionIndex < $quiz->getQuestions()->count(); $questionIndex++) {
-            $question = $quiz->getQuestions()[$questionIndex];
-            $question->setQuizz($quiz);
-            $question->setPosition($question->getPosition() ?? ($questionIndex + 1));
+        // Get existing questions from the database
+        $existingQuestions = $this->entityManager
+            ->getRepository(Question::class)
+            ->findBy(['quiz' => $quiz]);
 
+        // Collect IDs of current questions from the form
+        $updatedQuestions = $quiz->getQuestions();
+
+        // Determine which questions need to be removed
+        foreach ($existingQuestions as $existingQuestion) {
+            if (!$updatedQuestions->contains($existingQuestion)) {
+                // Mark question for removal
+                $this->entityManager->remove($existingQuestion);
+            }
+        }
+
+        foreach ($quiz->getQuestions() as $question) {
+            $questionIndex = $quiz->getQuestions()->indexOf($question);
+
+            $question->setQuiz($quiz);
+            $question->setPosition($question->getPosition() ?? ($questionIndex + 1));
             $question->getAnswer1()->setQuestion($question);
             $question->getAnswer2()->setQuestion($question);
 

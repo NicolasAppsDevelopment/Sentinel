@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Answer;
-use App\Entity\Quizz;
+use App\Entity\Quiz;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -36,7 +36,7 @@ class QuizFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Quizz::class,
+            'data_class' => Quiz::class,
         ]);
     }
 }
