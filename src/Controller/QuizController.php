@@ -135,8 +135,6 @@ class QuizController extends AbstractController
             return new Response("Not authorized", 401);
         }
 
-        // TODO: manage questions ressources files
-
         $form = $this->createForm(QuizFormType::class, $quiz);
         $form->handleRequest($request);
 
