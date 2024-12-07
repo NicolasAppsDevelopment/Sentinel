@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\QuestionAnswerUserQuizAttempt;
 use App\Entity\Quiz;
 use App\Entity\User;
+use App\Entity\UserQuizAttempt;
+use App\Form\QuestionAnswerUserQuizAttemptFormType;
 use App\Form\QuizFormType;
+use App\Repository\UserQuizAttemptRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,19 +73,79 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: 'quiz/play/{id}', name: 'app_quiz_play')]
-    public function play(string $id): Response
+    #[Route(path: 'quiz/play/{quizId}/{questionIndex}', name: 'app_quiz_play')]
+    public function play(string $quizId, string $questionIndex, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
+        $user = $this->getUser();
+
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
 
-        // TODO: add new attempt
+        $questionIndex = intval($questionIndex);
+
+        $question = $quiz->getQuestions()[$questionIndex];
+
+        $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class);
+        $form->handleRequest($request);
+
+        if ($questionIndex == 0 && !$form->isSubmitted()){
+            $userQuizAttempt = new UserQuizAttempt();
+            $userQuizAttempt->setQuiz($quiz);
+            $userQuizAttempt->setUser($user);
+            $userQuizAttempt->setScore(0);
+            $userQuizAttempt->setFinished(false);
+            $userQuizAttempt->setPlayedDate(new \DateTime());
+
+            $entityManager->persist($userQuizAttempt);
+            $entityManager->flush();
+        } else {
+            $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user)[0];
+            if (!$userQuizAttempt) {
+                return new Response("Not found", 404);
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $questionAnswerUserQuizAttempt = new QuestionAnswerUserQuizAttempt();
+            $questionAnswerUserQuizAttempt->setAttempt($userQuizAttempt);
+            $questionAnswerUserQuizAttempt->setQuestion($question);
+
+            $answer1IsSelected = $form->get('answer1')->getData();
+            $answer2IsSelected = $form->get('answer1')->getData();
+            $answer3IsSelected = $form->get('answer1')->getData();
+            $answer4IsSelected = $form->get('answer1')->getData();
+            if ($answer1IsSelected) {
+                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer1());
+            }
+            if ($answer2IsSelected) {
+                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer2());
+            }
+            if ($answer3IsSelected) {
+                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer3());
+            }
+            if ($answer4IsSelected) {
+                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer4());
+            }
+
+
+            $entityManager->persist($questionAnswerUserQuizAttempt);
+            $entityManager->flush();
+
+            if (count($quiz->getQuestions()) < $questionIndex + 1) {
+                return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('app_quiz_view_all');
+            }
+
+        }
 
         // get first question and view it
         return $this->render('question/view.html.twig', [
-            'question' => $quiz->getQuestions()[0],
+            'question' => $question,
+            'questionIndex' => $questionIndex,
+            'form' => $form,
         ]);
     }
 

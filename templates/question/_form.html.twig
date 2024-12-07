@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+
+{{ form_row(form.answer1) }}
+<p>{{ question.answer1.getText() }}</p>
+
+{{ form_row(form.answer2) }}
+<p>{{ question.answer2.getText() }}</p>
+
+{% if question.answer3 %}
+    {{ form_row(form.answer3) }}
+    <p>{{ question.answer3.getText() }}</p>
+{% endif %}
+
+{% if question.answer3 %}
+    {{ form_row(form.answer4) }}
+    <p>{{ question.answer4.getText() }}</p>
+{% endif %}
+
+{{ form_widget(form) }}
+<button class="rounded-btn add_question_item_link" type="submit">{{ button_label|default('Valider') }}</button>
+{{ form_end(form) }}
+

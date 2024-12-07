@@ -11,7 +11,7 @@
         <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
         <p>{{ quiz.description }}</p>
 
-        <a href="{{ path('app_quiz_play', {'id': quiz.id}) }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Jouer</a>
+        <a href="{{ path('app_quiz_play', {'quizId': quiz.id, 'questionIndex': 0}) }}" class="rounded-btn">Jouer</a>
         {% if app.user.id == quiz.author.id %}
             <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="rounded-btn"><i class="fa-solid fa-pen-to-square"></i> Modifier</a>
             <a href="{{ path('app_quiz_remove', {'id': quiz.id}) }}" class="rounded-btn destructive"><i class="fa-solid fa-trash"></i> Supprimer</a>

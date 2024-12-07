@@ -76,4 +76,16 @@ class UserQuizAttemptRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getUserLatestAttempt(User $user): array
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->andWhere('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('userQuizzAttempt.playedDate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
