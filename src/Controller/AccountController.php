@@ -12,16 +12,28 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Repository\UserQuizzAttemptRepository;
 use App\Form\UserType;
 
 #[Route(path: '/account')]
 class AccountController extends AbstractController
 {
     #[Route(path: '/view/{id}', name: 'app_account_view', methods: ['GET'])]
-    public function view(User $user): Response
+    public function view(User $user, UserQuizzAttemptRepository $userQuizzAttemptRepository): Response
     {
+        $NbQuestionsAnswered = $userQuizzAttemptRepository->getUserNbQuestionsAnswered($user);
+        $percentageOfCorrectAnswers = "No questions answered";
+
+        if (count($NbQuestionsAnswered) != 0) {
+            $percentageOfCorrectAnswers = count($NbQuestionsAnswered) / count($userQuizzAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100;
+            $percentageOfCorrectAnswers = $percentageOfCorrectAnswers . "%";
+        }
+
         return $this->render('account/view.html.twig', [
             'user' => $user,
+            'NbQuizzesPlayed' => count($userQuizzAttemptRepository->getUserNbQuizzesPlayed($user)),
+            'NbQuestionsAnswered' => count($NbQuestionsAnswered),
+            'PercentageOfCorrectAnswers' => $percentageOfCorrectAnswers,
         ]);
     }
 

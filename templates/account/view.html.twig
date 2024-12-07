@@ -4,33 +4,56 @@
 
 {% block body %}
     {{ component('navbar', {index: 3}) }}
-    <h1>Account</h1>
+    <h1 class='text-center'>Account</h1>
 
-    <div class="container-card small">
-        <table class="table">
-            <tbody>
-            <tr>
-                <th>Username</th>
-                <td>{{ user.username }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Score</th>
-                <td>{{ user.score }}</td>
-            </tr>
-            <tr>
-                <th>Date of Creation</th>
-                <td>{{ user.creationDate|date("d/m/Y") }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="container">
+        <div class="container-card small">
+            <h2>Informations</h2>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Score</th>
+                        <td>{{ user.score }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Creation</th>
+                        <td>{{ user.creationDate|date("d/m/Y") }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <a class="rounded-btn add_question_item_link"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
+            <a class="rounded-btn"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
 
-        {{ include('account/_delete_form.html.twig') }}
+            {{ include('account/_delete_form.html.twig') }}
+        </div>
+
+        <div class="container-card small">
+            <h2>Statistics</h2>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Number of quizzes played</th>
+                        <td>{{ NbQuizzesPlayed }}</td>
+                    </tr>
+                    <tr>
+                        <th>Number of questions answered</th>
+                        <td>{{ NbQuestionsAnswered }}</td>
+                    </tr>
+                    <tr>
+                        <th>Percentage of correct answers</th>
+                        <td>{{ PercentageOfCorrectAnswers }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
 {% endblock %}

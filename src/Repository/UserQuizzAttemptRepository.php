@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserQuizzAttempt;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,39 @@ class UserQuizzAttemptRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function getUserNbQuizzesPlayed(User $user): array
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->andWhere('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getUserNbQuestionsAnswered(User $user): array
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->select('questionAnswers.id')
+            ->leftJoin('userQuizzAttempt.questionAnswers', 'questionAnswers')
+            ->where('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getUserNbQuestionsAnsweredCorrectly(User $user): array
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->select('questionAnswers.id')
+            ->leftJoin('userQuizzAttempt.questionAnswers', 'questionAnswers')
+            ->leftJoin('questionAnswers.answer', 'answer')
+            ->where('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('answer.isCorrect = :val')
+            ->setParameter('val', true)
+            ->getQuery()
+            ->getResult();
+    }
 }
