@@ -318,6 +318,15 @@ form {
     text-align: center;
 }
 
+.leaderboard tbody tr:first-child{
+    background-color: var(--card-hover-icon-border-color);
+}
+
+a {
+    text-decoration: none;
+    color : white;
+}
+
 .question-img {
     border-radius: 15px;
     max-width: 100%;

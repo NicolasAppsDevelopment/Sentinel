@@ -30,9 +30,11 @@
                 </tbody>
             </table>
 
-            <a class="rounded-btn"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
+            {% if app.user.id == user.id %}
+                <a class="rounded-btn"  href="{{ path('app_account_edit', {'id': user.id}) }}">Edit</a>
 
-            {{ include('account/_delete_form.html.twig') }}
+                {{ include('account/_delete_form.html.twig') }}
+            {% endif %}
         </div>
 
         <div class="container-card small">

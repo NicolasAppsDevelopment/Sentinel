@@ -54,7 +54,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function getUserLeaderboard(): array
     {
         $users = $this->createQueryBuilder('user')
-            ->select('user.username', 'user.score')
+            ->select('user.id', 'user.username', 'user.score')
             ->orderBy('user.score', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
