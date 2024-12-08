@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\UserQuizAttempt;
 use App\Form\QuestionAnswerUserQuizAttemptFormType;
 use App\Form\QuizFormType;
+use App\Form\SearchQuizFormType;
 use App\Service\FileManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,13 +39,7 @@ class QuizController extends AbstractController
         $lastQuiz = $this->entityManager->getRepository(Quiz::class)->getLastQuizzes();
         $searchedQuiz = null;
 
-        $defaultData = ['query' => ''];
-        $form = $this->createFormBuilder($defaultData)
-            ->add('query', TextType::class, [
-                'attr' => ['placeholder' => 'Search for a quiz'],
-            ])
-            ->getForm();
-
+        $form = $this->createForm(SearchQuizFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -52,11 +47,32 @@ class QuizController extends AbstractController
             $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitle($data['query']);
         }
 
-        return $this->render('quiz/index.html.twig', [
+        return $this->render('quiz/all.html.twig', [
             'searchedQuiz' => $searchedQuiz,
             'trendQuiz' => $trendQuiz,
             'lastQuiz' => $lastQuiz,
-            'searchForm' => $form->createView(),
+            'searchForm' => $form,
+        ]);
+    }
+
+    #[Route(path: '/quiz/view/me', name: 'app_quiz_view_me')]
+    public function viewMe(Request $request): Response
+    {
+        $myQuizzes = $this->entityManager->getRepository(Quiz::class)->findBy(['author' => $this->getUser()]);
+        $searchedQuiz = null;
+
+        $form = $this->createForm(SearchQuizFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitle($data['query']);
+        }
+
+        return $this->render('quiz/me.html.twig', [
+            'myQuizzes' => $myQuizzes,
+            'searchedQuiz' => $searchedQuiz,
+            'searchForm' => $form,
         ]);
     }
 
