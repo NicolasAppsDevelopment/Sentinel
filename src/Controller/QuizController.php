@@ -36,7 +36,7 @@ class QuizController extends AbstractController
     {
         $trendQuiz = $this->entityManager->getRepository(Quiz::class)->getTrendQuizzes();
         $lastQuiz = $this->entityManager->getRepository(Quiz::class)->getLastQuizzes();
-        $searchedQuiz = [];
+        $searchedQuiz = null;
 
         $defaultData = ['query' => ''];
         $form = $this->createFormBuilder($defaultData)
