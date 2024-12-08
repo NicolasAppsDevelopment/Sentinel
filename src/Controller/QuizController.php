@@ -74,7 +74,7 @@ class QuizController extends AbstractController
     }
 
     #[Route(path: 'quiz/play/{quizId}/{questionIndex}', name: 'app_quiz_play')]
-    public function play(string $quizId, string $questionIndex, EntityManagerInterface $entityManager, Request $request): Response
+    public function play(string $quizId, int $questionIndex, EntityManagerInterface $entityManager, Request $request): Response
     {
         $user = $this->getUser();
 
@@ -83,23 +83,18 @@ class QuizController extends AbstractController
             return new Response("Not found", 404);
         }
 
-        $questionIndex = intval($questionIndex);
-
-        $question = $quiz->getQuestions()[$questionIndex];
-
         $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class);
         $form->handleRequest($request);
 
-        $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user);
+        $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttemptNotFinished($user);
 
         #start a quiz
-        if ($questionIndex == 0 && !$form->isSubmitted()){
-            #the user has an attempt on this quiz not finished
-            if ($userQuizAttempt && !$userQuizAttempt[0]->isFinished()) {
-                $questionIndex = count($userQuizAttempt[0]->getQuestionAnswers());
-            }
-            #the user has no attempts on this quiz not finished
-            else {
+        if ($questionIndex == 0){
+            if ($userQuizAttempt) {
+                #the user has an attempt on this quiz not finished
+                $questionIndex = count($userQuizAttempt->getQuestionAnswers());
+            } else {
+                #the user has no attempts on this quiz not finished
                 $userQuizAttempt = new UserQuizAttempt();
                 $userQuizAttempt->setQuiz($quiz);
                 $userQuizAttempt->setUser($user);
@@ -110,17 +105,16 @@ class QuizController extends AbstractController
                 $entityManager->persist($userQuizAttempt);
                 $entityManager->flush();
             }
-
-
-        }
-
-        else {
+        } else {
             # the user continues his attempt
-            $userQuizAttempt = $userQuizAttempt[0];
             if (!$userQuizAttempt) {
                 return new Response("Not found", 404);
             }
+            $questionIndex = count($userQuizAttempt->getQuestionAnswers());
         }
+
+        //dd($questionIndex);
+        $question = $quiz->getQuestions()[$questionIndex];
 
         if ($form->isSubmitted() && $form->isValid()) {
             $questionAnswerUserQuizAttempt = new QuestionAnswerUserQuizAttempt();
@@ -128,9 +122,10 @@ class QuizController extends AbstractController
             $questionAnswerUserQuizAttempt->setQuestion($question);
 
             $answer1IsSelected = $form->get('answer1')->getData();
-            $answer2IsSelected = $form->get('answer1')->getData();
-            $answer3IsSelected = $form->get('answer1')->getData();
-            $answer4IsSelected = $form->get('answer1')->getData();
+            $answer2IsSelected = $form->get('answer2')->getData();
+            $answer3IsSelected = $form->get('answer3')->getData();
+            $answer4IsSelected = $form->get('answer4')->getData();
+
             if ($answer1IsSelected) {
                 $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer1());
             }
@@ -145,13 +140,16 @@ class QuizController extends AbstractController
             }
 
             $entityManager->persist($questionAnswerUserQuizAttempt);
-            $entityManager->flush();
 
 
             if (count($quiz->getQuestions()) > $questionIndex + 1) {
+                $entityManager->flush();
                 return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
             } else {
                 $userQuizAttempt->setFinished(true);
+                $entityManager->persist($userQuizAttempt);
+                $entityManager->flush();
+
                 return $this->redirectToRoute('app_quiz_view_all');
             }
 

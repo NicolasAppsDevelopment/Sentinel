@@ -3,7 +3,7 @@
 {% block title %}Leaderboard{% endblock %}
 
 {% block body %}
-    {{ component('navbar', {index: 1}) }}
+    {{ component('navbar', {index: 0}) }}
     <div class="centered">
         <div class="container-card small">
             {% if question.ressourceFilename %}
@@ -19,7 +19,7 @@
                     </video>
                 {% endif %}
             {% endif %}
-            <h1>Question {{ questionIndex }}</h1>
+            <h1>Question {{ questionIndex + 1}}</h1>
             <p>{{ question.getStatement() }}</p>
             {{ include('question/_form.html.twig', {'button_label': 'Valider'}) }}
         </div>
