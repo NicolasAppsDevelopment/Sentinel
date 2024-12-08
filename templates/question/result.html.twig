@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ component('navbar', {index: 0}) }}
+    <div class="centered">
+        <div class="container-card small">
+            {% if question.ressourceFilename %}
+                {% if question.type == 1 %}
+                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}" class="question-img">
+                {% endif %}
+                {% if question.type == 2 %}
+                    <audio controls src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
+                {% endif %}
+                {% if question.type == 3 %}
+                    <video controls class="question-img">
+                        <source src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
+                    </video>
+                {% endif %}
+            {% endif %}
+            <h1>Question {{ questionIndex + 1}}</h1>
+            <p>{{ question.getStatement() }}</p>
+
+            {% if quizzEnd == false %}
+                <a href="{{ path('app_quiz_play', {'quizId': quizId, 'questionIndex': questionIndex }) }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Next</a>
+            {% else %}
+                <a href="{{ path('app_quiz_view_all') }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Finish</a>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -185,13 +185,26 @@ class QuizController extends AbstractController
 
             if (count($quiz->getQuestions()) > $questionIndex + 1) {
                 $entityManager->flush();
-                return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
+                //return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
+                return $this->render('question/result.html.twig', [
+                    'question' => $question,
+                    'questionIndex' => $questionIndex,
+                    'quizId' => $quizId,
+                    'form' => $form,
+                    'quizzEnd' => false,
+                ]);
             } else {
                 $userQuizAttempt->setFinished(true);
                 $entityManager->persist($userQuizAttempt);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_quiz_view_all');
+                return $this->render('question/result.html.twig', [
+                    'question' => $question,
+                    'questionIndex' => $questionIndex,
+                    'quizId' => $quizId,
+                    'form' => $form,
+                    'quizzEnd' => true,
+                ]);
             }
 
         }
