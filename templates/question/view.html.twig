@@ -6,6 +6,19 @@
     {{ component('navbar', {index: 1}) }}
     <div class="centered">
         <div class="container-card small">
+            {% if question.ressourceFilename %}
+                {% if question.type == 1 %}
+                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}" class="question-img">
+                {% endif %}
+                {% if question.type == 2 %}
+                    <audio controls src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
+                {% endif %}
+                {% if question.type == 3 %}
+                    <video controls class="question-img">
+                        <source src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
+                    </video>
+                {% endif %}
+            {% endif %}
             <h1>Question {{ questionIndex }}</h1>
             <p>{{ question.getStatement() }}</p>
             {{ include('question/_form.html.twig', {'button_label': 'Valider'}) }}
