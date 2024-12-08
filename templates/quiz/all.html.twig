@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ component('navbar', {index: 0}) }}
+
+    <div class="top-container">
+        <h1>List of quizzes</h1>
+
+        {{ form_start(searchForm) }}
+            {{ form_row(searchForm.query) }}
+            <button type="submit" class="rounded-btn"><i class="fa-solid fa-search"></i> Search</button>
+        {{ form_end(searchForm) }}
+    </div>
+
+    <div class="p1">
+        {% if searchedQuiz is not null %}
+            <h2>🔎 Result of your research</h2>
+            <div class="quiz-grid-container">
+                {% for quiz in searchedQuiz %}
+                    {{ component('quizcard', {quiz: quiz}) }}
+                {% endfor %}
+                {% if searchedQuiz is empty %}
+                    <p class="no-result">No quiz found 😅</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+
+        <h2>🔥 Trending quizzes</h2>
+        <div class="quiz-grid-container">
+            {% for quiz in trendQuiz %}
+                {{ component('quizcard', {quiz: quiz}) }}
+            {% endfor %}
+        </div>
+
+        <h2>✨ Last new quizzes</h2>
+        <div class="quiz-grid-container">
+            {% for quiz in lastQuiz %}
+                {{ component('quizcard', {quiz: quiz}) }}
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

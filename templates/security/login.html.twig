@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
-
 {% block body %}
     <div class="centered">
     <div class="container-card small">
@@ -28,7 +26,7 @@
                    value="{{ csrf_token('authenticate') }}"
             >
 
-            <div class="checkbox mb-3">
+            <div class="checkbox mb-3 row">
                 <input type="checkbox" name="_remember_me" id="_remember_me">
                 <label for="_remember_me">Remember me</label>
             </div>

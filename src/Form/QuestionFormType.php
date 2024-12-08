@@ -54,6 +54,7 @@ class QuestionFormType extends AbstractType
                 ],
             ])
             ->add('removeFile', CheckboxType::class, [
+                'attr' => ['class' => 'remove-file'],
                 'label' => 'Remove the current file',
                 'required' => false,
                 'mapped' => false,
