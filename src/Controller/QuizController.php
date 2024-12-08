@@ -127,19 +127,44 @@ class QuizController extends AbstractController
             $answer4IsSelected = $form->get('answer4')->getData();
 
             if ($answer1IsSelected) {
-                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer1());
+                $answer = $question->getAnswer1();
+                $questionAnswerUserQuizAttempt->setAnswer($answer);
+                if ($answer->isCorrect()){
+                    $user->setScore($user->getScore() + 1);
+                } else {
+                    $user->setScore($user->getScore() - 1);
+                }
             }
             if ($answer2IsSelected) {
-                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer2());
+                $answer = $question->getAnswer2();
+                $questionAnswerUserQuizAttempt->setAnswer($answer);
+                if ($answer->isCorrect()){
+                    $user->setScore($user->getScore() + 1);
+                } else {
+                    $user->setScore($user->getScore() - 1);
+                }
             }
             if ($answer3IsSelected) {
-                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer3());
+                $answer = $question->getAnswer3();
+                $questionAnswerUserQuizAttempt->setAnswer($answer);
+                if ($answer->isCorrect()){
+                    $user->setScore($user->getScore() + 1);
+                } else {
+                    $user->setScore($user->getScore() - 1);
+                }
             }
             if ($answer4IsSelected) {
-                $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer4());
+                $answer = $question->getAnswer4();
+                $questionAnswerUserQuizAttempt->setAnswer($answer);
+                if ($answer->isCorrect()){
+                    $user->setScore($user->getScore() + 1);
+                } else {
+                    $user->seScore($user->getScore() - 1);
+                }
             }
 
             $entityManager->persist($questionAnswerUserQuizAttempt);
+            $entityManager->persist($user);
 
 
             if (count($quiz->getQuestions()) > $questionIndex + 1) {
