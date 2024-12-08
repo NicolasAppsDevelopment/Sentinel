@@ -9,8 +9,7 @@ use App\Entity\User;
 use App\Entity\UserQuizAttempt;
 use App\Form\QuestionAnswerUserQuizAttemptFormType;
 use App\Form\QuizFormType;
-use App\Repository\UserQuizAttemptRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\FileManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -28,7 +27,8 @@ class QuizController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly FileManagerService $fileManagerService
     ) {}
 
     #[Route(path: '/', name: 'app_quiz_view_all')]
@@ -245,6 +245,14 @@ class QuizController extends AbstractController
         $quiz->setAuthor($userInDB);
         $quiz->setCreatedDate(new \DateTime());
 
+        // Handle quiz illustration file upload
+        $quiz->setIllustrationFilename(
+            $this->fileManagerService->uploadReplaceFile(
+                $form->get('illustrationFile')->getData(),
+                $quiz->getIllustrationFilename()
+            )
+        );
+
         // Get existing questions from the database
         $existingQuestions = $this->entityManager
             ->getRepository(Question::class)
@@ -280,45 +288,26 @@ class QuizController extends AbstractController
             $removeFile = $form->get('questions')[$questionIndex]['removeFile']->getData();
 
             // Handle file removal
-            if ($removeFile && $question->getRessourceFilename()) {
-                $filePath = $this->parameterBag->get("uploads_directory") . '/' . $question->getRessourceFilename();
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-                $question->setRessourceFilename(null);
+            if ($removeFile === true) {
+                $this->fileManagerService->removeFile($question->getRessourceFilename());
                 $question->setType(0);
+                $question->setRessourceFilename(null);
+                $ressourceFile = null;
             }
 
-            if ($ressourceFile) {
-                $fileType = $ressourceFile->getMimeType();
-                if (str_contains($fileType, 'image')) {
-                    $question->setType(1);
-                } elseif (str_contains($fileType, 'audio')) {
-                    $question->setType(2);
-                } elseif (str_contains($fileType, 'video')) {
-                    $question->setType(3);
-                } else {
-                    $question->setType(0);
-                }
-
-                $originalFilename = pathinfo($ressourceFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $ressourceFile->guessExtension();
-                try {
-                    $ressourceFile->move($this->parameterBag->get("uploads_directory"), $newFilename);
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
-                if ($question->getRessourceFilename()) {
-                    $oldFilePath = $this->parameterBag->get("uploads_directory") . '/' . $question->getRessourceFilename();
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
-                    }
-                }
-
-                $question->setRessourceFilename($newFilename);
-            }
+            // Handle file upload
+            $question->setType(
+                $this->fileManagerService->getFileType(
+                    $ressourceFile,
+                    $question->getType()
+                )
+            );
+            $question->setRessourceFilename(
+                $this->fileManagerService->uploadReplaceFile(
+                    $ressourceFile,
+                    $question->getRessourceFilename()
+                )
+            );
 
             $quiz->addQuestion($question);
         }

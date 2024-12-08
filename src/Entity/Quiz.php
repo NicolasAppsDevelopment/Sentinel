@@ -16,6 +16,9 @@ class Quiz
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $illustrationFilename = null;
+
     #[ORM\ManyToOne(inversedBy: 'quizzes')]
     private ?User $author = null;
 
@@ -43,6 +46,16 @@ class Quiz
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIllustrationFilename(): ?string
+    {
+        return $this->illustrationFilename;
+    }
+
+    public function setIllustrationFilename(?string $illustrationFilename): void
+    {
+        $this->illustrationFilename = $illustrationFilename;
     }
 
     public function getAuthor(): ?User

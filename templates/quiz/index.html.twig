@@ -16,11 +16,16 @@
     <div class="container">
         {% for quiz in searchedQuiz %}
             <a class="quiz-card" href="{{ path('app_quiz_view', {'id': quiz.id}) }}">
-                <h3>{{ quiz.title }}</h3>
-                <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
-                <p>{{ quiz.questions.count() }} questions</p>
-                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
-                <p>{{ quiz.description }}</p>
+                <div>
+                    {% if quiz.illustrationFilename %}
+                        <img src="{{ asset('uploads/' ~ quiz.illustrationFilename) }}" class="question-img">
+                    {% endif %}
+                    <h3 class="title">{{ quiz.title }}</h3>
+                    <p class="nb-question">({{ quiz.questions.count() }} questions)</p>
+                    <p class="description">{{ quiz.description }}</p>
+                    <p class="author"><i class="fa-solid fa-user"></i> {{ quiz.author.username }}</p>
+                    <p class="date"><i class="fa-regular fa-calendar"></i> {{ quiz.createdDate|date('d/m/Y') }}</p>
+                </div>
             </a>
         {% endfor %}
     </div>
@@ -30,11 +35,14 @@
         {% for quiz in trendQuiz %}
             <a class="quiz-card" href="{{ path('app_quiz_view', {'id': quiz.id}) }}">
                 <div>
-                    <h3>{{ quiz.title }}</h3>
-                    <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
-                    <p>{{ quiz.questions.count() }} questions</p>
-                    <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
-                    <p>{{ quiz.description }}</p>
+                    {% if quiz.illustrationFilename %}
+                        <img src="{{ asset('uploads/' ~ quiz.illustrationFilename) }}" class="question-img">
+                    {% endif %}
+                    <h3 class="title">{{ quiz.title }}</h3>
+                    <p class="nb-question">({{ quiz.questions.count() }} questions)</p>
+                    <p class="description">{{ quiz.description }}</p>
+                    <p class="author"><i class="fa-solid fa-user"></i> {{ quiz.author.username }}</p>
+                    <p class="date"><i class="fa-regular fa-calendar"></i> {{ quiz.createdDate|date('d/m/Y') }}</p>
                 </div>
             </a>
         {% endfor %}
@@ -43,14 +51,18 @@
     <h2>✨ Les derniers quiz</h2>
     <div class="container">
         {% for quiz in lastQuiz %}
-            <div class="quiz-card">
-                <h3>{{ quiz.title }}</h3>
-                <a href="{{ path('app_account_view', {'id': quiz.author.id}) }}">{{ quiz.author.username }}</a>
-                <p>{{ quiz.questions.count() }} questions</p>
-                <p>Crée {{ quiz.createdDate|date('d/m/Y') }}</p>
-                <p>{{ quiz.description }}</p>
-                <a href="{{ path('app_quiz_view', {'id': quiz.id}) }}" class="rounded-btn">Jouer</a>
-            </div>
+            <a class="quiz-card" href="{{ path('app_quiz_view', {'id': quiz.id}) }}">
+                <div>
+                    {% if quiz.illustrationFilename %}
+                        <img src="{{ asset('uploads/' ~ quiz.illustrationFilename) }}" class="question-img">
+                    {% endif %}
+                    <h3 class="title">{{ quiz.title }}</h3>
+                    <p class="nb-question">({{ quiz.questions.count() }} questions)</p>
+                    <p class="description">{{ quiz.description }}</p>
+                    <p class="author"><i class="fa-solid fa-user"></i> {{ quiz.author.username }}</p>
+                    <p class="date"><i class="fa-regular fa-calendar"></i> {{ quiz.createdDate|date('d/m/Y') }}</p>
+                </div>
+            </a>
         {% endfor %}
     </div>
 

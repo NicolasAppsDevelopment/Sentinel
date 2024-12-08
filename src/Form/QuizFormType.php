@@ -7,9 +7,12 @@ use App\Entity\Quiz;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\File;
 
 class QuizFormType extends AbstractType
 {
@@ -23,6 +26,24 @@ class QuizFormType extends AbstractType
             ->add('description', TextType::class, [
                 'attr' => ['placeholder' => 'Description of the quiz'],
                 'required' => false,
+            ])
+            ->add('illustrationFile', FileType::class, [
+                'label' => 'Thumbnail of the quiz',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/avif',
+                            'image/gif',
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image',
+                    ])
+                ],
             ])
             ->add('questions', CollectionType::class, [
                 'entry_type' => QuestionFormType::class,
