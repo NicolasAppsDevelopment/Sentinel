@@ -2,28 +2,48 @@
 
 {% block body %}
     {{ component('navbar', {index: 0}) }}
-    <div class="centered">
-        <div class="container-card small">
+    <div class="screen-center">
+        <div class="big-image-container">
             {% if question.ressourceFilename %}
+
                 {% if question.type == 1 %}
-                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}" class="question-img">
+                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                 {% endif %}
                 {% if question.type == 2 %}
-                    <audio controls src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
+                    <audio controls autoplay src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
                 {% endif %}
                 {% if question.type == 3 %}
-                    <video controls class="question-img">
+                    <video controls autoplay>
                         <source src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                     </video>
                 {% endif %}
+                <p class="tag large">{{ questionIndex + 1}}/{{ question.quiz.questions.count() }}</p>
             {% endif %}
-            <h1>Question {{ questionIndex + 1}}</h1>
-            <p>{{ question.getStatement() }}</p>
-
+        </div>
+        <div class="p1 g1 column">
+            <h1 class="no-margin">{{ question.getStatement() }}</h1>
+            <div class="answer-btn-container">
+                <div><p class="answer-btn-no-interact {{ question.answer1.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer1 ? "selected" : "not-selected" }}">
+                    {{ question.answer1.text }}
+                </p></div>
+                <div><p class="answer-btn-no-interact {{ question.answer2.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer2 ? "selected" : "not-selected" }}">
+                    {{ question.answer2.text }}
+                </p></div>
+                {% if question.answer3 %}
+                    <div><p class="answer-btn-no-interact {{ question.answer3.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer3 ? "selected" : "not-selected" }}">
+                        {{ question.answer3.text }}
+                    </p></div>
+                {% endif %}
+                {% if question.answer4 %}
+                    <div><p class="answer-btn-no-interact {{ question.answer4.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer4 ? "selected" : "not-selected" }}">
+                        {{ question.answer4.text }}
+                    </p></div>
+                {% endif %}
+            </div>
             {% if quizzEnd == false %}
-                <a href="{{ path('app_quiz_play', {'quizId': quizId, 'questionIndex': questionIndex }) }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Next</a>
+                <a href="{{ path('app_quiz_play', {'quizId': quizId, 'questionIndex': questionIndex }) }}" class="rounded-btn large">Next <i class="fa-solid fa-arrow-right"></i></a>
             {% else %}
-                <a href="{{ path('app_quiz_view_all') }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Finish</a>
+                <a href="{{ path('app_quiz_view_all') }}" class="rounded-btn large">Finish <i class="fa-solid fa-flag"></i></a>
             {% endif %}
         </div>
     </div>

@@ -179,7 +179,7 @@ class QuizController extends AbstractController
                 if ($answer->isCorrect()){
                     $user->setScore($user->getScore() + 1);
                 } else {
-                    $user->seScore($user->getScore() - 1);
+                    $user->setScore($user->getScore() - 1);
                 }
             }
 
@@ -191,10 +191,15 @@ class QuizController extends AbstractController
                 $entityManager->flush();
                 //return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
                 return $this->render('question/result.html.twig', [
+                    'selectedAnswer' => [
+                        'answer1' => $answer1IsSelected ? true : false,
+                        'answer2' => $answer2IsSelected ? true : false,
+                        'answer3' => $answer3IsSelected ? true : false,
+                        'answer4' => $answer4IsSelected ? true : false,
+                    ],
                     'question' => $question,
                     'questionIndex' => $questionIndex,
                     'quizId' => $quizId,
-                    'form' => $form,
                     'quizzEnd' => false,
                 ]);
             } else {
@@ -203,10 +208,15 @@ class QuizController extends AbstractController
                 $entityManager->flush();
 
                 return $this->render('question/result.html.twig', [
+                    'selectedAnswer' => [
+                        'answer1' => $answer1IsSelected ? true : false,
+                        'answer2' => $answer2IsSelected ? true : false,
+                        'answer3' => $answer3IsSelected ? true : false,
+                        'answer4' => $answer4IsSelected ? true : false,
+                    ],
                     'question' => $question,
                     'questionIndex' => $questionIndex,
                     'quizId' => $quizId,
-                    'form' => $form,
                     'quizzEnd' => true,
                 ]);
             }
