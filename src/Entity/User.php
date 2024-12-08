@@ -52,13 +52,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
     private Collection $quizzes;
 
-    #[ORM\OneToOne(targetEntity: UserQuizAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
-    private ?UserQuizAttempt $quizAttempt;
+    #[ORM\OneToMany(targetEntity: UserQuizAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
+    private Collection $quizAttempts;
 
 
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
+        $this->quizAttempts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,7 +192,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addQuiz(Quiz $quiz): self
     {
-
         if (!$this->quizzes->contains($quiz)) {
             $this->quizzes->add($quiz);
             $quiz->setAuthor($this);
@@ -211,14 +211,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getQuizAttempt(): ?UserQuizAttempt
+    public function getQuizAttempts(): Collection
     {
-        return $this->quizAttempt;
+        return $this->quizAttempts;
     }
 
-    public function setQuizAttempt(?UserQuizAttempt $quizAttempt): self
+    public function addQuizAttempt(UserQuizAttempt $quizAttempt): self
     {
-        $this->quizAttempt = $quizAttempt;
+        if (!$this->quizAttempts->contains($quizAttempt)) {
+            $this->quizAttempts->add($quizAttempt);
+            $quizAttempt->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizAttempt(UserQuizAttempt $quizAttempt): self
+    {
+        if ($this->quizAttempts->removeElement($quizAttempt)) {
+            if ($quizAttempt->getUser() === $this) {
+                $quizAttempt->setUser(null);
+            }
+        }
 
         return $this;
     }

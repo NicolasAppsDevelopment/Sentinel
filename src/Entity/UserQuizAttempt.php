@@ -19,7 +19,7 @@ class UserQuizAttempt
     #[ORM\ManyToOne(inversedBy: 'usersAttempts')]
     private ?Quiz $quiz = null;
 
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'quizAttempt')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'quizAttempt')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 

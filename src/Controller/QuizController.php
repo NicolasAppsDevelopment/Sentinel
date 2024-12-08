@@ -90,18 +90,33 @@ class QuizController extends AbstractController
         $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class);
         $form->handleRequest($request);
 
-        if ($questionIndex == 0 && !$form->isSubmitted()){
-            $userQuizAttempt = new UserQuizAttempt();
-            $userQuizAttempt->setQuiz($quiz);
-            $userQuizAttempt->setUser($user);
-            $userQuizAttempt->setScore(0);
-            $userQuizAttempt->setFinished(false);
-            $userQuizAttempt->setPlayedDate(new \DateTime());
+        $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user);
 
-            $entityManager->persist($userQuizAttempt);
-            $entityManager->flush();
-        } else {
-            $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user)[0];
+        #start a quiz
+        if ($questionIndex == 0 && !$form->isSubmitted()){
+            #the user has an attempt on this quiz not finished
+            if ($userQuizAttempt && !$userQuizAttempt[0]->isFinished()) {
+                $questionIndex = count($userQuizAttempt[0]->getQuestionAnswers());
+            }
+            #the user has no attempts on this quiz not finished
+            else {
+                $userQuizAttempt = new UserQuizAttempt();
+                $userQuizAttempt->setQuiz($quiz);
+                $userQuizAttempt->setUser($user);
+                $userQuizAttempt->setScore(0);
+                $userQuizAttempt->setFinished(false);
+                $userQuizAttempt->setPlayedDate(new \DateTime());
+
+                $entityManager->persist($userQuizAttempt);
+                $entityManager->flush();
+            }
+
+
+        }
+
+        else {
+            # the user continues his attempt
+            $userQuizAttempt = $userQuizAttempt[0];
             if (!$userQuizAttempt) {
                 return new Response("Not found", 404);
             }
@@ -129,13 +144,14 @@ class QuizController extends AbstractController
                 $questionAnswerUserQuizAttempt->setAnswer($question->getAnswer4());
             }
 
-
             $entityManager->persist($questionAnswerUserQuizAttempt);
             $entityManager->flush();
 
-            if (count($quiz->getQuestions()) < $questionIndex + 1) {
+
+            if (count($quiz->getQuestions()) > $questionIndex + 1) {
                 return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
             } else {
+                $userQuizAttempt->setFinished(true);
                 return $this->redirectToRoute('app_quiz_view_all');
             }
 
