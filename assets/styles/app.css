@@ -442,6 +442,7 @@ div:has(> .remove-file) {
     background-color: black;
     display: flex;
     position: relative;
+    justify-content: center;
 }
 .big-image-container img {
     object-fit: contain;

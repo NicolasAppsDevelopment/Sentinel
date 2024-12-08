@@ -10,10 +10,10 @@
                     <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                 {% endif %}
                 {% if question.type == 2 %}
-                    <audio controls src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
+                    <audio controls autoplay src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
                 {% endif %}
                 {% if question.type == 3 %}
-                    <video controls>
+                    <video controls autoplay>
                         <source src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                     </video>
                 {% endif %}
