@@ -19,28 +19,33 @@ class QuestionAnswerUserQuizAttemptFormType extends AbstractType
     {
         $builder
             ->add('answer1', CheckboxType::class, [
-                'label' => false,
+                'label' => $options['answer1'],
                 'required' => false,
             ])
             ->add('answer2', CheckboxType::class, [
-                'label' => false,
+                'label' => $options['answer2'],
                 'required' => false,
             ])
             ->add('answer3', CheckboxType::class, [
-                'label' => false,
+                'attr' => ['class' => $options['answer3'] ? '' : 'd-none'],
+                'label' => $options['answer3'] ?? false,
                 'required' => false,
             ])
             ->add('answer4', CheckboxType::class, [
-                'label' => false,
+                'attr' => ['class' => $options['answer3'] ? '' : 'd-none'],
+                'label' => $options['answer4'] ?? false,
                 'required' => false,
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => null,
-        ]);
+        ])
+        ->setRequired('answer1')
+        ->setRequired('answer2')
+        ->setRequired('answer3')
+        ->setRequired('answer4');
     }
 }

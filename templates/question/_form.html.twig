@@ -1,22 +1,25 @@
 {{ form_start(form) }}
 
-{{ form_row(form.answer1) }}
-<p>{{ question.answer1.getText() }}</p>
-
-{{ form_row(form.answer2) }}
-<p>{{ question.answer2.getText() }}</p>
-
-{% if question.answer3 %}
-    {{ form_row(form.answer3) }}
-    <p>{{ question.answer3.getText() }}</p>
-{% endif %}
-
-{% if question.answer4 %}
-    {{ form_row(form.answer4) }}
-    <p>{{ question.answer4.getText() }}</p>
-{% endif %}
+<div class="answer-btn-container">
+    <div class="answer-btn">
+        {{ form_row(form.answer1) }}
+    </div>
+    <div class="answer-btn">
+        {{ form_row(form.answer2) }}
+    </div>
+    {% if question.answer3 %}
+        <div class="answer-btn">
+            {{ form_row(form.answer3) }}
+        </div>
+    {% endif %}
+    {% if question.answer4 %}
+        <div class="answer-btn">
+            {{ form_row(form.answer4) }}
+        </div>
+    {% endif %}
+</div>
 
 {{ form_widget(form) }}
-<button class="rounded-btn add_question_item_link" type="submit">{{ button_label|default('Valider') }}</button>
+<button class="rounded-btn add_question_item_link" type="submit"><i class="fa-solid fa-check"></i> {{ button_label|default('Valider') }}</button>
 {{ form_end(form) }}
 

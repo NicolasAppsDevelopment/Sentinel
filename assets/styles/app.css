@@ -3,7 +3,7 @@
     --primary-color-dark: #0b5739;
     --primary-color-darker: #072c1e;
     --card-background-color: #061512;
-
+    --navbar-height: 85px;
 
 
     --background-color: #18181B;
@@ -31,7 +31,7 @@
 
 body {
     background-color: var(--background-color);
-    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Roboto, sans-serif;
     margin: 0;
 }
 
@@ -118,13 +118,13 @@ body {
     color: var(--card-label-color);
 }
 
-.centered {
+.screen-center {
+    margin-top: -1rem;
     width: 100vw;
-    height: 100vh;
-    align-content: center;
+    height: calc(100vh - var(--navbar-height));
 }
 
-.centered > .container-card {
+.screen-center > div {
     margin: auto;
 }
 
@@ -186,8 +186,7 @@ body {
     gap: 2rem;
     margin-bottom: 1rem;
 }
-
-.nav-item {
+.navbar .nav-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -195,15 +194,16 @@ body {
     text-decoration: none;
     text-wrap: nowrap;
 }
-
-.nav-item:hover, .nav-item.active {
+.navbar .nav-item:hover, .navbar .nav-item.active {
     color: var(--primary-color);
     transform: scale(1.1);
 }
-
-.nav-item.red {
+.navbar .nav-item.logout {
     color: var(--destruction-label-color);
-    font-weight: bold;
+    font-size: 1.5rem;
+}
+.navbar * {
+    margin: 0;
 }
 
 .expanded {
@@ -231,7 +231,6 @@ p > a {
     color: var(--card-label-color);
     cursor: pointer;
     text-decoration: none;
-    width: 100%;
 }
 .rounded-btn.destructive {
     background-color: var(--destruction-label-color);
@@ -415,11 +414,13 @@ div:has(> .remove-file) {
     flex-direction: row;
 }
 
+/* TAG CSS */
+
 .tag {
     font-size: 0.75rem;
     color: white;
     background-color: rgba(7, 61, 41, 0.6);
-    border-radius: 18px;
+    border-radius: 100px;
     padding: 0.5rem 1rem;
     margin: 0;
     backdrop-filter: blur(20px);
@@ -428,4 +429,73 @@ div:has(> .remove-file) {
 
 .tag.small {
     padding: 0.25rem 0.5rem;
+}
+.tag.large {
+    padding: 0.5rem 1.5rem;
+}
+
+
+
+.big-image-container {
+    height: 40vh;
+    overflow: hidden;
+    background-color: black;
+    display: flex;
+    position: relative;
+}
+.big-image-container img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+}
+.big-image-container .tag {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 1.25rem;
+}
+
+.d-none {
+    display: none;
+}
+
+.answer-btn label {
+    padding: 1rem;
+    border: 2px solid var(--card-border-color);
+    border-radius: 8px;
+    color: var(--card-label-color);
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+}
+.answer-btn label:hover {
+    background-color: var(--primary-color-darker);
+}
+.answer-btn label:has(+ input[type="checkbox"]:checked) {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.answer-btn input[type="checkbox"] {
+    display: none;
+}
+
+.answer-btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-wrap: wrap;
+    max-height: 8rem;
+}
+.answer-btn-container > .answer-btn {
+    flex: 1;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
 }

@@ -99,9 +99,6 @@ class QuizController extends AbstractController
             return new Response("Not found", 404);
         }
 
-        $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class);
-        $form->handleRequest($request);
-
         $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttemptNotFinished($user);
 
         #start a quiz
@@ -129,8 +126,15 @@ class QuizController extends AbstractController
             $questionIndex = count($userQuizAttempt->getQuestionAnswers());
         }
 
-        //dd($questionIndex);
         $question = $quiz->getQuestions()[$questionIndex];
+
+        $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class, null, [
+            'answer1' => $quiz->getQuestions()[$questionIndex]->getAnswer1()->getText(),
+            'answer2' => $quiz->getQuestions()[$questionIndex]->getAnswer2()->getText(),
+            'answer3' => $quiz->getQuestions()[$questionIndex]->getAnswer3()?->getText(),
+            'answer4' => $quiz->getQuestions()[$questionIndex]->getAnswer4()?->getText(),
+        ]);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $questionAnswerUserQuizAttempt = new QuestionAnswerUserQuizAttempt();

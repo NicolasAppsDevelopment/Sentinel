@@ -1,26 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Leaderboard{% endblock %}
-
 {% block body %}
     {{ component('navbar', {index: 0}) }}
-    <div class="centered">
-        <div class="container-card small">
+    <div class="screen-center">
+        <div class="big-image-container">
             {% if question.ressourceFilename %}
+
                 {% if question.type == 1 %}
-                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}" class="question-img">
+                    <img src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                 {% endif %}
                 {% if question.type == 2 %}
                     <audio controls src="{{ asset('uploads/' ~ question.ressourceFilename) }}"></audio>
                 {% endif %}
                 {% if question.type == 3 %}
-                    <video controls class="question-img">
+                    <video controls>
                         <source src="{{ asset('uploads/' ~ question.ressourceFilename) }}">
                     </video>
                 {% endif %}
+                <p class="tag large">{{ questionIndex + 1}}/{{ question.quiz.questions.count() }}</p>
             {% endif %}
-            <h1>Question {{ questionIndex + 1}}</h1>
-            <p>{{ question.getStatement() }}</p>
+        </div>
+        <div class="p1 g1 column">
+            <h1 class="no-margin">{{ question.getStatement() }}</h1>
             {{ include('question/_form.html.twig', {'button_label': 'Valider'}) }}
         </div>
     </div>
