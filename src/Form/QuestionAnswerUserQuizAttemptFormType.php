@@ -32,7 +32,7 @@ class QuestionAnswerUserQuizAttemptFormType extends AbstractType
                 'required' => false,
             ])
             ->add('answer4', CheckboxType::class, [
-                'attr' => ['class' => $options['answer3'] ? '' : 'd-none'],
+                'attr' => ['class' => $options['answer4'] ? '' : 'd-none'],
                 'label' => $options['answer4'] ?? false,
                 'required' => false,
             ]);
