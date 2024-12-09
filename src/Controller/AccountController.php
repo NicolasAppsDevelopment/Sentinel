@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\UserQuizAttemptRepository;
@@ -21,26 +19,26 @@ class AccountController extends AbstractController
     #[Route(path: '/view/{id}', name: 'app_account_view', methods: ['GET'])]
     public function view(User $user, UserQuizAttemptRepository $userQuizAttemptRepository): Response
     {
-        $NbQuestionsAnswered = $userQuizAttemptRepository->getUserNbQuestionsAnswered($user);
+        $nbQuestionsAnswered = $userQuizAttemptRepository->getUserNbQuestionsAnswered($user);
         $percentageOfCorrectAnswers = "No questions answered";
 
-        $NbAnswerSubmited = $userQuizAttemptRepository->getUserNbAnswerSubmited($user);
+        $nbAnswerSubmitted = $userQuizAttemptRepository->getUserNbAnswerSubmited($user);
 
-        if (count($NbQuestionsAnswered) != 0) {
-            $percentageOfCorrectAnswers = round((count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($NbAnswerSubmited), 0, PHP_ROUND_HALF_UP);
+        if (count($nbQuestionsAnswered) != 0) {
+            $percentageOfCorrectAnswers = round((count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($nbAnswerSubmitted), 0, PHP_ROUND_HALF_UP);
             $percentageOfCorrectAnswers = $percentageOfCorrectAnswers . "%";
         }
 
         return $this->render('account/view.html.twig', [
             'user' => $user,
             'NbQuizzesPlayed' => count($userQuizAttemptRepository->getUserNbQuizzesPlayed($user)),
-            'NbQuestionsAnswered' => count($NbQuestionsAnswered),
+            'NbQuestionsAnswered' => count($nbQuestionsAnswered),
             'PercentageOfCorrectAnswers' => $percentageOfCorrectAnswers,
         ]);
     }
 
     #[Route(path: '/remove/{id}', name: 'app_account_remove', methods: ['POST'])]
-    public function remove(Request $request, User $user, UserRepository $userRepository): Response
+    public function remove(User $user, UserRepository $userRepository): Response
     {
         $userRepository->remove($user, true);
 
@@ -69,13 +67,5 @@ class AccountController extends AbstractController
             'user' => $user,
             'form' => $form,
         ]);
-    }
-
-    #[Route(path: '/save/{id}', name: 'app_account_save')]
-    public function save(string $id): Response
-    {
-
-        // TODO: redirect to right account id view
-        return $this->render('account/view.html.twig');
     }
 }

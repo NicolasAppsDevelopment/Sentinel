@@ -35,6 +35,13 @@ body {
     margin: 0;
 }
 
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 .row {
     display: flex;
     flex-direction: row;
@@ -253,7 +260,7 @@ p > a {
     background-color: var(--card-border-color);
 }
 
-h1, h2, h3, h4, h5, h6, label, p {
+h1, h2, h3, h4, h5, h6, label, p, td, th {
     color: var(--card-label-color);
 }
 
@@ -396,9 +403,47 @@ form {
     text-align: center;
 }
 
-.leaderboard tbody tr:first-child{
-    background-color: var(--card-hover-icon-border-color);
+/* LEADERBOARD CSS */
+
+.leaderboard, .leaderboard th, .leaderboard td {
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
+.leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
+    border: 3px solid var(--primary-color);
+}
+.leaderboard th {
+    background-color: var(--primary-color);
+    color: var(--card-label-color);
+    font-weight: 600;
+    text-align: left;
+}
+.leaderboard th {
+    padding: 1rem 1rem;
+}
+.leaderboard td {
+    padding: 0.5rem 1rem;
+}
+.leaderboard tbody tr:nth-child(1){
+    background-color: rgb(255, 215, 0, 0.5);
+}
+.leaderboard tbody tr:nth-child(2){
+    background-color: rgb(192, 192, 192, 0.5);
+}
+.leaderboard tbody tr:nth-child(3){
+    background-color: rgb(205, 127, 50, 0.5);
+}
+.leaderboard tbody tr:last-child {
+    border-top: 3px solid var(--primary-color);
+    background-color: rgb(0, 0, 0, 0.5);
+}
+
+
+
+
 
 a {
     text-decoration: none;
@@ -490,9 +535,6 @@ div:has(> .remove-file) {
     gap: 1rem;
     flex-wrap: wrap;
     max-height: 8rem;
-}
-.answer-btn-container > .answer-btn, .answer-btn-container > .answer-btn-no-interact {
-    flex: 1;
 }
 
 .answer-btn-no-interact {
