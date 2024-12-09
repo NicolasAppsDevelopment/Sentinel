@@ -46,4 +46,15 @@ class QuizRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getNbOfTimesPlayed(int $quizzId): int
+    {
+        return (int) $this->createQueryBuilder('quiz')
+            ->select('COUNT(usersAttempt) AS count')
+            ->leftJoin('quiz.usersAttempts', 'usersAttempt')
+            ->andWhere('quiz.id = :id')
+            ->setParameter('id', $quizzId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

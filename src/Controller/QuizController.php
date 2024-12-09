@@ -82,8 +82,12 @@ class QuizController extends AbstractController
             return new Response("Not found", 404);
         }
 
+        $nbOfTimesQuizHasBeenPlayed = $this->entityManager->getRepository(Quiz::class)->getNbOfTimesPlayed($quiz->getId());
+
         return $this->render('quiz/view.html.twig', [
             'quiz' => $quiz,
+            'nbOfTimesQuizHasBeenPlayed' => $nbOfTimesQuizHasBeenPlayed,
+
         ]);
     }
 
