@@ -175,7 +175,7 @@ class Question
         return $this->answer3;
     }
 
-    public function setAnswer3(Answer $answer3): static
+    public function setAnswer3(?Answer $answer3): static
     {
         $this->answer3 = $answer3;
 
@@ -187,7 +187,7 @@ class Question
         return $this->answer4;
     }
 
-    public function setAnswer4(Answer $answer4): static
+    public function setAnswer4(?Answer $answer4): static
     {
         $this->answer4 = $answer4;
 

@@ -314,6 +314,7 @@ class QuizController extends AbstractController
      * @param SluggerInterface $slugger
      * @return RedirectResponse
      */
+    // TODO: check if questions have at least 1 correct answer
     public function saveQuizForm(FormInterface $form, UserInterface $userInDB, SluggerInterface $slugger): RedirectResponse
     {
         $quiz = $form->getData();
@@ -345,6 +346,15 @@ class QuizController extends AbstractController
         }
 
         foreach ($quiz->getQuestions() as $question) {
+            if ($question->getAnswer3() !== null && $question->getAnswer3()?->getText() === null) {
+                $this->entityManager->remove($question->getAnswer3());
+                $question->setAnswer3(null);
+            }
+            if ($question->getAnswer4() !== null && $question->getAnswer4()?->getText() === null) {
+                $this->entityManager->remove($question->getAnswer4());
+                $question->setAnswer4(null);
+            }
+
             $questionIndex = $quiz->getQuestions()->indexOf($question);
 
             $question->setQuiz($quiz);
