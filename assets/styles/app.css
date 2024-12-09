@@ -455,7 +455,6 @@ form {
     width: 100%;
     border-collapse: collapse;
     overflow: hidden;
-    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
     border: 3px solid var(--primary-color);
 }
 .profile th {
