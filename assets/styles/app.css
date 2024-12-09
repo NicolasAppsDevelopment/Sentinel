@@ -602,5 +602,8 @@ div:has(> .remove-file) {
     justify-content: space-evenly;
     align-items: flex-start;
     height: fit-content;
-    margin-top: 2rem;
+}
+
+.row_space_evenly > a, .row_space_evenly > button, .row_space_evenly > form {
+    margin: 1rem;
 }
