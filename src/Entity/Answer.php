@@ -24,13 +24,15 @@ class Answer
     #[ORM\Column]
     private ?int $numberOfTimesSelected = 0;
 
-
-    #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'answer', cascade: ["persist", 'remove'])]
-    private Collection $questionsUserQuizAttempt;
+    /**
+     * @var Collection<int, QuestionAnswerUserQuizAttempt>
+     */
+    #[ORM\ManyToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'answers')]
+    private Collection $questionAnswerUserQuizAttempts;
 
     public function __construct()
     {
-        $this->questionsUserQuizAttempt = new ArrayCollection();
+        $this->questionAnswerUserQuizAttempts = new ArrayCollection();
     }
 
 
@@ -75,40 +77,28 @@ class Answer
         return $this;
     }
 
-    public function getQuestion(): ?Question
+    /**
+     * @return Collection<int, QuestionAnswerUserQuizAttempt>
+     */
+    public function getQuestionAnswerUserQuizAttempts(): Collection
     {
-        return $this->question;
+        return $this->questionAnswerUserQuizAttempts;
     }
 
-    public function setQuestion(?Question $question): self
+    public function addQuestionAnswerUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionAnswerUserQuizAttempt): static
     {
-        $this->question = $question;
-
-        return $this;
-    }
-
-    public function getQuestionsUserQuizAttempt(): Collection
-    {
-        return $this->questionsUserQuizAttempt;
-    }
-
-    public function addQuestionUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionUserQuizzAttempt): self
-    {
-
-        if (!$this->questionsUserQuizAttempt->contains($questionUserQuizzAttempt)) {
-            $this->questionsUserQuizAttempt->add($questionUserQuizzAttempt);
-            $questionUserQuizzAttempt->setAnswer($this);
+        if (!$this->questionAnswerUserQuizAttempts->contains($questionAnswerUserQuizAttempt)) {
+            $this->questionAnswerUserQuizAttempts->add($questionAnswerUserQuizAttempt);
+            $questionAnswerUserQuizAttempt->addAnswer($this);
         }
 
         return $this;
     }
 
-    public function removeQuestionUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionUserQuizAttempt): self
+    public function removeQuestionAnswerUserQuizAttempt(QuestionAnswerUserQuizAttempt $questionAnswerUserQuizAttempt): static
     {
-        if ($this->questionsUserQuizAttempt->removeElement($questionUserQuizAttempt)) {
-            if ($questionUserQuizAttempt->getAnswer() === $this) {
-                $questionUserQuizAttempt->setAnswer(null);
-            }
+        if ($this->questionAnswerUserQuizAttempts->removeElement($questionAnswerUserQuizAttempt)) {
+            $questionAnswerUserQuizAttempt->removeAnswer($this);
         }
 
         return $this;

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionAnswerUserQuizAttemptRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionAnswerUserQuizAttemptRepository::class)]
@@ -19,8 +21,16 @@ class QuestionAnswerUserQuizAttempt
     #[ORM\ManyToOne(inversedBy: 'userQuizzAttemptAnswers')]
     private ?Question $question = null;
 
-    #[ORM\ManyToOne(inversedBy: 'questionsUserQuizzAttempt')]
-    private ?Answer $answer = null;
+    /**
+     * @var Collection<int, Answer>
+     */
+    #[ORM\ManyToMany(targetEntity: Answer::class, inversedBy: 'questionAnswerUserQuizAttempts')]
+    private Collection $answers;
+
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -51,14 +61,26 @@ class QuestionAnswerUserQuizAttempt
         return $this;
     }
 
-    public function getAnswer(): ?Answer
+    /**
+     * @return Collection<int, Answer>
+     */
+    public function getAnswers(): Collection
     {
-        return $this->answer;
+        return $this->answers;
     }
 
-    public function setAnswer(?Answer $answer): self
+    public function addAnswer(Answer $answer): static
     {
-        $this->answer = $answer;
+        if (!$this->answers->contains($answer)) {
+            $this->answers->add($answer);
+        }
+
+        return $this;
+    }
+
+    public function removeAnswer(Answer $answer): static
+    {
+        $this->answers->removeElement($answer);
 
         return $this;
     }

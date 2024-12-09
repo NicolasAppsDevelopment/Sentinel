@@ -146,13 +146,12 @@ class QuizController extends AbstractController
 
             foreach ($answers as $answer) {
                 if ($answer['selected']) {
-                    $questionAnswerUserQuizAttempt->setAnswer($answer['answer']);
+                    $questionAnswerUserQuizAttempt->addAnswer($answer['answer']);
                     if ($answer['answer']->isCorrect()){
                         $user->setScore($user->getScore() + 1);
                     } else {
                         $user->setScore($user->getScore() - 1);
                     }
-                    break; // TODO: handle several responses
                 }
             }
 
@@ -192,15 +191,15 @@ class QuizController extends AbstractController
 
         $lastAnsweredQuestion = $lastTry->getQuestionAnswers()->last();
         $question = $lastAnsweredQuestion->getQuestion();
-        $selectedAnswer = $lastAnsweredQuestion->getAnswer();
+        $selectedAnswers = $lastAnsweredQuestion->getAnswers();
         $questionIndex = $quiz->getQuestions()->indexOf($question);
 
         return $this->render('question/result.html.twig', [
             'selectedAnswer' => [
-                'answer1' => $question->getAnswer1() == $selectedAnswer ? true : false,
-                'answer2' => $question->getAnswer2() == $selectedAnswer ? true : false,
-                'answer3' => $question->getAnswer3() == $selectedAnswer ? true : false,
-                'answer4' => $question->getAnswer4() == $selectedAnswer ? true : false,
+                'answer1' => $selectedAnswers->contains($question->getAnswer1()) ? true : false,
+                'answer2' => $selectedAnswers->contains($question->getAnswer2()) ? true : false,
+                'answer3' => $selectedAnswers->contains($question->getAnswer3()) ? true : false,
+                'answer4' => $selectedAnswers->contains($question->getAnswer4()) ? true : false,
             ],
             'question' => $question,
             'questionIndex' => $questionIndex,
@@ -318,15 +317,6 @@ class QuizController extends AbstractController
 
             $question->setQuiz($quiz);
             $question->setPosition($question->getPosition() ?? ($questionIndex + 1));
-            $question->getAnswer1()->setQuestion($question);
-            $question->getAnswer2()->setQuestion($question);
-
-            if ($question->getAnswer3()) {
-                $question->getAnswer3()->setQuestion($question);
-            }
-            if ($question->getAnswer4()) {
-                $question->getAnswer4()->setQuestion($question);
-            }
 
             $ressourceFile = $form->get('questions')[$questionIndex]['ressourceFile']->getData();
             $removeFile = $form->get('questions')[$questionIndex]['removeFile']->getData();
