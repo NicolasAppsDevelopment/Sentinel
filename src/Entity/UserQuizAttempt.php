@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserQuizAttemptRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -29,8 +30,8 @@ class UserQuizAttempt
     #[ORM\Column]
     private ?int $score = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $playedDate = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTime $playedDate = null;
 
     #[ORM\OneToMany(targetEntity: QuestionAnswerUserQuizAttempt::class, mappedBy: 'attempt', cascade: ["persist", 'remove'])]
     private Collection $questionAnswers;
@@ -93,12 +94,12 @@ class UserQuizAttempt
         return $this;
     }
 
-    public function getPlayedDate(): ?\DateTimeInterface
+    public function getPlayedDate(): ?DateTime
     {
         return $this->playedDate;
     }
 
-    public function setPlayedDate(\DateTimeInterface $playedDate): static
+    public function setPlayedDate(DateTime $playedDate): static
     {
         $this->playedDate = $playedDate;
 
