@@ -28,7 +28,7 @@
         {% endif %}
 
 
-        <h2>🔥 Trending quizzes</h2>
+        <h2>🔥 Most played quizzes</h2>
         <div class="quiz-grid-container">
             {% for quiz in trendQuiz %}
                 {{ component('quizcard', {quiz: quiz}) }}
@@ -38,6 +38,13 @@
         <h2>✨ Last new quizzes</h2>
         <div class="quiz-grid-container">
             {% for quiz in lastQuiz %}
+                {{ component('quizcard', {quiz: quiz}) }}
+            {% endfor %}
+        </div>
+
+        <h2>❤️️ Most liked quizzes</h2>
+        <div class="quiz-grid-container">
+            {% for quiz in likedQuiz %}
                 {{ component('quizcard', {quiz: quiz}) }}
             {% endfor %}
         </div>

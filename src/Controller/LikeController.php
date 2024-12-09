@@ -21,17 +21,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route(path: '/favorites')]
-class FavoriteController extends AbstractController
+#[Route(path: '/like')]
+class LikeController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager
     ) {}
 
-    #[Route(path: '/', name: 'app_favorites_view')]
+    #[Route(path: '/', name: 'app_likes_view')]
     public function list(Request $request): Response
     {
-        $favoriteQuizzes = $this->getUser()->getFavoriteQuizzes();
+        $likedQuizzes = $this->getUser()->getLikedQuizzes();
         $searchedQuiz = null;
 
         $form = $this->createForm(SearchQuizFormType::class);
@@ -39,43 +39,43 @@ class FavoriteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitleInMyFavorites($data['query'], $this->getUser());
+            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitleInMyLiked($data['query'], $this->getUser());
         }
 
-        return $this->render('favorites/view.html.twig', [
-            'favoriteQuizzes' => $favoriteQuizzes,
+        return $this->render('like/view.html.twig', [
+            'likedQuizzes' => $likedQuizzes,
             'searchedQuiz' => $searchedQuiz,
             'searchForm' => $form,
         ]);
     }
 
-    #[Route(path: 'add/{quizId}', name: 'app_favorites_add')]
+    #[Route(path: '/add/{quizId}', name: 'app_like_add')]
     public function add(string $quizId): Response
     {
         if (!$this->getUser()) {
-            $this->addFlash('error', 'You must be logged in to add a quiz to your favorites.');
+            $this->addFlash('error', 'You must be logged in to add a quiz to your like.');
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
-        $this->getUser()->addFavoriteQuiz($this->entityManager->getRepository(Quiz::class)->find($quizId));
+        $this->getUser()->addLikedQuiz($this->entityManager->getRepository(Quiz::class)->find($quizId));
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Quiz added to your favorites.');
+        $this->addFlash('success', 'Quiz added to your liked quizzes.');
         return $this->redirectToRoute('app_quiz_view', ['id' => $quizId], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route(path: 'remove/{quizId}', name: 'app_favorites_remove')]
+    #[Route(path: '/remove/{quizId}', name: 'app_like_remove')]
     public function remove(string $quizId): Response
     {
         if (!$this->getUser()) {
-            $this->addFlash('error', 'You must be logged in to remove a quiz from your favorites.');
+            $this->addFlash('error', 'You must be logged in to remove a quiz from your likes.');
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
-        $this->getUser()->removeFavoriteQuiz($this->entityManager->getRepository(Quiz::class)->find($quizId));
+        $this->getUser()->removeLikedQuiz($this->entityManager->getRepository(Quiz::class)->find($quizId));
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Quiz removed from your favorites.');
+        $this->addFlash('success', 'Quiz removed from your liked quizzes.');
         return $this->redirectToRoute('app_quiz_view', ['id' => $quizId], Response::HTTP_SEE_OTHER);
     }
 }

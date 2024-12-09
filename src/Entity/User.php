@@ -58,15 +58,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Quiz>
      */
-    #[ORM\ManyToMany(targetEntity: Quiz::class, inversedBy: 'favoriteOfUsers')]
-    private Collection $favoriteQuizzes;
+    #[ORM\ManyToMany(targetEntity: Quiz::class, inversedBy: 'usersLiked')]
+    private Collection $likedQuizzes;
 
 
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
         $this->quizAttempts = new ArrayCollection();
-        $this->favoriteQuizzes = new ArrayCollection();
+        $this->likedQuizzes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,29 +247,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Quiz>
      */
-    public function getFavoriteQuizzes(): Collection
+    public function getLikedQuizzes(): Collection
     {
-        return $this->favoriteQuizzes;
+        return $this->likedQuizzes;
     }
 
-    public function addFavoriteQuiz(Quiz $favoriteQuiz): static
+    public function addLikedQuiz(Quiz $quiz): static
     {
-        if (!$this->favoriteQuizzes->contains($favoriteQuiz)) {
-            $this->favoriteQuizzes->add($favoriteQuiz);
+        if (!$this->likedQuizzes->contains($quiz)) {
+            $this->likedQuizzes->add($quiz);
         }
 
         return $this;
     }
 
-    public function removeFavoriteQuiz(Quiz $favoriteQuiz): static
+    public function removeLikedQuiz(Quiz $quiz): static
     {
-        $this->favoriteQuizzes->removeElement($favoriteQuiz);
+        $this->likedQuizzes->removeElement($quiz);
 
         return $this;
     }
 
-    public function isQuizInFavorite(Quiz $quiz): bool
+    public function isQuizLiked(Quiz $quiz): bool
     {
-        return $this->favoriteQuizzes->contains($quiz);
+        return $this->likedQuizzes->contains($quiz);
     }
 }

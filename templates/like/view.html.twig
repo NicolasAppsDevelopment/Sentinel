@@ -5,7 +5,7 @@
     {{ component('alert') }}
 
     <div class="top-container">
-        <h1>List of my favorite quizzes</h1>
+        <h1>List of my liked quizzes</h1>
 
         {{ form_start(searchForm) }}
             {{ form_row(searchForm.query) }}
@@ -27,9 +27,9 @@
             <hr>
         {% endif %}
 
-        <h2>✨ Your Favorites</h2>
+        <h2>✨ Your Liked Quizzes</h2>
         <div class="quiz-grid-container">
-            {% for quiz in favoriteQuizzes %}
+            {% for quiz in likedQuizzes %}
                 {{ component('quizcard', {quiz: quiz}) }}
             {% endfor %}
         </div>

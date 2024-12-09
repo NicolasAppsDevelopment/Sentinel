@@ -34,6 +34,7 @@ class QuizController extends AbstractController
     {
         $trendQuiz = $this->entityManager->getRepository(Quiz::class)->getTrendQuizzes();
         $lastQuiz = $this->entityManager->getRepository(Quiz::class)->getLastQuizzes();
+        $likedQuiz = $this->entityManager->getRepository(Quiz::class)->getMostLikedQuizzes();
         $searchedQuiz = null;
 
         $form = $this->createForm(SearchQuizFormType::class);
@@ -48,6 +49,7 @@ class QuizController extends AbstractController
             'searchedQuiz' => $searchedQuiz,
             'trendQuiz' => $trendQuiz,
             'lastQuiz' => $lastQuiz,
+            'likedQuiz' => $likedQuiz,
             'searchForm' => $form,
         ]);
     }
@@ -86,9 +88,9 @@ class QuizController extends AbstractController
 
         return $this->render('quiz/view.html.twig', [
             'quiz' => $quiz,
-            'isFavorite' => $this->getUser()?->isQuizInFavorite($quiz) ?? false,
+            'isFavorite' => $this->getUser()?->isQuizLiked($quiz) ?? false,
             'nbOfTimesQuizHasBeenPlayed' => $nbOfTimesQuizHasBeenPlayed,
-
+            'nbOfUsersHasFavorited' => count($quiz->getUsersLiked()),
         ]);
     }
 

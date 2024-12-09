@@ -42,14 +42,14 @@ class Quiz
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favoriteQuizzes')]
-    private Collection $favoriteOfUsers;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'likedQuizzes')]
+    private Collection $usersLiked;
 
     public function __construct()
     {
         $this->questions = new ArrayCollection();
         $this->usersAttempts = new ArrayCollection();
-        $this->favoriteOfUsers = new ArrayCollection();
+        $this->usersLiked = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,25 +191,25 @@ class Quiz
     /**
      * @return Collection<int, User>
      */
-    public function getFavoriteOfUsers(): Collection
+    public function getUsersLiked(): Collection
     {
-        return $this->favoriteOfUsers;
+        return $this->usersLiked;
     }
 
-    public function addFavoriteOfUser(User $favoriteOfUser): static
+    public function addUserLiked(User $user): static
     {
-        if (!$this->favoriteOfUsers->contains($favoriteOfUser)) {
-            $this->favoriteOfUsers->add($favoriteOfUser);
-            $favoriteOfUser->addFavoriteQuiz($this);
+        if (!$this->usersLiked->contains($user)) {
+            $this->usersLiked->add($user);
+            $user->addLikedQuiz($this);
         }
 
         return $this;
     }
 
-    public function removeFavoriteOfUser(User $favoriteOfUser): static
+    public function removeUserLiked(User $user): static
     {
-        if ($this->favoriteOfUsers->removeElement($favoriteOfUser)) {
-            $favoriteOfUser->removeFavoriteQuiz($this);
+        if ($this->usersLiked->removeElement($user)) {
+            $user->removeLikedQuiz($this);
         }
 
         return $this;

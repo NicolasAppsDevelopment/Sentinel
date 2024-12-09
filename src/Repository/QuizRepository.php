@@ -38,14 +38,14 @@ class QuizRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByTitleInMyFavorites(string $title, User $user)
+    public function findByTitleInMyLiked(string $title, User $user)
     {
         return $this->createQueryBuilder('quiz')
             ->andWhere('LOWER(TRIM(quiz.title)) LIKE :title')
             ->setParameter('title', '%' . strtolower(trim($title)) . '%')
             ->andWhere(':author IN (:users)')
             ->setParameter('author', $user)
-            ->setParameter('users', $user->getFavoriteQuizzes())
+            ->setParameter('users', $user->getLikedQuizzes())
             ->getQuery()
             ->getResult();
     }
@@ -80,5 +80,17 @@ class QuizRepository extends ServiceEntityRepository
             ->setParameter('id', $quizzId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getMostLikedQuizzes(): array
+    {
+        return $this->createQueryBuilder('quiz')
+            ->select('quiz, COUNT(user) AS HIDDEN userCount')
+            ->leftJoin('quiz.usersLiked', 'user')
+            ->groupBy('quiz.id')
+            ->orderBy('userCount', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
     }
 }
