@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\QuestionAnswerUserQuizAttempt;
 use App\Entity\Quiz;
@@ -194,6 +195,36 @@ class QuizController extends AbstractController
         $selectedAnswers = $lastAnsweredQuestion->getAnswers();
         $questionIndex = $quiz->getQuestions()->indexOf($question);
 
+        $answerRepository = $this->entityManager->getRepository(Answer::class);
+        $questionAnswerUserQuizAttemptRepository = $this->entityManager->getRepository(QuestionAnswerUserQuizAttempt::class);
+        $NbOfTimeQuestionHasBeenAnswered = $questionAnswerUserQuizAttemptRepository->getNbOfTimesAnswered($question);
+
+        if ($NbOfTimeQuestionHasBeenAnswered != 0) {
+            $answerPercentageOfSelection =  [
+                'answer1' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer1()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
+                'answer2' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer2()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
+            ];
+
+            if ($question->getAnswer3()) {
+                $answerPercentageOfSelection['answer3'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer3()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
+            }
+            if ($question->getAnswer4()) {
+                $answerPercentageOfSelection['answer4'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer4()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
+            }
+        } else {
+            $answerPercentageOfSelection =  [
+                'answer1' => 0,
+                'answer2' => 0,
+            ];
+
+            if ($question->getAnswer3()) {
+                $answerPercentageOfSelection['answer3'] = 0;
+            }
+            if ($question->getAnswer4()) {
+                $answerPercentageOfSelection['answer4'] = 0;
+            }
+        }
+
         return $this->render('question/result.html.twig', [
             'selectedAnswer' => [
                 'answer1' => $selectedAnswers->contains($question->getAnswer1()) ? true : false,
@@ -201,6 +232,7 @@ class QuizController extends AbstractController
                 'answer3' => $selectedAnswers->contains($question->getAnswer3()) ? true : false,
                 'answer4' => $selectedAnswers->contains($question->getAnswer4()) ? true : false,
             ],
+            'answerPercentageOfSelection' => $answerPercentageOfSelection,
             'question' => $question,
             'questionIndex' => $questionIndex,
             'quizId' => $quizId,

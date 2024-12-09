@@ -28,12 +28,13 @@ class QuestionAnswerUserQuizAttemptRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getNbOfTimesSelected(Answer $seekAnswer): int
+    public function getNbOfTimesSelected(int $seekAnswerId): int
     {
         return (int) $this->createQueryBuilder('questionAnswerUserQuizAttempt')
             ->select('COUNT(questionAnswerUserQuizAttempt.id) AS count')
-            ->andWhere('questionAnswerUserQuizAttempt.answer = :seekAnswer')
-            ->setParameter('seekAnswer', $seekAnswer)
+            ->leftJoin('questionAnswerUserQuizAttempt.answers', 'answers')
+            ->andWhere('answers.id = :seekAnswerId')
+            ->setParameter('seekAnswerId', $seekAnswerId)
             ->getQuery()
             ->getSingleScalarResult();
     }
