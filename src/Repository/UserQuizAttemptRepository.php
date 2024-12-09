@@ -64,12 +64,24 @@ class UserQuizAttemptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getUserNbAnswerSubmited(User $user): array
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->select('questionAnswers.id')
+            ->leftJoin('userQuizzAttempt.questionAnswers', 'questionAnswers')
+            ->leftJoin('questionAnswers.answers', 'answer')
+            ->where('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getUserNbQuestionsAnsweredCorrectly(User $user): array
     {
         return $this->createQueryBuilder('userQuizzAttempt')
             ->select('questionAnswers.id')
             ->leftJoin('userQuizzAttempt.questionAnswers', 'questionAnswers')
-            ->leftJoin('questionAnswers.answer', 'answer')
+            ->leftJoin('questionAnswers.answers', 'answer')
             ->where('userQuizzAttempt.user = :user')
             ->setParameter('user', $user)
             ->andWhere('answer.isCorrect = :val')
