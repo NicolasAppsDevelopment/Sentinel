@@ -441,9 +441,29 @@ form {
     background-color: rgb(0, 0, 0, 0.5);
 }
 
-
-
-
+/* PROFILE CSS */
+.profile, .profile th, .profile td {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.profile {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 var(--card-box-shadow-1-y) var(--card-box-shadow-1-blur);
+    border: 3px solid var(--primary-color);
+}
+.profile th {
+    background-color: var(--primary-color);
+    color: var(--card-label-color);
+    font-weight: 600;
+    text-align: left;
+}
+.profile th {
+    padding: 1rem 1rem;
+}
+.profile td {
+    padding: 0.5rem 1rem;
+}
 
 a {
     text-decoration: none;
@@ -575,4 +595,12 @@ div:has(> .remove-file) {
     justify-content: space-between;
     align-items: center;
     height: fit-content;
+}
+
+.row_space_evenly {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    height: fit-content;
+    margin-top: 2rem;
 }
