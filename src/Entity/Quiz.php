@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -108,7 +109,26 @@ class Quiz
 
     public function getQuestions(): Collection
     {
-        return $this->questions;
+        // order questions by position
+        $criteria = Criteria::create()->orderBy(['position' => 'ASC']);
+        return $this->questions->matching($criteria);
+    }
+
+    public function getNextQuestion(Question $question): ?Question
+    {
+        $questions = $this->getQuestions();
+        $nextQuestion = null;
+        $next = false;
+        foreach ($questions as $q) {
+            if ($next) {
+                $nextQuestion = $q;
+                break;
+            }
+            if ($q === $question) {
+                $next = true;
+            }
+        }
+        return $nextQuestion;
     }
 
     public function addQuestion(Question $question): self

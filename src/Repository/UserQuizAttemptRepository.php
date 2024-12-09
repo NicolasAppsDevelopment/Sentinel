@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Quiz;
 use App\Entity\UserQuizAttempt;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -77,17 +78,30 @@ class UserQuizAttemptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getUserLatestAttemptNotFinished(User $user): ?UserQuizAttempt
+    public function getUserLatestAttemptNotFinished(User $user, Quiz $quiz): ?UserQuizAttempt
     {
         return $this->createQueryBuilder('userQuizzAttempt')
             ->andWhere('userQuizzAttempt.user = :user')
             ->setParameter('user', $user)
-            ->andWhere('userQuizzAttempt.finished = :val')
-            ->setParameter('val', false)
+            ->andWhere('userQuizzAttempt.finished = false')
+            ->andWhere('userQuizzAttempt.quiz = :quiz')
+            ->setParameter('quiz', $quiz)
             ->orderBy('userQuizzAttempt.playedDate', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
+    }
+
+    public function getUserLatestAttempt(User $user, Quiz $quiz): ?UserQuizAttempt
+    {
+        return $this->createQueryBuilder('userQuizzAttempt')
+            ->andWhere('userQuizzAttempt.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('userQuizzAttempt.quiz = :quiz')
+            ->setParameter('quiz', $quiz)
+            ->orderBy('userQuizzAttempt.playedDate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\QuestionAnswerUserQuizAttempt;
 use App\Entity\Quiz;
@@ -12,6 +11,7 @@ use App\Form\QuestionAnswerUserQuizAttemptFormType;
 use App\Form\QuizFormType;
 use App\Form\SearchQuizFormType;
 use App\Service\FileManagerService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -90,180 +90,122 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route(path: 'quiz/play/{quizId}/{questionIndex}', name: 'app_quiz_play')]
-    public function play(string $quizId, int $questionIndex, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route(path: 'quiz/play/{quizId}', name: 'app_quiz_play')]
+    public function play(string $quizId, Request $request, UserInterface $user): Response
     {
-        $user = $this->getUser();
-
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
         if (!$quiz) {
             return new Response("Not found", 404);
         }
 
-        $userQuizAttempt = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttemptNotFinished($user);
-
-        #start a quiz
-        if ($questionIndex == 0){
-            if ($userQuizAttempt) {
-                #the user has an attempt on this quiz not finished
-                $questionIndex = count($userQuizAttempt->getQuestionAnswers());
-            } else {
-                #the user has no attempts on this quiz not finished
-                $userQuizAttempt = new UserQuizAttempt();
-                $userQuizAttempt->setQuiz($quiz);
-                $userQuizAttempt->setUser($user);
-                $userQuizAttempt->setScore(0);
-                $userQuizAttempt->setFinished(false);
-                $userQuizAttempt->setPlayedDate(new \DateTime());
-
-                $entityManager->persist($userQuizAttempt);
-                $entityManager->flush();
-            }
+        $question = $quiz->getQuestions()[0];
+        $lastTry = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttemptNotFinished($user, $quiz);
+        if (!$lastTry) {
+            $lastTry = new UserQuizAttempt();
+            $lastTry->setQuiz($quiz);
+            $lastTry->setUser($user);
+            $lastTry->setScore(0);
+            $lastTry->setFinished(false);
+            $lastTry->setPlayedDate(new DateTime());
         } else {
-            # the user continues his attempt
-            if (!$userQuizAttempt) {
-                return new Response("Not found", 404);
-            }
-            $questionIndex = count($userQuizAttempt->getQuestionAnswers());
+            $lastAnsweredQuestion = $lastTry->getQuestionAnswers()->last()->getQuestion();
+            $question = $quiz->getNextQuestion($lastAnsweredQuestion);
         }
 
-        $question = $quiz->getQuestions()[$questionIndex];
-
         $form = $this->createForm(QuestionAnswerUserQuizAttemptFormType::class, null, [
-            'answer1' => $quiz->getQuestions()[$questionIndex]->getAnswer1()->getText(),
-            'answer2' => $quiz->getQuestions()[$questionIndex]->getAnswer2()->getText(),
-            'answer3' => $quiz->getQuestions()[$questionIndex]->getAnswer3()?->getText(),
-            'answer4' => $quiz->getQuestions()[$questionIndex]->getAnswer4()?->getText(),
+            'answer1' => $question->getAnswer1()->getText(),
+            'answer2' => $question->getAnswer2()->getText(),
+            'answer3' => $question->getAnswer3()?->getText(),
+            'answer4' => $question->getAnswer4()?->getText(),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $questionAnswerUserQuizAttempt = new QuestionAnswerUserQuizAttempt();
-            $questionAnswerUserQuizAttempt->setAttempt($userQuizAttempt);
+            $questionAnswerUserQuizAttempt->setAttempt($lastTry);
             $questionAnswerUserQuizAttempt->setQuestion($question);
 
-            $answer1IsSelected = $form->get('answer1')->getData();
-            $answer2IsSelected = $form->get('answer2')->getData();
-            $answer3IsSelected = $form->get('answer3')->getData();
-            $answer4IsSelected = $form->get('answer4')->getData();
+            $answers = [
+                0 => [
+                    'selected' => $form->get('answer1')->getData(),
+                    'answer' => $question->getAnswer1(),
+                ],
+                1 => [
+                    'selected' => $form->get('answer2')->getData(),
+                    'answer' => $question->getAnswer2(),
+                ],
+                2 => [
+                    'selected' => $form->get('answer3')->getData(),
+                    'answer' => $question->getAnswer3(),
+                ],
+                3 => [
+                    'selected' => $form->get('answer4')->getData(),
+                    'answer' => $question->getAnswer4(),
+                ],
+            ];
 
-            if ($answer1IsSelected) {
-                $answer = $question->getAnswer1();
-                $questionAnswerUserQuizAttempt->setAnswer($answer);
-                if ($answer->isCorrect()){
-                    $user->setScore($user->getScore() + 1);
-                } else {
-                    $user->setScore($user->getScore() - 1);
-                }
-            }
-            if ($answer2IsSelected) {
-                $answer = $question->getAnswer2();
-                $questionAnswerUserQuizAttempt->setAnswer($answer);
-                if ($answer->isCorrect()){
-                    $user->setScore($user->getScore() + 1);
-                } else {
-                    $user->setScore($user->getScore() - 1);
-                }
-            }
-            if ($answer3IsSelected) {
-                $answer = $question->getAnswer3();
-                $questionAnswerUserQuizAttempt->setAnswer($answer);
-                if ($answer->isCorrect()){
-                    $user->setScore($user->getScore() + 1);
-                } else {
-                    $user->setScore($user->getScore() - 1);
-                }
-            }
-            if ($answer4IsSelected) {
-                $answer = $question->getAnswer4();
-                $questionAnswerUserQuizAttempt->setAnswer($answer);
-                if ($answer->isCorrect()){
-                    $user->setScore($user->getScore() + 1);
-                } else {
-                    $user->setScore($user->getScore() - 1);
+            foreach ($answers as $answer) {
+                if ($answer['selected']) {
+                    $questionAnswerUserQuizAttempt->setAnswer($answer['answer']);
+                    if ($answer['answer']->isCorrect()){
+                        $user->setScore($user->getScore() + 1);
+                    } else {
+                        $user->setScore($user->getScore() - 1);
+                    }
+                    break; // TODO: handle several responses
                 }
             }
 
-            $entityManager->persist($questionAnswerUserQuizAttempt);
-            $entityManager->persist($user);
-
-            $answerRepository = $this->entityManager->getRepository(Answer::class);
-            $questionAnswerUserQuizAttemptRepository = $this->entityManager->getRepository(QuestionAnswerUserQuizAttempt::class);
-            $NbOfTimeQuestionHasBeenAnswered = $questionAnswerUserQuizAttemptRepository->getNbOfTimesAnswered($question);
-
-            if ($NbOfTimeQuestionHasBeenAnswered != 0) {
-                $answerPercentageOfSelection =  [
-                    'answer1' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer1()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
-                    'answer2' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer2()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
-                ];
-
-                if ($question->getAnswer3()) {
-                    $answerPercentageOfSelection['answer3'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer3()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
-                }
-                if ($question->getAnswer4()) {
-                    $answerPercentageOfSelection['answer4'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer4()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
-                }
-            } else {
-                $answerPercentageOfSelection =  [
-                    'answer1' => 0,
-                    'answer2' => 0,
-                ];
-
-                if ($question->getAnswer3()) {
-                    $answerPercentageOfSelection['answer3'] = 0;
-                }
-                if ($question->getAnswer4()) {
-                    $answerPercentageOfSelection['answer4'] = 0;
-                }
+            if ($quiz->getNextQuestion($question) === null) {
+                $lastTry->setFinished(true);
             }
 
+            $this->entityManager->persist($questionAnswerUserQuizAttempt);
+            $this->entityManager->persist($lastTry);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-            //dd($answerPercentageOfSelection);
-
-
-            if (count($quiz->getQuestions()) > $questionIndex + 1) {
-                $entityManager->flush();
-                //return $this->redirectToRoute('app_quiz_play', ['quizId' => $quizId , 'questionIndex' => $questionIndex + 1], Response::HTTP_SEE_OTHER);
-                return $this->render('question/result.html.twig', [
-                    'selectedAnswer' => [
-                        'answer1' => $answer1IsSelected ? true : false,
-                        'answer2' => $answer2IsSelected ? true : false,
-                        'answer3' => $answer3IsSelected ? true : false,
-                        'answer4' => $answer4IsSelected ? true : false,
-                    ],
-                    'answerPercentageOfSelection' => $answerPercentageOfSelection,
-                    'question' => $question,
-                    'questionIndex' => $questionIndex,
-                    'quizId' => $quizId,
-                    'quizzEnd' => false,
-                ]);
-            } else {
-                $userQuizAttempt->setFinished(true);
-                $entityManager->persist($userQuizAttempt);
-                $entityManager->flush();
-
-                return $this->render('question/result.html.twig', [
-                    'selectedAnswer' => [
-                        'answer1' => $answer1IsSelected ? true : false,
-                        'answer2' => $answer2IsSelected ? true : false,
-                        'answer3' => $answer3IsSelected ? true : false,
-                        'answer4' => $answer4IsSelected ? true : false,
-                    ],
-                    'answerPercentageOfSelection' => $answerPercentageOfSelection,
-                    'question' => $question,
-                    'questionIndex' => $questionIndex,
-                    'quizId' => $quizId,
-                    'quizzEnd' => true,
-                ]);
-            }
-
+            return $this->redirectToRoute('app_quiz_check', ['quizId' => $quizId]);
         }
 
-        // get first question and view it
+        $questionIndex = $quiz->getQuestions()->indexOf($question);
         return $this->render('question/view.html.twig', [
             'question' => $question,
             'questionIndex' => $questionIndex,
+            'quizId' => $quizId,
             'form' => $form,
+        ]);
+    }
+
+    #[Route(path: 'quiz/check/{quizId}', name: 'app_quiz_check')]
+    public function check(string $quizId, Request $request, UserInterface $user): Response
+    {
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
+        if (!$quiz) {
+            return new Response("Not found", 404);
+        }
+
+        $lastTry = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user, $quiz);
+        if (!$lastTry) {
+            return new Response("Not found", 404);
+        }
+
+        $lastAnsweredQuestion = $lastTry->getQuestionAnswers()->last();
+        $question = $lastAnsweredQuestion->getQuestion();
+        $selectedAnswer = $lastAnsweredQuestion->getAnswer();
+        $questionIndex = $quiz->getQuestions()->indexOf($question);
+
+        return $this->render('question/result.html.twig', [
+            'selectedAnswer' => [
+                'answer1' => $question->getAnswer1() == $selectedAnswer ? true : false,
+                'answer2' => $question->getAnswer2() == $selectedAnswer ? true : false,
+                'answer3' => $question->getAnswer3() == $selectedAnswer ? true : false,
+                'answer4' => $question->getAnswer4() == $selectedAnswer ? true : false,
+            ],
+            'question' => $question,
+            'questionIndex' => $questionIndex,
+            'quizId' => $quizId,
+            'quizzEnd' => $lastTry->isFinished(),
         ]);
     }
 
