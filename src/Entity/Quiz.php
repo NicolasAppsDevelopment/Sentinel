@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\QuizRepository;
+use DateTime;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,8 +30,8 @@ class Quiz
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $createdDate = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTime $createdDate = null;
 
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quiz', cascade: ["persist", 'remove'])]
     private Collection $questions;
@@ -102,12 +103,12 @@ class Quiz
         return $this;
     }
 
-    public function getCreatedDate(): ?\DateTimeInterface
+    public function getCreatedDate(): ?DateTime
     {
         return $this->createdDate;
     }
 
-    public function setCreatedDate(\DateTimeInterface $createdDate): static
+    public function setCreatedDate(DateTime $createdDate): static
     {
         $this->createdDate = $createdDate;
 
