@@ -7,6 +7,6 @@
 import './styles/app.css';
 import './fontawesome/css/fontawesome.css';
 import './fontawesome/css/solid.css';
-import './fontawesome/css/brands.css';
+import './fontawesome/css/regular.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
