@@ -38,4 +38,15 @@ class QuestionAnswerUserQuizAttemptRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getPercentageOfTimesSelected(Question $question, ?int $answerId): int
+    {
+        if ($answerId === null) {
+            return 0;
+        }
+
+        $total = $this->getNbOfTimesAnswered($question);
+        $selected = $this->getNbOfTimesSelected($answerId);
+        return $total === 0 ? 0 : round(($selected / $total) * 100, 0, PHP_ROUND_HALF_UP);
+    }
 }

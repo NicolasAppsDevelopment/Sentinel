@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\QuestionAnswerUserQuizAttempt;
 use App\Entity\Quiz;
@@ -15,8 +14,6 @@ use App\Service\FileManagerService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +27,6 @@ class QuizController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ParameterBagInterface $parameterBag,
         private readonly FileManagerService $fileManagerService
     ) {}
 
@@ -195,44 +191,30 @@ class QuizController extends AbstractController
         $selectedAnswers = $lastAnsweredQuestion->getAnswers();
         $questionIndex = $quiz->getQuestions()->indexOf($question);
 
-        $answerRepository = $this->entityManager->getRepository(Answer::class);
+        $answer1 = $question->getAnswer1();
+        $answer2 = $question->getAnswer2();
+        $answer3 = $question->getAnswer3();
+        $answer4 = $question->getAnswer4();
         $questionAnswerUserQuizAttemptRepository = $this->entityManager->getRepository(QuestionAnswerUserQuizAttempt::class);
-        $NbOfTimeQuestionHasBeenAnswered = $questionAnswerUserQuizAttemptRepository->getNbOfTimesAnswered($question);
-
-        if ($NbOfTimeQuestionHasBeenAnswered != 0) {
-            $answerPercentageOfSelection =  [
-                'answer1' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer1()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
-                'answer2' => round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer2()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP ),
-            ];
-
-            if ($question->getAnswer3()) {
-                $answerPercentageOfSelection['answer3'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer3()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
-            }
-            if ($question->getAnswer4()) {
-                $answerPercentageOfSelection['answer4'] = round(($questionAnswerUserQuizAttemptRepository->getNbOfTimesSelected($question->getAnswer4()->getId()) / $NbOfTimeQuestionHasBeenAnswered) * 100, 0, PHP_ROUND_HALF_UP );
-            }
-        } else {
-            $answerPercentageOfSelection =  [
-                'answer1' => 0,
-                'answer2' => 0,
-            ];
-
-            if ($question->getAnswer3()) {
-                $answerPercentageOfSelection['answer3'] = 0;
-            }
-            if ($question->getAnswer4()) {
-                $answerPercentageOfSelection['answer4'] = 0;
-            }
-        }
-
         return $this->render('question/result.html.twig', [
-            'selectedAnswer' => [
-                'answer1' => $selectedAnswers->contains($question->getAnswer1()) ? true : false,
-                'answer2' => $selectedAnswers->contains($question->getAnswer2()) ? true : false,
-                'answer3' => $selectedAnswers->contains($question->getAnswer3()) ? true : false,
-                'answer4' => $selectedAnswers->contains($question->getAnswer4()) ? true : false,
+            'answers' => [
+                0 => [
+                    "isSelected" => $selectedAnswers->contains($answer1) ? true : false,
+                    "answerRatio" => $questionAnswerUserQuizAttemptRepository->getPercentageOfTimesSelected($question, $answer1->getId()),
+                ],
+                1 => [
+                    "isSelected" => $selectedAnswers->contains($answer2) ? true : false,
+                    "answerRatio" => $questionAnswerUserQuizAttemptRepository->getPercentageOfTimesSelected($question, $answer2->getId()),
+                ],
+                2 => [
+                    "isSelected" => $selectedAnswers->contains($answer3) ? true : false,
+                    "answerRatio" => $questionAnswerUserQuizAttemptRepository->getPercentageOfTimesSelected($question, $answer3?->getId()),
+                ],
+                3 => [
+                    "isSelected" => $selectedAnswers->contains($answer4) ? true : false,
+                    "answerRatio" => $questionAnswerUserQuizAttemptRepository->getPercentageOfTimesSelected($question, $answer4?->getId()),
+                ],
             ],
-            'answerPercentageOfSelection' => $answerPercentageOfSelection,
             'question' => $question,
             'questionIndex' => $questionIndex,
             'quizId' => $quizId,
@@ -241,10 +223,9 @@ class QuizController extends AbstractController
     }
 
     #[Route(path: 'quiz/add', name: 'app_quiz_add')]
-    public function add(Request $request, UserInterface $user, SluggerInterface $slugger): Response
+    public function add(Request $request, UserInterface $user): Response
     {
-        $userInDB = $this->getUser();
-        if (!$userInDB) {
+        if (!$user) {
             return new Response("Not authorized", 401);
         }
 
@@ -253,7 +234,7 @@ class QuizController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveQuizForm($form, $userInDB, $slugger);
+            return $this->saveQuizForm($form, $user);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -282,7 +263,7 @@ class QuizController extends AbstractController
     }
 
     #[Route(path: 'quiz/edit/{id}', name: 'app_quiz_edit')]
-    public function edit(string $id, UserInterface $user, Request $request, SluggerInterface $slugger): Response
+    public function edit(string $id, UserInterface $user, Request $request): Response
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
@@ -298,7 +279,7 @@ class QuizController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveQuizForm($form, $userInDB, $slugger);
+            return $this->saveQuizForm($form, $userInDB);
         }
 
         // just display add page, save logic in /quiz/save !
@@ -311,15 +292,14 @@ class QuizController extends AbstractController
     /**
      * @param FormInterface $form
      * @param UserInterface $userInDB
-     * @param SluggerInterface $slugger
      * @return RedirectResponse
      */
     // TODO: check if questions have at least 1 correct answer
-    public function saveQuizForm(FormInterface $form, UserInterface $userInDB, SluggerInterface $slugger): RedirectResponse
+    public function saveQuizForm(FormInterface $form, UserInterface $userInDB): RedirectResponse
     {
         $quiz = $form->getData();
         $quiz->setAuthor($userInDB);
-        $quiz->setCreatedDate(new \DateTime());
+        $quiz->setCreatedDate(new DateTime());
 
         // Handle quiz illustration file upload
         $quiz->setIllustrationFilename(
@@ -346,6 +326,7 @@ class QuizController extends AbstractController
         }
 
         foreach ($quiz->getQuestions() as $question) {
+            // remove question 3 and 4 if they are empty
             if ($question->getAnswer3() !== null && $question->getAnswer3()?->getText() === null) {
                 $this->entityManager->remove($question->getAnswer3());
                 $question->setAnswer3(null);
@@ -392,6 +373,6 @@ class QuizController extends AbstractController
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Quiz updated successfully!');
-        return $this->redirectToRoute('app_quiz_view', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_quiz_view_me', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
     }
 }
