@@ -55,11 +55,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserQuizAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
     private Collection $quizAttempts;
 
+    /**
+     * @var Collection<int, Quiz>
+     */
+    #[ORM\ManyToMany(targetEntity: Quiz::class, inversedBy: 'favoriteOfUsers')]
+    private Collection $favoriteQuizzes;
+
 
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
         $this->quizAttempts = new ArrayCollection();
+        $this->favoriteQuizzes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,5 +242,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getFavoriteQuizzes(): Collection
+    {
+        return $this->favoriteQuizzes;
+    }
+
+    public function addFavoriteQuiz(Quiz $favoriteQuiz): static
+    {
+        if (!$this->favoriteQuizzes->contains($favoriteQuiz)) {
+            $this->favoriteQuizzes->add($favoriteQuiz);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteQuiz(Quiz $favoriteQuiz): static
+    {
+        $this->favoriteQuizzes->removeElement($favoriteQuiz);
+
+        return $this;
+    }
+
+    public function isQuizInFavorite(Quiz $quiz): bool
+    {
+        return $this->favoriteQuizzes->contains($quiz);
     }
 }

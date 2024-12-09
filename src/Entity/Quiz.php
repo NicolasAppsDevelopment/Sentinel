@@ -38,10 +38,17 @@ class Quiz
     #[ORM\OneToMany(targetEntity: UserQuizAttempt::class, mappedBy: 'quiz', cascade: ["persist", 'remove'])]
     private Collection $usersAttempts;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favoriteQuizzes')]
+    private Collection $favoriteOfUsers;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
         $this->usersAttempts = new ArrayCollection();
+        $this->favoriteOfUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +182,33 @@ class Quiz
             if ($userAttempt->getQuiz() === $this) {
                 $userAttempt->setQuiz(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getFavoriteOfUsers(): Collection
+    {
+        return $this->favoriteOfUsers;
+    }
+
+    public function addFavoriteOfUser(User $favoriteOfUser): static
+    {
+        if (!$this->favoriteOfUsers->contains($favoriteOfUser)) {
+            $this->favoriteOfUsers->add($favoriteOfUser);
+            $favoriteOfUser->addFavoriteQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteOfUser(User $favoriteOfUser): static
+    {
+        if ($this->favoriteOfUsers->removeElement($favoriteOfUser)) {
+            $favoriteOfUser->removeFavoriteQuiz($this);
         }
 
         return $this;

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ component('navbar', {index: 0}) }}
+    {{ component('navbar', {index: 4}) }}
     {{ component('alert') }}
 
     <div class="top-container">
-        <h1>List of quizzes</h1>
+        <h1>List of my favorite quizzes</h1>
 
         {{ form_start(searchForm) }}
             {{ form_row(searchForm.query) }}
@@ -27,17 +27,8 @@
             <hr>
         {% endif %}
 
-
-        <h2>🔥 Trending quizzes</h2>
         <div class="quiz-grid-container">
-            {% for quiz in trendQuiz %}
-                {{ component('quizcard', {quiz: quiz}) }}
-            {% endfor %}
-        </div>
-
-        <h2>✨ Last new quizzes</h2>
-        <div class="quiz-grid-container">
-            {% for quiz in lastQuiz %}
+            {% for quiz in favoriteQuizzes %}
                 {{ component('quizcard', {quiz: quiz}) }}
             {% endfor %}
         </div>

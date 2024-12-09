@@ -655,3 +655,9 @@ div:has(> .remove-file) {
 .row_space_evenly > a, .row_space_evenly > button, .row_space_evenly > form {
     margin: 1rem;
 }
+
+hr {
+    margin: 1rem;
+    border: none;
+    border-top: 2px solid var(--card-border-color);
+}

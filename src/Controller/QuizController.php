@@ -63,7 +63,7 @@ class QuizController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitle($data['query']);
+            $searchedQuiz = $this->entityManager->getRepository(Quiz::class)->findByTitleInMyQuizzes($data['query'], $this->getUser());
         }
 
         return $this->render('quiz/me.html.twig', [
@@ -86,6 +86,7 @@ class QuizController extends AbstractController
 
         return $this->render('quiz/view.html.twig', [
             'quiz' => $quiz,
+            'isFavorite' => $this->getUser()?->isQuizInFavorite($quiz) ?? false,
             'nbOfTimesQuizHasBeenPlayed' => $nbOfTimesQuizHasBeenPlayed,
 
         ]);
@@ -181,7 +182,7 @@ class QuizController extends AbstractController
     }
 
     #[Route(path: 'quiz/check/{quizId}', name: 'app_quiz_check')]
-    public function check(string $quizId, Request $request, UserInterface $user): Response
+    public function check(string $quizId, UserInterface $user): Response
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
         if (!$quiz) {

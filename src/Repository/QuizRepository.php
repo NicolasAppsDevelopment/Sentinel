@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Quiz;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,6 +25,29 @@ class QuizRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findByTitleInMyQuizzes(string $title, User $author): array
+    {
+        return $this->createQueryBuilder('quiz')
+            ->andWhere('LOWER(TRIM(quiz.title)) LIKE :title')
+            ->setParameter('title', '%' . strtolower(trim($title)) . '%')
+            ->andWhere('quiz.author = :author')
+            ->setParameter('author', $author)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTitleInMyFavorites(string $title, User $user)
+    {
+        return $this->createQueryBuilder('quiz')
+            ->andWhere('LOWER(TRIM(quiz.title)) LIKE :title')
+            ->setParameter('title', '%' . strtolower(trim($title)) . '%')
+            ->andWhere(':author IN (:users)')
+            ->setParameter('author', $user)
+            ->setParameter('users', $user->getFavoriteQuizzes())
+            ->getQuery()
+            ->getResult();
     }
 
     public function getTrendQuizzes(): array
