@@ -1,23 +1,32 @@
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
+<div class="alert-container">
+    {% for message in app.flashes('success') %}
+        <div class="alert success" onclick="this.style.display='none';">
+            <i class="fa-solid fa-check"></i> <strong>Success!</strong> {{ message }}
+        </div>
+    {% endfor %}
 
-{% for message in app.flashes('error') %}
-    <div class="alert alert-error">
-        {{ message }}
-    </div>
-{% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert error" onclick="this.style.display='none';">
+            <i class="fa-solid fa-xmark"></i> <strong>Error!</strong> {{ message }}
+        </div>
+    {% endfor %}
 
-{% for message in app.flashes('warning') %}
-    <div class="alert alert-warning">
-        {{ message }}
-    </div>
-{% endfor %}
+    {% for message in app.flashes('warning') %}
+        <div class="alert warning" onclick="this.style.display='none';">
+            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Warning!</strong> {{ message }}
+        </div>
+    {% endfor %}
 
-{% for message in app.flashes('info') %}
-    <div class="alert alert-info">
-        {{ message }}
-    </div>
-{% endfor %}
+    {% for message in app.flashes('info') %}
+        <div class="alert info" onclick="this.style.display='none';">
+            <i class="fa-solid fa-circle-info"></i> {{ message }}
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    let alerts = document.getElementsByClassName("alert");
+    for (let i = 0; i < alerts.length; i++) {
+        setTimeout(function(){ alerts[i].style.display = "none"; }, 5000);
+    }
+</script>

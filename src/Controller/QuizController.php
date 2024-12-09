@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 // TODO: add #[Route(path: '/quiz')] without breaking the redirections
 class QuizController extends AbstractController
@@ -79,7 +78,8 @@ class QuizController extends AbstractController
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'Quiz not found!');
+            return $this->redirectToRoute('app_quiz_view_all');
         }
 
         $nbOfTimesQuizHasBeenPlayed = $this->entityManager->getRepository(Quiz::class)->getNbOfTimesPlayed($quiz->getId());
@@ -96,7 +96,8 @@ class QuizController extends AbstractController
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
         if (!$quiz) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'Quiz not found!');
+            return $this->redirectToRoute('app_quiz_view_all');
         }
 
         $question = $quiz->getQuestions()[0];
@@ -182,12 +183,14 @@ class QuizController extends AbstractController
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $quizId]);
         if (!$quiz) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'This quiz not longer exists!');
+            return $this->redirectToRoute('app_quiz_view_all');
         }
 
         $lastTry = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($user, $quiz);
         if (!$lastTry) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'Your last attempt not longer exists!');
+            return $this->redirectToRoute('app_quiz_view_all');
         }
 
         $lastAnsweredQuestion = $lastTry->getQuestionAnswers()->last();
@@ -230,7 +233,8 @@ class QuizController extends AbstractController
     public function add(Request $request, UserInterface $user): Response
     {
         if (!$user) {
-            return new Response("Not authorized", 401);
+            $this->addFlash('error', 'You are not authorized to add quiz! Sign in first!');
+            return $this->redirectToRoute('app_quiz_view_me');
         }
 
         $quiz = new Quiz();
@@ -252,18 +256,21 @@ class QuizController extends AbstractController
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'Quiz not found!');
+            return $this->redirectToRoute('app_quiz_view_me');
         }
 
         $userInDB = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
         if (!$userInDB || $quiz->getAuthor()->getId() !== $userInDB->getId()) {
-            return new Response("Not authorized", 401);
+            $this->addFlash('error', 'You are not authorized to remove this quiz!');
+            return $this->redirectToRoute('app_quiz_view_me');
         }
 
         $this->entityManager->remove($quiz);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_quiz_view_all');
+        $this->addFlash('success', 'Quiz removed successfully!');
+        return $this->redirectToRoute('app_quiz_view_me');
     }
 
     #[Route(path: 'quiz/edit/{id}', name: 'app_quiz_edit')]
@@ -271,12 +278,14 @@ class QuizController extends AbstractController
     {
         $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
         if (!$quiz) {
-            return new Response("Not found", 404);
+            $this->addFlash('error', 'Quiz not found!');
+            return $this->redirectToRoute('app_quiz_view_me');
         }
 
         $userInDB = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
         if (!$userInDB || $quiz->getAuthor()->getId() !== $userInDB->getId()) {
-            return new Response("Not authorized", 401);
+            $this->addFlash('error', 'You are not authorized to edit this quiz!');
+            return $this->redirectToRoute('app_quiz_view_me');
         }
 
         $form = $this->createForm(QuizFormType::class, $quiz);
@@ -298,7 +307,6 @@ class QuizController extends AbstractController
      * @param UserInterface $userInDB
      * @return RedirectResponse
      */
-    // TODO: check if questions have at least 1 correct answer
     public function saveQuizForm(FormInterface $form, UserInterface $userInDB): RedirectResponse
     {
         $quiz = $form->getData();
@@ -376,7 +384,7 @@ class QuizController extends AbstractController
         $this->entityManager->persist($quiz);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Quiz updated successfully!');
+        $this->addFlash('success', 'Quiz saved successfully!');
         return $this->redirectToRoute('app_quiz_view_me', ['id' => $quiz->getId()], Response::HTTP_SEE_OTHER);
     }
 }

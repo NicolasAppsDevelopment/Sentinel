@@ -51,6 +51,11 @@ class QuizFormType extends AbstractType
                 'allow_delete' => true,
                 'entry_options' => ['label' => false],
                 'label' => false,
+                'constraints' => [
+                    new Count([
+                        'min' => 1,
+                    ]),
+                ],
             ]);
     }
 

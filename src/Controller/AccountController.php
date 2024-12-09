@@ -9,13 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Repository\UserQuizAttemptRepository;
 use App\Form\UserType;
 
 #[Route(path: '/account')]
 class AccountController extends AbstractController
 {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager
+    ) {}
+
     #[Route(path: '/view/{id}', name: 'app_account_view', methods: ['GET'])]
     public function view(User $user, UserQuizAttemptRepository $userQuizAttemptRepository): Response
     {
@@ -37,10 +40,17 @@ class AccountController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/remove/{id}', name: 'app_account_remove', methods: ['POST'])]
-    public function remove(User $user, UserRepository $userRepository): Response
+    #[Route(path: '/remove', name: 'app_account_remove', methods: ['POST'])]
+    public function remove(): Response
     {
-        $userRepository->remove($user, true);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $this->entityManager->remove($this->getUser());
+        $this->entityManager->flush();
+
+        // TODO: remove user in cache
 
         return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
     }

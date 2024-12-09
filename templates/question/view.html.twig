@@ -2,6 +2,8 @@
 
 {% block body %}
     {{ component('navbar', {index: 0}) }}
+    {{ component('alert') }}
+
     <div class="screen-center">
         <div class="big-image-container">
             {% if question.ressourceFilename %}
