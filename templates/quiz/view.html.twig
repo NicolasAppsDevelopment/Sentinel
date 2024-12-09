@@ -30,7 +30,7 @@
             <p>{{ quiz.description }}</p>
 
             <div class="row g1">
-                <a href="{{ path('app_quiz_play', {'quizId': quiz.id, 'questionIndex': 0}) }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Play</a>
+                <a href="{{ path('app_quiz_play', {'quizId': quiz.id }) }}" class="rounded-btn"><i class="fa-solid fa-play"></i> Play</a>
                 {% if app.user.id == quiz.author.id %}
                     <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="rounded-btn"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
                     <a href="{{ path('app_quiz_remove', {'id': quiz.id}) }}" class="rounded-btn destructive"><i class="fa-solid fa-trash"></i> Remove</a>

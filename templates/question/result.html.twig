@@ -63,7 +63,7 @@
                 {% endif %}
             </div>
             {% if quizzEnd == false %}
-                <a href="{{ path('app_quiz_play', {'quizId': quizId, 'questionIndex': questionIndex }) }}" class="rounded-btn large">Next <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="{{ path('app_quiz_play', {'quizId': quizId }) }}" class="rounded-btn large">Next <i class="fa-solid fa-arrow-right"></i></a>
             {% else %}
                 <a href="{{ path('app_quiz_result', {'id': quizId}) }}" class="rounded-btn large">Finish <i class="fa-solid fa-flag"></i></a>
             {% endif %}
