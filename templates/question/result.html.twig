@@ -23,39 +23,39 @@
         <div class="p1 g1 column">
             <h1 class="no-margin">{{ question.getStatement() }}</h1>
             <div class="answer-btn-container">
-                <div class="row_space_btw answer-btn-no-interact {{ question.answer1.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer1 ? "selected" : "not-selected" }}">
+                <div class="row_space_btw answer-btn-no-interact {{ question.answer1.isCorrect ? "correct" : "incorrect" }} {{ answers[0].isSelected ? "selected" : "not-selected" }}">
                     <p class="no-margin">
                         {{ question.answer1.text }}
                     </p>
                     <p class="no-margin">
-                        {{ answerPercentageOfSelection.answer1 }} %
+                        {{ answers[0].answerRatio }} %
                     </p>
                 </div>
-                <div class="row_space_btw answer-btn-no-interact {{ question.answer2.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer2 ? "selected" : "not-selected" }}">
+                <div class="row_space_btw answer-btn-no-interact {{ question.answer2.isCorrect ? "correct" : "incorrect" }} {{ answers[1].isSelected ? "selected" : "not-selected" }}">
                     <p class="no-margin">
                         {{ question.answer2.text }}
                     </p>
                     <p class="no-margin">
-                        {{ answerPercentageOfSelection.answer2 }} %
+                        {{ answers[1].answerRatio }} %
                     </p>
                 </div>
                 {% if question.answer3 %}
-                    <div class="row_space_btw answer-btn-no-interact {{ question.answer3.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer3 ? "selected" : "not-selected" }}">
+                    <div class="row_space_btw answer-btn-no-interact {{ question.answer3.isCorrect ? "correct" : "incorrect" }} {{ answers[2].isSelected ? "selected" : "not-selected" }}">
                         <p class="no-margin">
                             {{ question.answer3.text }}
                         </p>
                         <p class="no-margin">
-                            {{ answerPercentageOfSelection.answer3 }} %
+                            {{ answers[2].answerRatio }} %
                         </p>
                     </div>
                 {% endif %}
                 {% if question.answer4 %}
-                    <div class="row_space_btw answer-btn-no-interact {{ question.answer4.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer4 ? "selected" : "not-selected" }}">
+                    <div class="row_space_btw answer-btn-no-interact {{ question.answer4.isCorrect ? "correct" : "incorrect" }} {{ answers[3].isSelected ? "selected" : "not-selected" }}">
                         <p class="no-margin">
                             {{ question.answer4.text }}
                         </p>
                         <p class="no-margin">
-                            {{ answerPercentageOfSelection.answer4 }} %
+                            {{ answers[3].answerRatio }} %
                         </p>
                     </div>
                 {% endif %}
