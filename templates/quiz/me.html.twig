@@ -28,6 +28,7 @@
             <hr>
         {% endif %}
 
+        <h2>✨ Your Quizzes</h2>
         <div class="quiz-grid-container">
             {% for quiz in myQuizzes %}
                 {{ component('quizcard', {quiz: quiz}) }}
