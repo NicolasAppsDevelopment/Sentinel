@@ -151,8 +151,10 @@ class QuizController extends AbstractController
                     $questionAnswerUserQuizAttempt->addAnswer($answer['answer']);
                     if ($answer['answer']->isCorrect()){
                         $user->setScore($user->getScore() + 1);
+                        $lastTry->setScore($lastTry->getScore() + 1);
                     } else {
                         $user->setScore($user->getScore() - 1);
+                        $lastTry->setScore($lastTry->getScore() - 1);
                     }
                 }
             }
@@ -226,6 +228,24 @@ class QuizController extends AbstractController
             'questionIndex' => $questionIndex,
             'quizId' => $quizId,
             'quizzEnd' => $lastTry->isFinished(),
+        ]);
+    }
+
+    #[Route(path: 'quiz/result/{id}', name: 'app_quiz_result')]
+    public function viewResult(string $id): Response
+    {
+        $quiz = $this->entityManager->getRepository(Quiz::class)->findOneBy(['id' => $id]);
+        if (!$quiz) {
+            $this->addFlash('error', 'Quiz not found!');
+            return $this->redirectToRoute('app_quiz_view_all');
+        }
+
+        $score = $this->entityManager->getRepository(UserQuizAttempt::class)->getUserLatestAttempt($this->getUser(), $quiz)->getScore();
+
+        return $this->render('quiz/result.html.twig', [
+            'quiz' => $quiz,
+            'score' => $score,
+
         ]);
     }
 

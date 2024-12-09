@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ component('navbar', {index: 0}) }}
+    {{ component('alert') }}
+
+
+    <div class="screen-center ">
+        <div class="big-image-container">
+            {% if quiz.illustrationFilename %}
+                <img src="{{ asset('uploads/' ~ quiz.illustrationFilename) }}">
+            {% endif %}
+        </div>
+
+        <!-- TODO: Add total playes times -->
+        <div class="p1 g1 column">
+            <h1>{{ quiz.title }}</h1>
+            <h2>Score : {{ score }}</h2>
+        </div>
+    </div>
+
+{% endblock %}
