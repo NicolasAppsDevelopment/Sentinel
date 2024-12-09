@@ -27,7 +27,7 @@ class AccountController extends AbstractController
         $NbAnswerSubmited = $userQuizAttemptRepository->getUserNbAnswerSubmited($user);
 
         if (count($NbQuestionsAnswered) != 0) {
-            $percentageOfCorrectAnswers = (count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($NbAnswerSubmited);
+            $percentageOfCorrectAnswers = round((count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($NbAnswerSubmited), 0, PHP_ROUND_HALF_UP);
             $percentageOfCorrectAnswers = $percentageOfCorrectAnswers . "%";
         }
 
