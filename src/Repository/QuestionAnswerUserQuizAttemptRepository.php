@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Answer;
+use App\Entity\Question;
 use App\Entity\QuestionAnswerUserQuizAttempt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,28 +18,23 @@ class QuestionAnswerUserQuizAttemptRepository extends ServiceEntityRepository
         parent::__construct($registry, QuestionAnswerUserQuizAttempt::class);
     }
 
-    //    /**
-    //     * @return QuestionAnswerUserQuizzAttempt[] Returns an array of QuestionAnswerUserQuizzAttempt objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('q.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getNbOfTimesAnswered(Question $seekQuestion): int
+    {
+        return (int) $this->createQueryBuilder('questionAnswerUserQuizAttempt')
+            ->select('COUNT(questionAnswerUserQuizAttempt.id) AS count')
+            ->andWhere('questionAnswerUserQuizAttempt.question = :seekQuestion')
+            ->setParameter('seekQuestion', $seekQuestion)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-    //    public function findOneBySomeField($value): ?QuestionAnswerUserQuizzAttempt
-    //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getNbOfTimesSelected(Answer $seekAnswer): int
+    {
+        return (int) $this->createQueryBuilder('questionAnswerUserQuizAttempt')
+            ->select('COUNT(questionAnswerUserQuizAttempt.id) AS count')
+            ->andWhere('questionAnswerUserQuizAttempt.answer = :seekAnswer')
+            ->setParameter('seekAnswer', $seekAnswer)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

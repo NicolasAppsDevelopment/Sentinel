@@ -23,21 +23,41 @@
         <div class="p1 g1 column">
             <h1 class="no-margin">{{ question.getStatement() }}</h1>
             <div class="answer-btn-container">
-                <div><p class="answer-btn-no-interact {{ question.answer1.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer1 ? "selected" : "not-selected" }}">
-                    {{ question.answer1.text }}
-                </p></div>
-                <div><p class="answer-btn-no-interact {{ question.answer2.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer2 ? "selected" : "not-selected" }}">
-                    {{ question.answer2.text }}
-                </p></div>
+                <div class="row_space_btw answer-btn-no-interact {{ question.answer1.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer1 ? "selected" : "not-selected" }}">
+                    <p class="no-margin">
+                        {{ question.answer1.text }}
+                    </p>
+                    <p class="no-margin">
+                        {{ answerPercentageOfSelection.answer1 }} %
+                    </p>
+                </div>
+                <div class="row_space_btw answer-btn-no-interact {{ question.answer2.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer2 ? "selected" : "not-selected" }}">
+                    <p class="no-margin">
+                        {{ question.answer2.text }}
+                    </p>
+                    <p class="no-margin">
+                        {{ answerPercentageOfSelection.answer2 }} %
+                    </p>
+                </div>
                 {% if question.answer3 %}
-                    <div><p class="answer-btn-no-interact {{ question.answer3.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer3 ? "selected" : "not-selected" }}">
-                        {{ question.answer3.text }}
-                    </p></div>
+                    <div class="row_space_btw answer-btn-no-interact {{ question.answer3.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer3 ? "selected" : "not-selected" }}">
+                        <p class="no-margin">
+                            {{ question.answer3.text }}
+                        </p>
+                        <p class="no-margin">
+                            {{ answerPercentageOfSelection.answer3 }} %
+                        </p>
+                    </div>
                 {% endif %}
                 {% if question.answer4 %}
-                    <div><p class="answer-btn-no-interact {{ question.answer4.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer4 ? "selected" : "not-selected" }}">
-                        {{ question.answer4.text }}
-                    </p></div>
+                    <div class="row_space_btw answer-btn-no-interact {{ question.answer4.isCorrect ? "correct" : "incorrect" }} {{ selectedAnswer.answer4 ? "selected" : "not-selected" }}">
+                        <p class="no-margin">
+                            {{ question.answer4.text }}
+                        </p>
+                        <p class="no-margin">
+                            {{ answerPercentageOfSelection.answer4 }} %
+                        </p>
+                    </div>
                 {% endif %}
             </div>
             {% if quizzEnd == false %}

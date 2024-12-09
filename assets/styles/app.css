@@ -527,3 +527,10 @@ div:has(> .remove-file) {
     display: flex;
     flex-direction: column;
 }
+
+.row_space_btw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: fit-content;
+}
