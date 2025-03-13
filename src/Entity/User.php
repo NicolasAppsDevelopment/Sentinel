@@ -40,33 +40,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column]
-    private ?int $score = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $creationDate = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
 
-    #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'author', cascade: ["persist", 'remove'])]
-    private Collection $quizzes;
-
-    #[ORM\OneToMany(targetEntity: UserQuizAttempt::class, mappedBy: 'user', cascade: ["persist", 'remove'], orphanRemoval: true)]
-    private Collection $quizAttempts;
-
     /**
-     * @var Collection<int, Quiz>
+     * @var Collection<int, Couple>
      */
-    #[ORM\ManyToMany(targetEntity: Quiz::class, inversedBy: 'usersLiked')]
-    private Collection $likedQuizzes;
-
+    #[ORM\OneToMany(targetEntity: Couple::class, mappedBy: 'user_id')]
+    private Collection $couples;
 
     public function __construct()
     {
-        $this->quizzes = new ArrayCollection();
-        $this->quizAttempts = new ArrayCollection();
-        $this->likedQuizzes = new ArrayCollection();
+        $this->couples = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,30 +142,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getScore(): ?int
-    {
-        return $this->score;
-    }
-
-    public function setScore(int $score): static
-    {
-        $this->score = $score;
-
-        return $this;
-    }
-
-    public function getCreationDate(): ?\DateTimeInterface
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate(\DateTimeInterface $creationDate): static
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
     public function isVerified(): bool
     {
         return $this->isVerified;
@@ -192,84 +154,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getQuizzes (): Collection
-    {
-        return $this->quizzes;
-    }
-
-    public function addQuiz(Quiz $quiz): self
-    {
-        if (!$this->quizzes->contains($quiz)) {
-            $this->quizzes->add($quiz);
-            $quiz->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuiz(Quiz $quiz): self
-    {
-        if ($this->quizzes->removeElement($quiz)) {
-            if ($quiz->getAuthor() === $this) {
-                $quiz->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getQuizAttempts(): Collection
-    {
-        return $this->quizAttempts;
-    }
-
-    public function addQuizAttempt(UserQuizAttempt $quizAttempt): self
-    {
-        if (!$this->quizAttempts->contains($quizAttempt)) {
-            $this->quizAttempts->add($quizAttempt);
-            $quizAttempt->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuizAttempt(UserQuizAttempt $quizAttempt): self
-    {
-        if ($this->quizAttempts->removeElement($quizAttempt)) {
-            if ($quizAttempt->getUser() === $this) {
-                $quizAttempt->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Quiz>
+     * @return Collection<int, Couple>
      */
-    public function getLikedQuizzes(): Collection
+    public function getCouples(): Collection
     {
-        return $this->likedQuizzes;
+        return $this->couples;
     }
 
-    public function addLikedQuiz(Quiz $quiz): static
+    public function addCouple(Couple $couple): static
     {
-        if (!$this->likedQuizzes->contains($quiz)) {
-            $this->likedQuizzes->add($quiz);
+        if (!$this->couples->contains($couple)) {
+            $this->couples->add($couple);
+            $couple->setUserId($this);
         }
 
         return $this;
     }
 
-    public function removeLikedQuiz(Quiz $quiz): static
+    public function removeCouple(Couple $couple): static
     {
-        $this->likedQuizzes->removeElement($quiz);
+        if ($this->couples->removeElement($couple)) {
+            // set the owning side to null (unless already changed)
+            if ($couple->getUserId() === $this) {
+                $couple->setUserId(null);
+            }
+        }
 
         return $this;
     }
 
-    public function isQuizLiked(Quiz $quiz): bool
-    {
-        return $this->likedQuizzes->contains($quiz);
-    }
 }
