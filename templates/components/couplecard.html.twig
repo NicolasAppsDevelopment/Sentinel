@@ -1,0 +1,19 @@
+<a class="quiz-card" href="{{ path('app_get_couple', {'id': couple.id}) }}">
+    <div>
+        <div class="quiz-card-image">
+            <div class="image-cover"></div>
+        </div>
+        <div class="quiz-card-info">
+            <h3 class="title">{{ couple.title }}</h3>
+            <p class="description">RAS</p>
+            <div class="row g0-5">
+                <p class="author tag small">
+                    <i class="fa-solid fa-user"></i> {{ couple.action_device_id.mac_address|default('N/A') }}
+                </p>
+                {# <p class="date tag small">
+                    <i class="fa-regular fa-calendar"></i> {{ couple.association_date }}
+                </p> #}
+            </div>
+        </div>
+    </div>
+</a>

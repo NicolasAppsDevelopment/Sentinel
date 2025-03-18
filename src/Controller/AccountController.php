@@ -19,26 +19,26 @@ class AccountController extends AbstractController
         private readonly EntityManagerInterface $entityManager
     ) {}
 
-    #[Route(path: '/view/{id}', name: 'app_account_view', methods: ['GET'])]
-    public function view(User $user, UserQuizAttemptRepository $userQuizAttemptRepository): Response
-    {
-        $nbQuestionsAnswered = $userQuizAttemptRepository->getUserNbQuestionsAnswered($user);
-        $percentageOfCorrectAnswers = "No questions answered";
+    // #[Route(path: '/view/{id}', name: 'app_account_view', methods: ['GET'])]
+    // public function view(User $user): Response
+    // {
+    //     //$nbQuestionsAnswered = $userQuizAttemptRepository->getUserNbQuestionsAnswered($user);
+    //     $percentageOfCorrectAnswers = "No questions answered";
 
-        $nbAnswerSubmitted = $userQuizAttemptRepository->getUserNbAnswerSubmited($user);
+    //     //$nbAnswerSubmitted = $userQuizAttemptRepository->getUserNbAnswerSubmited($user);
 
-        if (count($nbQuestionsAnswered) != 0) {
-            $percentageOfCorrectAnswers = round((count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($nbAnswerSubmitted), 0, PHP_ROUND_HALF_UP);
-            $percentageOfCorrectAnswers = $percentageOfCorrectAnswers . "%";
-        }
+    //     // if (count($nbQuestionsAnswered) != 0) {
+    //     //     $percentageOfCorrectAnswers = round((count($userQuizAttemptRepository->getUserNbQuestionsAnsweredCorrectly($user)) * 100) / count($nbAnswerSubmitted), 0, PHP_ROUND_HALF_UP);
+    //     //     $percentageOfCorrectAnswers = $percentageOfCorrectAnswers . "%";
+    //     // }
 
-        return $this->render('account/view.html.twig', [
-            'user' => $user,
-            'NbQuizzesPlayed' => count($userQuizAttemptRepository->getUserNbQuizzesPlayed($user)),
-            'NbQuestionsAnswered' => count($nbQuestionsAnswered),
-            'PercentageOfCorrectAnswers' => $percentageOfCorrectAnswers,
-        ]);
-    }
+    //     // return $this->render('account/view.html.twig', [
+    //     //     'user' => $user,
+    //     //     'NbQuizzesPlayed' => count($userQuizAttemptRepository->getUserNbQuizzesPlayed($user)),
+    //     //     'NbQuestionsAnswered' => count($nbQuestionsAnswered),
+    //     //     'PercentageOfCorrectAnswers' => $percentageOfCorrectAnswers,
+    //     // ]);
+    // }
 
     #[Route(path: '/remove', name: 'app_account_remove', methods: ['POST'])]
     public function remove(): Response

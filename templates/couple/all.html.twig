@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {# {{ component('navbar', {index: 0}) }} #}
+    {# {{ component('alert') }} #}
+
+    <div class="top-container">
+        <h1>Your alarm</h1>
+    </div>
+
+    <div class="p1">
+        {% if couple is not null %}
+            <h2>🔎 alarm list</h2>
+            <div class="quiz-grid-container">
+                {% for device in couple %}
+                    {{ component('couplecard', {couple: device}) }}
+                {% endfor %}
+                {% if couple is empty %}
+                    <p class="no-result">You have no alarm</p>
+                {% endif %}
+            </div>
+            <hr>
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}

@@ -16,6 +16,18 @@ class CoupleRepository extends ServiceEntityRepository
         parent::__construct($registry, Couple::class);
     }
 
+
+    /**
+     * Get all couples for a given user ID.
+     */
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :user')
+            ->setParameter('user', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Couple[] Returns an array of Couple objects
 //     */

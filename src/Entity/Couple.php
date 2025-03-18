@@ -22,15 +22,18 @@ class Couple
 
     #[ORM\ManyToOne(inversedBy: 'couples')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Device $action_device_id = null;
+    private ?Device $action_device = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Device $camera_device_id = null;
+    private ?Device $camera_device = null;
+
+    #[ORM\Column]
+    private ?bool $enabled = null;
 
     public function getId(): ?int
     {
@@ -70,36 +73,48 @@ class Couple
 
     public function getUserId(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUserId(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
     public function getActionDeviceId(): ?Device
     {
-        return $this->action_device_id;
+        return $this->action_device;
     }
 
-    public function setActionDeviceId(Device $action_device_id): static
+    public function setActionDeviceId(Device $action_device): static
     {
-        $this->action_device_id = $action_device_id;
+        $this->action_device = $action_device;
 
         return $this;
     }
 
     public function getCameraDeviceId(): ?Device
     {
-        return $this->camera_device_id;
+        return $this->camera_device;
     }
 
-    public function setCameraDeviceId(Device $camera_device_id): static
+    public function setCameraDeviceId(Device $camera_device): static
     {
-        $this->camera_device_id = $camera_device_id;
+        $this->camera_device = $camera_device;
+
+        return $this;
+    }
+
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }
