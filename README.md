@@ -92,7 +92,7 @@ mettre dans web_profiler.yaml  :
 symfony server:start
 
 # Configure Apache2
-sudo nano /etc/apache2/sites-available/Sentinel.conf
+sudo nano /etc/apache2/sites-available/sentinel.conf
     <VirtualHost *:80>
         ServerName sentinel.com
         DocumentRoot /var/www/sentinel/public
@@ -114,13 +114,14 @@ sudo systemctl restart apache2
 sudo apt install -y hostapd dnsmasq
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
+sudo apt install dhcpcd
 sudo nano /etc/dhcpcd.conf
     interface wlan0
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
 sudo systemctl restart dhcpcd
 
-sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
 sudo nano /etc/dnsmasq.conf
 interface=wlan0
 dhcp-range=192.168.4.1,192.168.4.100,255.255.255.0,24h
