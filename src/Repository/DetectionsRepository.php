@@ -16,6 +16,15 @@ class DetectionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Detections::class);
     }
 
+    public function findByCoupleId(int $coupleId): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.couple = :couple')
+            ->setParameter('couple', $coupleId)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Detections[] Returns an array of Detections objects
 //     */

@@ -23,6 +23,14 @@ final class DeviceController extends AbstractController{
         ]);
     }
 
+    #[Route('/device/{id}', name: 'app_device')]
+    public function getDevice(): Response
+    {
+        
 
+        return $this->render('device_manager/all.html.twig', [
+            'controller_name' => 'DeviceManagerController',
+        ]);
+    }
 
 }

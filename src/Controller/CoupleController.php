@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\CoupleService;
+use App\Service\DetectionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,7 +12,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class CoupleController extends AbstractController{
 
     public function __construct(
-        private readonly CoupleService $coupleService
+        private readonly CoupleService $coupleService,
+        private readonly DetectionService $detectionService,
+
+
     ) {}
 
 
@@ -26,8 +30,15 @@ final class CoupleController extends AbstractController{
     #[Route('/couple/{id}', name: 'app_get_couple')]
     public function getCouple($id): Response
     {
-        return $this->render('couple/index.html.twig', [
+        $couple = $this->coupleService->getCouplesById($id);
+        $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
+
+        // dd($detections);
+        return $this->render('couple/alarme.html.twig', [
             'controller_name' => 'CoupleController',
+            'deviceInfo'=> $couple,
+            'detections'=> $detections,
+
         ]);
     }
 

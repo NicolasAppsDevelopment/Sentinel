@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="page-camera">
+    <!-- En-tête avec le titre et l'état de l'alarme -->
+    <div class="top-container">
+        <h1>{{ deviceInfo.title}} </h1>
+    </div>
+
+    <!-- Section de prévisualisation de la caméra et du bouton pour prendre une photo -->
+    <section class="camera-section">
+        <div class="camera-preview">
+            <div class="preview-icon">
+
+            </div>
+        </div>
+        <button class="photo-button">
+            Prendre une photo
+        </button>
+    </section>
+
+    <!-- Historique des photos prises -->
+    <section class="history-section">
+        <h2 class="history-title">Historique :</h2>
+
+        {% block history %}
+            {% if detections is not null %}
+                <div class="history-grid">
+                    {% for detect in detections %}
+                        <div class="history-item">
+                            <img class="history-image" src="{{ asset('camera_picture/' ~ detect.image_filename) }}">
+
+                            <div class="history-info">
+                                <p class="history-date"> {{detect.triggered_at|date("d/m/Y H:i:s")}} </p>
+                                {# <p class="history-type">{{detect.triggered_at}}</p> #}
+                            </div>
+                        </div>  
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock %}
+
+    </section>
+</div>
+{% endblock %}

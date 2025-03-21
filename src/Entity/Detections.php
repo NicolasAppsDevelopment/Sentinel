@@ -15,14 +15,14 @@ class Detections
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image_filename = null;
+    public ?string $image_filename = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $triggered_at = null;
+    public ?\DateTimeInterface $triggered_at = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Couple $couple_id = null;
+    private ?Couple $couple = null;
 
     public function getId(): ?int
     {
@@ -55,12 +55,12 @@ class Detections
 
     public function getCoupleId(): ?Couple
     {
-        return $this->couple_id;
+        return $this->couple;
     }
 
-    public function setCoupleId(?Couple $couple_id): static
+    public function setCoupleId(?Couple $couple): static
     {
-        $this->couple_id = $couple_id;
+        $this->couple = $couple;
 
         return $this;
     }

@@ -22,6 +22,13 @@ class CoupleService
         return $this->coupleRepository->findByUserId($userId);
     }
 
+    public function getCouplesById(int $coupleId): Couple
+    {
+        return $this->coupleRepository->findOneBy(
+            ['id' => $coupleId]
+        );
+    }
+
     /**
      * Create a new Couple.
      * 
