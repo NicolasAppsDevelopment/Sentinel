@@ -123,7 +123,22 @@ sudo systemctl restart dhcpcd
 
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
 sudo nano /etc/dnsmasq.conf
-interface=wlan0
-dhcp-range=192.168.4.1,192.168.4.100,255.255.255.0,24h
+    interface=wlan0
+    dhcp-range=192.168.4.2,192.168.4.100,255.255.255.0,24h
+sudo nano /etc/hostapd/hostapd.conf
+    interface=wlan0
+    driver=nl80211
+    ssid=MyRaspberryPi
+    hw_mode=g
+    channel=7
+    wmm_enabled=0
+    macaddr_acl=0
+    auth_algs=1
+    ignore_broadcast_ssid=0
+    wpa=2
+    wpa_passphrase=raspberry123
+    wpa_key_mgmt=WPA-PSK
+    rsn_pairwise=CCMP
+
 
 
