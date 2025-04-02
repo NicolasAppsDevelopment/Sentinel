@@ -65,10 +65,12 @@ sudo git clone https://forge.univ-lyon1.fr/WOT_BUT3WWW_2025/groupe-10/sentinel.g
 cd sentinel
 git config --global --add safe.directory /var/www/sentinel
 cp .env .env.local
-nano .env.local
+sudo nano .env.local
     APP_DEBUG=0
     APP_ENV=prod
     DATABASE_URL="mysql://sentinel:Sentinel2025@127.0.0.1:3306/sentinel_db"
+
+
 
 sudo chmod -R 775 /var/www/sentinel
 mkdir -p /var/www/sentinel/vendor
@@ -119,16 +121,17 @@ sudo nano /etc/dhcpcd.conf
     interface wlan0
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
-sudo systemctl restart dhcpcd
 
+sudo systemctl restart dhcpcd
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
 sudo nano /etc/dnsmasq.conf
     interface=wlan0
     dhcp-range=192.168.4.2,192.168.4.100,255.255.255.0,24h
+
 sudo nano /etc/hostapd/hostapd.conf
     interface=wlan0
     driver=nl80211
-    ssid=MyRaspberryPi
+    ssid=Sentinel
     hw_mode=g
     channel=7
     wmm_enabled=0
@@ -136,9 +139,15 @@ sudo nano /etc/hostapd/hostapd.conf
     auth_algs=1
     ignore_broadcast_ssid=0
     wpa=2
-    wpa_passphrase=raspberry123
+    wpa_passphrase=sentinel2025
     wpa_key_mgmt=WPA-PSK
     rsn_pairwise=CCMP
+
+sudo nano /etc/default/hostapd   (Info : find DAEMON_CONF in the file, remove the #, and add "/etc/hostapd/hostapd.conf")
+    DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+sudo systemctl restart hostapd
+
 
 
 
