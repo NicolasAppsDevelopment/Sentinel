@@ -13,7 +13,7 @@
             <h2>🔎 alarm list</h2>
             <div class="quiz-grid-container">
                 {% for device in couple %}
-                    {{ component('couplecard', {couple: device}) }}
+                    {{ component('couplecard', {couple: device, wifi:wifi}) }}
                 {% endfor %}
                 {% if couple is empty %}
                     <p class="no-result">You have no alarm</p>
