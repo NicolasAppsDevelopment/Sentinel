@@ -1,3 +1,10 @@
-_security_logout:
-    resource: security.route_loader.logout
-    type: service
+security:
+    # ...
+
+    firewalls:
+        main:
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_couple_getall
+                always_use_default_target_path: true
