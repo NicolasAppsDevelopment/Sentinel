@@ -13,8 +13,11 @@ chmod -R 775 /camera_picture
 chown -R www-data:www-data /camera_picture
 
 # set symbolic link for image upload folder
-rm -R /var/www/app-site/assets/camera_picture
+if [ -d "/var/www/app-site/assets/camera_picture" ]; then
+    rm -R /var/www/app-site/assets/camera_picture
+fi
 ln -s /camera_picture /var/www/app-site/assets/camera_picture
 
+php bin/console d:m:m
 
 exec "$@"
