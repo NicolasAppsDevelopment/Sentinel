@@ -28,6 +28,24 @@ class CoupleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Récupère les couples ayant au moins une détection pour un utilisateur donné.
+     *
+     * @param int $userId L'identifiant de l'utilisateur.
+     * @return Couple[] La liste des couples avec leurs détections.
+     */
+    public function findCouplesWithDetectionsByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.detections', 'd')
+            ->where('c.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('d.triggered_at')
+            ->groupBy('c.id')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Couple[] Returns an array of Couple objects
 //     */

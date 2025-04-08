@@ -46,11 +46,14 @@ final class CoupleController extends AbstractController{
     public function getAllDevice(UserInterface $user): Response
     {
         $couple = $this->coupleService->getAllCouplesByUser($user->getId());
+        //dd($couple[0]->detections);
+        $wifi = "good";
 
         //dd($couple);
         return $this->render('couple/all.html.twig', [
             'controller_name' => 'CoupleController',
             'couple'=> $couple,
+            'wifi'=>$wifi,
         ]);
     }
 }

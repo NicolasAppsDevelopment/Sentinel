@@ -7,6 +7,23 @@
             <h3 class="title">{{ couple.title }}</h3>
             <p class="description">RAS</p>
             <div class="row g0-5">
+                {% if couple.enabled == 1 %}
+                    <img class="tag small" src="{{ asset('icons/enabled-camera.svg') }}">
+                {% else %}
+                    <img class="tag small" src="{{ asset('icons/disabled-camera.svg') }}">
+                {% endif %}
+
+                {% if wifi == "good" %}
+                    <img class="tag small" src="{{ asset('icons/good-wifi-icon.svg') }}">
+                {% elseif wifi == "mid" %}
+                    <img class="tag small" src="{{ asset('icons/mid-wifi-icon.svg') }}">
+                {% elseif wifi == "low" %}
+                    <img class="tag small" src="{{ asset('icons/low-wifi-icon.svg') }}">
+                {% else %}
+                    <img class="tag small" src="{{ asset('icons/no-wifi-icon.svg') }}">
+                {% endif %}
+
+
                 <p class="author tag small">
                     <i class="fa-solid fa-user"></i> {{ couple.action_device_id.mac_address|default('N/A') }}
                 </p>

@@ -19,5 +19,6 @@ fi
 ln -s /camera_picture /var/www/app-site/assets/camera_picture
 
 php bin/console d:m:m
+php bin/console asset-map:compile
 
 exec "$@"
