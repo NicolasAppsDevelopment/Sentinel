@@ -1,4 +1,3 @@
-version: '1.0'
 services:
   php:
     container_name: sentinel-php
@@ -6,6 +5,7 @@ services:
       context: ./php
     volumes:
       - ./app-site:/var/www/app-site
+      - './camera_picture:/camera_picture'
     networks:
       - default
   nginx:
@@ -21,3 +21,8 @@ services:
       - ./logs/nginx:/var/log/nginx
     depends_on:
       - php
+  mariadb:
+      image: mariadb:latest
+      ports:
+        - "3307:3306"
+      env_file: ".env"

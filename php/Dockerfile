@@ -37,3 +37,9 @@ COPY ./confphp.ini /usr/local/etc/php/conf.d/confphp.ini
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && git config --global user.email ${GIT_USER_EMAIL} \
     && git config --global user.name ${GIT_USER_NAME}
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD ["php-fpm"]
