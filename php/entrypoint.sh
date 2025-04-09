@@ -4,7 +4,7 @@ set -e
 # If the vendor directory doesn't exist or you need to ensure it's up to date,
 # you can run composer install here.
 cd /var/www/app-site
-composer install --no-dev
+composer install 
 
 # set permision for symfony
 chmod -R 775 /var/www/app-site
