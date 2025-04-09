@@ -18,16 +18,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class DeviceController extends AbstractController {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ApiResponseService $apiResponseService
-    ) {}
-
-    #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
-
-    public function __construct(
+        private readonly ApiResponseService $apiResponseService,
         private readonly DeviceService $deviceService,
 
     ) {}
 
+    #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
     public function discoverDevice(#[MapRequestPayload] DeviceDto $deviceDto): Response
     {
         // Check if the device already exists
