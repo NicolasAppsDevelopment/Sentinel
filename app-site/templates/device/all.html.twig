@@ -6,13 +6,15 @@
             <tr>
                 <th>MAC Address</th>
                 <th>IP Address</th>
+                <th>Type</th>
             </tr>
         </thead>
         <tbody>
             {% for device in devices %}
                 <tr>
-                    <td>{{ device.mac_address }}</td>
+                    <td>{{ device.macAddress }}</td>
                     <td>{{ device.ip }}</td>
+                    <td>{{ device.isCamera ? "Module caméra" : "Module d'action" }}</td>
                 </tr>
             {% endfor %}
         </tbody>

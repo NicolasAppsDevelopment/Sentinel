@@ -56,10 +56,10 @@ class DeviceRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function findDeviceNonAppaired(): array
+    public function findAllUnpaired(): array
     {
         return $this->createQueryBuilder('d')
-            ->where('d.isPaired = 0')
+            ->where('d.isPaired = false')
             ->getQuery()
             ->getResult();
     }

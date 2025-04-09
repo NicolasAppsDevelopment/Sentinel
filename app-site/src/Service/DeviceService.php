@@ -22,8 +22,8 @@ class DeviceService
         );
     }
 
-    public function getNotAppairedDevices(): array
+    public function getUnpairedDevices(): array
     {
-        return $this->deviceRepository->findDeviceNonAppaired();
+        return $this->deviceRepository->findAllUnpaired();
     }
 }

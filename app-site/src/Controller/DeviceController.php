@@ -4,13 +4,10 @@ namespace App\Controller;
 
 use App\Dto\DeviceDto;
 use App\Entity\Device;
-use App\Repository\CoupleRepository;
-use App\Repository\DeviceRepository;
 use App\Service\ApiResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\DeviceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
@@ -58,14 +55,13 @@ final class DeviceController extends AbstractController {
         ]);
     }
 
-    #[Route('/devices/unapparaired', name: 'app_devices_not_appaired')]
-    public function getAllDevices(): Response
+    #[Route('/devices/unpaired', name: 'app_devices_not_appaired')]
+    public function getUnpairedDevices(): Response
     {
-        $device = $this->deviceService->getNotAppairedDevices();
-        dd($device);
+        $unpairedDevices = $this->deviceService->getUnpairedDevices();
         return $this->render('device/all.html.twig', [
             'controller_name' => 'DeviceManagerController',
-            'devices'=> $device,
+            'devices'=> $unpairedDevices,
         ]);
     }
 
