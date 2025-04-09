@@ -17,8 +17,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_couple_getall
-                always_use_default_target_path: true
+                default_target_path: app_couples
             remember_me:
                 secret: '%kernel.secret%' # required
                 lifetime: 604800 # 1 week in seconds

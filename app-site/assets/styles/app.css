@@ -245,6 +245,19 @@ p > a {
     cursor: pointer;
     text-decoration: none;
 }
+
+.rect-btn {
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: var(--primary-color);
+    border: 1px solid var(--card-hover-icon-border-color);
+    border-radius: 10px;
+    color: var(--card-label-color);
+    cursor: pointer;
+    text-decoration: none;
+}
 .rounded-btn.large {
     font-size: large;
 }
@@ -502,7 +515,12 @@ div:has(> .remove-file) {
 
 .tag.small {
     padding: 0.25rem 0.5rem;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 .tag.large {
     padding: 0.5rem 1.5rem;
 }
@@ -781,4 +799,46 @@ hr {
 .history-type {
     font-size: 0.85rem;
     color: #cccccc;
+}
+
+
+/* Tableau général */
+.devices-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #1F1F1F; /* Fond du tableau (légèrement plus clair que le body) */
+}
+
+/* En-têtes du tableau */
+.devices-table thead {
+    background-color: #00AB6B; /* Couleur verte rappelée */
+}
+
+/* Style des cellules d'en-tête */
+.devices-table thead th {
+    padding: 12px;
+    text-align: left;
+    color: #FFFFFF;
+    border-bottom: 1px solid #008952; /* Légère variation de vert pour la bordure */
+}
+
+/* Lignes du corps du tableau */
+.devices-table tbody tr {
+    border-bottom: 1px solid #2C2C2C;
+}
+
+/* Style de base des cellules du corps du tableau */
+.devices-table tbody td {
+    padding: 12px;
+}
+
+/* Alternance de couleurs pour plus de lisibilité */
+.devices-table tbody tr:nth-child(even) {
+    background-color: #2A2A2A;
+}
+
+/* Survol d’une ligne */
+.devices-table tbody tr:hover {
+    background-color: #333333;
 }

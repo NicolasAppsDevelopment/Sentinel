@@ -25,6 +25,9 @@ class DetectionsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+
+
 //    /**
 //     * @return Detections[] Returns an array of Detections objects
 //     */

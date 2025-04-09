@@ -55,4 +55,12 @@ class DeviceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findDeviceNonAppaired(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.isPaired = 0')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -20,10 +20,17 @@ final class CoupleController extends AbstractController{
 
 
     #[Route('/couples', name: 'app_couples')]
-    public function index(): Response
+    public function index(UserInterface $user): Response
     {
-        return $this->render('couple/index.html.twig', [
+        $couple = $this->coupleService->getAllCouplesByUser($user->getId());
+        //dd($couple[0]->detections);
+        $wifi = "good";
+
+        //dd($couple);
+        return $this->render('couple/all.html.twig', [
             'controller_name' => 'CoupleController',
+            'couple'=> $couple,
+            'wifi'=>$wifi,
         ]);
     }
 
@@ -39,21 +46,6 @@ final class CoupleController extends AbstractController{
             'deviceInfo'=> $couple,
             'detections'=> $detections,
 
-        ]);
-    }
-
-    #[Route('/couples/all', name: 'app_couple_getall')]
-    public function getAllCouples(UserInterface $user): Response
-    {
-        $couple = $this->coupleService->getAllCouplesByUser($user->getId());
-        //dd($couple[0]->detections);
-        $wifi = "good";
-
-        //dd($couple);
-        return $this->render('couple/all.html.twig', [
-            'controller_name' => 'CoupleController',
-            'couple'=> $couple,
-            'wifi'=>$wifi,
         ]);
     }
 }

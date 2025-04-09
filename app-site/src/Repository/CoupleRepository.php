@@ -29,6 +29,8 @@ class CoupleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+
     /**
      * Récupère les couples ayant au moins une détection pour un utilisateur donné.
      *
@@ -46,6 +48,11 @@ class CoupleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+
+
+
 //    /**
 //     * @return Couple[] Returns an array of Couple objects
 //     */
