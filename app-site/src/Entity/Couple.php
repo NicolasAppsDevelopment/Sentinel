@@ -18,19 +18,19 @@ class Couple
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $association_date = null;
+    private ?\DateTimeInterface $associationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'couples')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Device $action_device = null;
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Device $actionDevice = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Device $camera_device = null;
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Device $cameraDevice = null;
 
     #[ORM\Column]
     private ?bool $enabled = null;
@@ -54,12 +54,12 @@ class Couple
 
     public function getAssociationDate(): ?\DateTimeInterface
     {
-        return $this->association_date;
+        return $this->associationDate;
     }
 
-    public function setAssociationDate(\DateTimeInterface $association_date): static
+    public function setAssociationDate(\DateTimeInterface $associationDate): static
     {
-        $this->association_date = $association_date;
+        $this->associationDate = $associationDate;
 
         return $this;
     }
@@ -85,24 +85,24 @@ class Couple
 
     public function getActionDeviceId(): ?Device
     {
-        return $this->action_device;
+        return $this->actionDevice;
     }
 
-    public function setActionDeviceId(Device $action_device): static
+    public function setActionDeviceId(Device $actionDevice): static
     {
-        $this->action_device = $action_device;
+        $this->actionDevice = $actionDevice;
 
         return $this;
     }
 
     public function getCameraDeviceId(): ?Device
     {
-        return $this->camera_device;
+        return $this->cameraDevice;
     }
 
-    public function setCameraDeviceId(Device $camera_device): static
+    public function setCameraDeviceId(Device $cameraDevice): static
     {
-        $this->camera_device = $camera_device;
+        $this->cameraDevice = $cameraDevice;
 
         return $this;
     }

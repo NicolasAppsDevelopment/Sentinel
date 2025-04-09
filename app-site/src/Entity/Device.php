@@ -13,10 +13,10 @@ class Device
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 40)]
-    private ?string $mac_adress = null;
+    #[ORM\Column(length: 17, unique: true)]
+    private ?string $macAddress = null;
 
-    #[ORM\Column(length: 40)]
+    #[ORM\Column(length: 15, unique: true)]
     private ?string $ip = null;
 
     #[ORM\Column]
@@ -37,14 +37,14 @@ class Device
         return $this;
     }
 
-    public function getMacAdress(): ?string
+    public function getMacAddress(): ?string
     {
-        return $this->mac_adress;
+        return $this->macAddress;
     }
 
-    public function setMacAdress(string $mac_adress): static
+    public function setMacAddress(string $macAddress): static
     {
-        $this->mac_adress = $mac_adress;
+        $this->macAddress = $macAddress;
 
         return $this;
     }
@@ -85,3 +85,4 @@ class Device
         return $this;
     }
 }
+
