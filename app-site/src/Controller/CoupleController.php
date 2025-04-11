@@ -10,16 +10,12 @@ use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\FormInterface;
-use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 
 final class CoupleController extends AbstractController{
 
@@ -83,34 +79,7 @@ final class CoupleController extends AbstractController{
         ]);
     }
 
-    /**
-     * @param FormInterface $form
-     * @param UserInterface $userInDB
-     * @return RedirectResponse
-     */
-    public function saveCoupleForm(FormInterface $form, UserInterface $userInDB): RedirectResponse
-    {
-        $couple = $form->getData();
-        $couple->setUser($userInDB);
-        $couple->setAssociationDate(new DateTime());
-        $couple->setEnabled(true);
 
-        $actionDevice = $couple->getActionDevice();
-        if ($actionDevice) {
-            $actionDevice->setIsPaired(true);
-        }
-
-        $cameraDevice = $couple->getCameraDevice();
-        if ($cameraDevice) {
-            $cameraDevice->setIsPaired(true);
-        }
-
-        $this->entityManager->persist($couple);
-        $this->entityManager->flush();
-
-        $this->addFlash('success', 'Couple saved successfully!');
-        return $this->redirectToRoute('app_couples');
-    }
 
     /**
      * @param FormInterface $form
@@ -140,4 +109,20 @@ final class CoupleController extends AbstractController{
         $this->addFlash('success', 'Couple saved successfully!');
         return $this->redirectToRoute('app_couples');
     }
+
+    #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]
+    public function enableDisableCouple(int $id): Response
+    {
+        $couple = $this->coupleService->getCoupleById($id);
+
+        $coupleState = $this->coupleService->enableDisableCouple($id);
+        // dd($detections);
+        return $this->render('couple/enable-disable-button.html.twig', [
+            'controller_name' => 'CoupleController',
+            'coupleInfo'=> $couple,
+            'coupleState'=> $coupleState,
+
+        ]);
+    }
+
 }
