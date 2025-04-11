@@ -31,20 +31,21 @@ final class DeviceController extends AbstractController {
             $this->entityManager->remove($deviceWithSameIp);
         }
 
-        $deviceWithSameMacAddress = $deviceRepository->findOneBy(["macAddress" => $deviceDto->mac]);
-        if ($deviceWithSameMacAddress) {
-            $deviceWithSameMacAddress->setIp($deviceDto->ip);
+        $device = $deviceRepository->findOneBy(["macAddress" => $deviceDto->mac]);
+        if ($device) {
+            $device->setIp($deviceDto->ip);
         } else {
-            $newDevice = new Device();
-            $newDevice->setIp($deviceDto->ip);
-            $newDevice->setMacAddress($deviceDto->mac);
-            $newDevice->setIsCamera($deviceDto->type === 'camera');
-            $newDevice->setIsPaired(false);
-            $this->entityManager->persist($newDevice);
+            $device = new Device();
+            $device->setIp($deviceDto->ip);
+            $device->setMacAddress($deviceDto->mac);
+            $device->setIsCamera($deviceDto->type === 'camera');
+            $device->setIsPaired(false);
         }
 
+        $this->entityManager->persist($device);
         $this->entityManager->flush();
-        return $this->apiResponseService->ok(null);
+
+        return $this->apiResponseService->okRaw($device->getId());
     }
 
     #[Route('/devices', name: 'app_devices')]
@@ -54,17 +55,6 @@ final class DeviceController extends AbstractController {
             'controller_name' => 'DeviceManagerController',
         ]);
     }
-
-    #[Route('/devices/unpaired', name: 'app_devices_not_appaired')]
-    public function getUnpairedDevices(): Response
-    {
-        $unpairedDevices = $this->deviceService->getUnpairedDevices();
-        return $this->render('device/all.html.twig', [
-            'controller_name' => 'DeviceManagerController',
-            'devices'=> $unpairedDevices,
-        ]);
-    }
-
 
     #[Route('/devices/get/{id}', name: 'app_devices_id')]
     public function getDeviceById(int $id): Response
@@ -82,5 +72,4 @@ final class DeviceController extends AbstractController {
             'allphoto' => $this->deviceService->getAllPhotoByDeviceId($id)
         ]);
     }
-
 }

@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {# {{ component('navbar', {index: 0}) }} #}
     {# {{ component('alert') }} #}
 
     <div class="top-container">
-        <h1>Your alarm</h1>
+      <a href="{{path('app_couples')}}" > <h1>Your alarm</h1> </a>
+
+        <a href="{{path('app_logout')}}" > <i class="fa-solid fa-right-from-bracket"></i> Logout </a>
+
     </div>
 
     <div class="p1">

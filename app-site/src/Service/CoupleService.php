@@ -29,6 +29,13 @@ class CoupleService
         );
     }
 
+    public function getCouplesByCameraId(int $cameraId): Couple
+    {
+        return $this->coupleRepository->findOneBy(
+            ['camera_id' => $cameraId]
+        );
+    }
+
     /**
      * Create a new Couple.
      * 

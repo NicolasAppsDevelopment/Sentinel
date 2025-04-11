@@ -6,7 +6,6 @@ use App\Entity\Couple;
 use App\Form\CoupleFormType;
 use App\Service\CoupleService;
 use App\Service\DetectionService;
-use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +21,6 @@ final class CoupleController extends AbstractController{
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
-        private readonly DeviceService $deviceService,
         private readonly EntityManagerInterface $entityManager
 
     ) {}
@@ -32,7 +30,7 @@ final class CoupleController extends AbstractController{
     public function index(UserInterface $user): Response
     {
         $couple = $this->coupleService->getAllCouplesByUser($user->getId());
-        //dd($couple[0]->detections);
+        //dd($couple);
         $wifi = "good";
 
         //dd($couple);
@@ -69,6 +67,7 @@ final class CoupleController extends AbstractController{
     public function getCoupleById(int $id): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
+        //dd($couple);
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
 
         // dd($detections);

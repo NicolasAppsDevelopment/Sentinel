@@ -531,8 +531,8 @@ div:has(> .remove-file) {
 }
 
 .tag.small {
-    padding: 0.25rem 0.5rem;
-    width: 50%;
+    color:white;
+    width: 12.5%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -826,7 +826,7 @@ hr {
     }
 
     .quiz-card .tag.small {
-        width: auto;
+        width: 50%;
         font-size: 0.7rem;
         padding: 0.2rem 0.4rem;
     }

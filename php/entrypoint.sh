@@ -18,6 +18,12 @@ if [ -d "/var/www/app-site/assets/camera_picture" ]; then
 fi
 ln -s /camera_picture /var/www/app-site/assets/camera_picture
 
+# wait MariaDB to be ready
+until mariadb -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; do
+  >&2 echo "Database is unavailable - waiting to be started..."
+  sleep 5
+done
+
 php bin/console d:m:m
 php bin/console asset-map:compile
 
