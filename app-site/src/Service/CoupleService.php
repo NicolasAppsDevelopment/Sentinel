@@ -22,7 +22,7 @@ class CoupleService
         return $this->coupleRepository->findByUserId($userId);
     }
 
-    public function getCouplesById(int $coupleId): Couple
+    public function getCoupleById(int $coupleId): Couple
     {
         return $this->coupleRepository->findOneBy(
             ['id' => $coupleId]
@@ -54,4 +54,17 @@ class CoupleService
             $data['user_id']
         );
     }
+
+    public function enableDisableCouple(int $coupleId): bool
+    {
+        $couple = $this->getCoupleById($coupleId);
+        if ($couple->isEnabled()){
+            $this->coupleRepository->disableCouple($coupleId);
+            return false;
+        }else{
+            $this->coupleRepository->enableCouple($coupleId);
+            return true;
+        }
+    }
+    
 }

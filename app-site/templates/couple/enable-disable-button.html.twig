@@ -1,0 +1,24 @@
+        {% if coupleState == 1 %}
+            <div id="btnUpdateCoupleState">
+                <h3>Votre appareil est activée</h3>
+                <button  class="rect-btn" 
+                hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                hx-trigger="click"
+                hx-target="#btnUpdateCoupleState"
+                hx-swap="outerHTML">
+                    <i id="iconAlarmOn" class="fa-solid fa-power-off"> On </i> 
+                </button>
+            </div>
+        {% else %}
+        <div id="btnUpdateCoupleState">
+            <h3>Votre appareil est desactivée</h3>
+
+            <button  class="rect-btn-red"
+            hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+            hx-trigger="click"
+            hx-target="#btnUpdateCoupleState"
+            hx-swap="outerHTML">
+                <i class="fa-solid fa-power-off"> Off</i>
+            </button>
+        </div>
+        {% endif %}

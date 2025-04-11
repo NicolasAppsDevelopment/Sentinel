@@ -37,14 +37,29 @@ final class CoupleController extends AbstractController{
     #[Route('/couples/{id}', name: 'app_couples_id')]
     public function getCoupleById(int $id): Response
     {
-        $couple = $this->coupleService->getCouplesById($id);
+        $couple = $this->coupleService->getCoupleById($id);
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
 
         // dd($detections);
-        return $this->render('couple/alarme.html.twig', [
+        return $this->render('couple/view.html.twig', [
             'controller_name' => 'CoupleController',
-            'deviceInfo'=> $couple,
+            'coupleInfo'=> $couple,
             'detections'=> $detections,
+
+        ]);
+    }
+
+    #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]
+    public function enableDisableCouple(int $id): Response
+    {
+        $couple = $this->coupleService->getCoupleById($id);
+
+        $coupleState = $this->coupleService->enableDisableCouple($id);
+        // dd($detections);
+        return $this->render('couple/enable-disable-button.html.twig', [
+            'controller_name' => 'CoupleController',
+            'coupleInfo'=> $couple,
+            'coupleState'=> $coupleState,
 
         ]);
     }

@@ -49,6 +49,27 @@ class CoupleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function enableCouple(int $coupleId): void
+    {
+        $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.enabled', '1')
+            ->where('c.id = :id')
+            ->setParameter('id', $coupleId)
+            ->getQuery()
+            ->execute();
+    }
+    public function disableCouple(int $coupleId): void
+    {
+        $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.enabled', '0')
+            ->where('c.id = :id')
+            ->setParameter('id', $coupleId)
+            ->getQuery()
+            ->execute();
+    }   
+
 
 
 

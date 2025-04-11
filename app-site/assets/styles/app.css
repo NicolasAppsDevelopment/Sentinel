@@ -258,6 +258,21 @@ p > a {
     cursor: pointer;
     text-decoration: none;
 }
+
+.rect-btn-red {
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color:red;
+    border: 1px solid var(--card-hover-icon-border-color);
+    border-radius: 10px;
+    color: var(--card-label-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+
 .rounded-btn.large {
     font-size: large;
 }
@@ -319,11 +334,13 @@ form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
     background-color: var(--primary-color-darker);
     box-shadow: var(--primary-color) 0 0.375rem;
     border: 0.125rem solid var(--primary-color);
     border-radius: 0.5rem;
-    width: var(--quiz-card-width);
+    width: 100%;
+    max-width: var(--quiz-card-width);
     overflow: hidden;
 }
 .quiz-card:hover {
@@ -802,43 +819,34 @@ hr {
 }
 
 
-/* Tableau général */
-.devices-table {
-    width: 80%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    background-color: #1F1F1F; /* Fond du tableau (légèrement plus clair que le body) */
+@media (max-width: 600px) {
+    .quiz-grid-container {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+
+    .quiz-card .tag.small {
+        width: auto;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .quiz-card .quiz-card-info {
+        padding: 0.5rem;
+    }
+
+    .quiz-card .title {
+        font-size: 0.9rem;
+    }
+
+    .quiz-card .description {
+        font-size: 0.8rem;
+    }
 }
 
-/* En-têtes du tableau */
-.devices-table thead {
-    background-color: #00AB6B; /* Couleur verte rappelée */
-}
-
-/* Style des cellules d'en-tête */
-.devices-table thead th {
-    padding: 12px;
-    text-align: left;
-    color: #FFFFFF;
-    border-bottom: 1px solid #008952; /* Légère variation de vert pour la bordure */
-}
-
-/* Lignes du corps du tableau */
-.devices-table tbody tr {
-    border-bottom: 1px solid #2C2C2C;
-}
-
-/* Style de base des cellules du corps du tableau */
-.devices-table tbody td {
-    padding: 12px;
-}
-
-/* Alternance de couleurs pour plus de lisibilité */
-.devices-table tbody tr:nth-child(even) {
-    background-color: #2A2A2A;
-}
-
-/* Survol d’une ligne */
-.devices-table tbody tr:hover {
-    background-color: #333333;
+#btnUpdateCoupleState{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }

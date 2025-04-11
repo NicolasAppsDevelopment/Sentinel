@@ -5,20 +5,47 @@
 <div class="page-camera">
     <!-- En-tête avec le titre et l'état de l'alarme -->
     <div class="top-container">
-        <h1>{{ deviceInfo.title}} </h1>
+        <h1>{{ coupleInfo.title}} </h1>
     </div>
 
     <!-- Section de prévisualisation de la caméra et du bouton pour prendre une photo -->
     <section class="camera-section">
+        {% if coupleInfo.enabled == 1 %}
+            <div id="btnUpdateCoupleState">
+                <h3>Votre appareil est activée</h3>
+                <button  class="rect-btn" 
+                hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                hx-trigger="click"
+                hx-target="#btnUpdateCoupleState"
+                hx-swap="outerHTML">
+                    <i id="iconAlarmOn" class="fa-solid fa-power-off"> On </i> 
+                </button>
+            </div>
+        {% else %}
+        <div id="btnUpdateCoupleState">
+            <h3>Votre appareil est desactivée</h3>
+
+            <button  class="rect-btn-red"
+            hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+            hx-trigger="click"
+            hx-target="#btnUpdateCoupleState"
+            hx-swap="outerHTML">
+                <i class="fa-solid fa-power-off"> Off</i>
+            </button>
+        </div>
+        {% endif %}
+
         <div class="camera-preview">
             <div class="preview-icon">
                 <img class="preview-icon" src="{{ asset('icons/stream-icon.svg') }}">
 
             </div>
         </div>
-        <button class="photo-button">
+        <button class="rect-btn">
             Prendre une photo
         </button>
+
+
     </section>
 
     <!-- Historique des photos prises -->
