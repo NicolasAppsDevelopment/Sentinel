@@ -22,11 +22,6 @@
                 {% else %}
                     <img class="tag small" src="{{ asset('icons/no-wifi-icon.svg') }}">
                 {% endif %}
-
-
-                <p class="author tag small">
-                    <i class="fa-solid fa-user"></i> {{ couple.action_device_id.mac_address|default('N/A') }}
-                </p>
                 {# <p class="date tag small">
                     <i class="fa-regular fa-calendar"></i> {{ couple.association_date }}
                 </p> #}
