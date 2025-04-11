@@ -38,8 +38,9 @@ docker compose up -d
 
 
 #Loop to wait for docker container to be ready
-until curl -s -o /dev/null -w "%{http_code}" https://localhost:8000/login | grep -q "200"
+until curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/login | grep -q "200"
 do
+  echo "Waiting for the web site to be setup and ready to be used"
   sleep 5
 done
 
