@@ -75,11 +75,11 @@ final class DeviceController extends AbstractController {
     }
 
     #[Route('/devices/{id}/capture', name: 'app_devices_capture')]
-    public function deviceTakePicture(): Response
+    public function deviceTakePicture(int $id): Response
     {
-        $photo = $this->deviceService->capture();
+        $this->deviceService->cameraTakePicture($id);
         return $this->render('couples/alarme.html.twig', [
-            'allphoto' => $this->deviceService->getAllPhoto()
+            'allphoto' => $this->deviceService->getAllPhotoByDeviceId($id)
         ]);
     }
 
