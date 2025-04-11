@@ -22,3 +22,6 @@ Add the content of "setup_sentinel.sh" (in git) into the file in the Raspberry P
 
 Execute the script :
 `sudo bash setup_sentinel.sh`
+
+# Note :
+You will be ask to enter you login and password for the git clone
