@@ -71,36 +71,36 @@ class Couple
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUserId(?User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getActionDeviceId(): ?Device
+    public function getActionDevice(): ?Device
     {
         return $this->actionDevice;
     }
 
-    public function setActionDeviceId(Device $actionDevice): static
+    public function setActionDevice(Device $actionDevice): static
     {
         $this->actionDevice = $actionDevice;
 
         return $this;
     }
 
-    public function getCameraDeviceId(): ?Device
+    public function getCameraDevice(): ?Device
     {
         return $this->cameraDevice;
     }
 
-    public function setCameraDeviceId(Device $cameraDevice): static
+    public function setCameraDevice(Device $cameraDevice): static
     {
         $this->cameraDevice = $cameraDevice;
 
