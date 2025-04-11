@@ -32,7 +32,7 @@ final class CoupleController extends AbstractController{
     public function index(UserInterface $user): Response
     {
         $couple = $this->coupleService->getAllCouplesByUser($user->getId());
-        //dd($couple[0]->detections);
+        //dd($couple);
         $wifi = "good";
 
         //dd($couple);
@@ -69,6 +69,7 @@ final class CoupleController extends AbstractController{
     public function getCoupleById(int $id): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
+        //dd($couple);
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
 
         // dd($detections);
