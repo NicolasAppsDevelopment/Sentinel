@@ -16,6 +16,12 @@ class ApiResponseService
             'data' => $data,
         ], Response::HTTP_OK);
     }
+
+    public function okRaw(int $data): Response
+    {
+        return new Response($data, Response::HTTP_OK);
+    }
+
     public function error(string $message): JsonResponse
     {
         return $this->responseJson([

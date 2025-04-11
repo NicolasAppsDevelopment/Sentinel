@@ -6,7 +6,6 @@ use App\Entity\Couple;
 use App\Form\CoupleFormType;
 use App\Service\CoupleService;
 use App\Service\DetectionService;
-use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +21,6 @@ final class CoupleController extends AbstractController{
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
-        private readonly DeviceService $deviceService,
         private readonly EntityManagerInterface $entityManager
 
     ) {}
