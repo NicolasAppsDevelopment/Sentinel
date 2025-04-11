@@ -22,8 +22,13 @@ class DeviceService
         );
     }
 
-    public function getUnpairedDevices(): array
+    public function getUnpairedActionDevices(): array
     {
-        return $this->deviceRepository->findAllUnpaired();
+        return $this->deviceRepository->findAllUnpairedAction();
+    }
+
+    public function getUnpairedCameraDevices(): array
+    {
+        return $this->deviceRepository->findAllUnpairedCamera();
     }
 }

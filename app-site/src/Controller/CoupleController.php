@@ -6,14 +6,21 @@ use App\Service\CoupleService;
 use App\Service\DetectionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Form\FormInterface;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 
 final class CoupleController extends AbstractController{
 
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
+
+        private readonly EntityManagerInterface $entityManager,
+
 
 
     ) {}
@@ -34,7 +41,7 @@ final class CoupleController extends AbstractController{
         ]);
     }
 
-    #[Route('/couples/{id}', name: 'app_couples_id')]
+    #[Route('/couples/{id}', name: 'app_couples_view')]
     public function getCoupleById(int $id): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
@@ -43,10 +50,38 @@ final class CoupleController extends AbstractController{
         // dd($detections);
         return $this->render('couple/view.html.twig', [
             'controller_name' => 'CoupleController',
-            'coupleInfo'=> $couple,
-            'detections'=> $detections,
-
+            'coupleInfo' => $couple,
+            'detections' => $detections,
         ]);
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param UserInterface $userInDB
+     * @return RedirectResponse
+     */
+    public function saveCoupleForm(FormInterface $form, UserInterface $userInDB): RedirectResponse
+    {
+        $couple = $form->getData();
+        $couple->setUser($userInDB);
+        $couple->setAssociationDate(new DateTime());
+        $couple->setEnabled(true);
+
+        $actionDevice = $couple->getActionDevice();
+        if ($actionDevice) {
+            $actionDevice->setIsPaired(true);
+        }
+
+        $cameraDevice = $couple->getCameraDevice();
+        if ($cameraDevice) {
+            $cameraDevice->setIsPaired(true);
+        }
+
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Couple saved successfully!');
+        return $this->redirectToRoute('app_couples');
     }
 
     #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]

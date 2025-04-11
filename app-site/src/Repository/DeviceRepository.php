@@ -56,10 +56,20 @@ class DeviceRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function findAllUnpaired(): array
+    public function findAllUnpairedAction(): array
     {
         return $this->createQueryBuilder('d')
             ->where('d.isPaired = false')
+            ->andWhere('d.isCamera = false')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllUnpairedCamera(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.isPaired = false')
+            ->andWhere('d.isCamera = true')
             ->getQuery()
             ->getResult();
     }

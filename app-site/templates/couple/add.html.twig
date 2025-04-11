@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {# {{ component('navbar', {index: 0}) }} #}
+    {# {{ component('alert') }} #}
+
+    <div class="p1">
+        <h1>Add a new couple</h1>
+
+        {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.actionDevice) }}
+        {{ form_row(form.cameraDevice) }}
+
+        <button type="submit" class="rounded-btn"><i class="fa-solid fa-floppy-disk"></i> Finish & Save</button>
+        <a class="rounded-btn cancel" href="{{ path('app_couples') }}">Cancel</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -20,15 +20,6 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-
-#Loop to wait for docker container to be ready
-until curl -s -o /dev/null -w "%{http_code}" http://192.168.4.1:8081/login | grep -q "200"
-do
-  sleep 5
-done
-
-
-
 # Update again and upgrade
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -44,6 +35,14 @@ newgrp docker
 git clone https://forge.univ-lyon1.fr/WOT_BUT3WWW_2025/groupe-10/sentinel.git
 cd sentinel
 docker compose up -d
+
+
+#Loop to wait for docker container to be ready
+until curl -s -o /dev/null -w "%{http_code}" https://localhost:8000/login | grep -q "200"
+do
+  sleep 5
+done
+
 
 # Configure static IP for wlan0
 cat <<EOF > /etc/systemd/network/10-wlan0.network
