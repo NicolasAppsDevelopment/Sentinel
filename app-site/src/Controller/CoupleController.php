@@ -74,7 +74,7 @@ final class CoupleController extends AbstractController{
         // dd($detections);
         return $this->render('couple/view.html.twig', [
             'controller_name' => 'CoupleController',
-            'deviceInfo' => $couple,
+            'coupleInfo' => $couple,
             'detections' => $detections,
         ]);
     }
