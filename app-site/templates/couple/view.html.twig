@@ -40,7 +40,7 @@
         </div>
         {% endif %}
 
-        <img class="camera-preview" src="{{coupleInfo.cameraDevice.ip}}/stream">
+        <img class="camera-preview" src="{{path('app_stream', {id:coupleInfo.id} ) }}" alt="Aperçu de la caméra">
         
         <button class="rect-btn">
             Prendre une photo
