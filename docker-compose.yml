@@ -1,6 +1,7 @@
 services:
   php:
     container_name: sentinel-php
+    env_file: ".env"
     build:
       context: ./php
     volumes:
