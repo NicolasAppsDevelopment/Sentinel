@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libxpm-dev \
     supervisor \
+    mariadb-client \
     && docker-php-ext-install intl opcache pdo pdo_mysql \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
