@@ -15,36 +15,35 @@
 
     <!-- Section de prévisualisation de la caméra et du bouton pour prendre une photo -->
     <section class="camera-section">
+        <div class="camera-preview">
+            <img src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="Aperçu de la caméra">
+        </div>
+
+        <a class="rect-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>
+            Enregistrer une photo
+        </a>
+
         {% if coupleInfo.enabled == 1 %}
             <div id="btnUpdateCoupleState">
-                <h3>Votre appareil est activée</h3>
-                <button  class="rect-btn" 
-                hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-                hx-trigger="click"
-                hx-target="#btnUpdateCoupleState"
-                hx-swap="outerHTML">
-                    <i id="iconAlarmOn" class="fa-solid fa-power-off"> On </i> 
+                <button  class="rect-btn"
+                         hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                         hx-trigger="click"
+                         hx-target="#btnUpdateCoupleState"
+                         hx-swap="outerHTML">
+                    <i id="iconAlarmOn" class="fa-solid fa-power-off"> On </i>
                 </button>
             </div>
         {% else %}
-        <div id="btnUpdateCoupleState">
-            <h3>Votre appareil est desactivée</h3>
-
-            <button  class="rect-btn-red"
-            hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-            hx-trigger="click"
-            hx-target="#btnUpdateCoupleState"
-            hx-swap="outerHTML">
-                <i class="fa-solid fa-power-off"> Off</i>
-            </button>
-        </div>
+            <div id="btnUpdateCoupleState">
+                <button  class="rect-btn-red"
+                         hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                         hx-trigger="click"
+                         hx-target="#btnUpdateCoupleState"
+                         hx-swap="outerHTML">
+                    <i class="fa-solid fa-power-off"> Off</i>
+                </button>
+            </div>
         {% endif %}
-
-        <img class="camera-preview" src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="Aperçu de la caméra">
-        
-        <button class="rect-btn">
-            Prendre une photo
-        </button>
 
 
     </section>
