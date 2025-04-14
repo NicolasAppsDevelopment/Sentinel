@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Update and upgrade
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt update
+sudo apt upgrade -y
 
 # Install required packages
-sudo apt-get install -y ca-certificates curl
+sudo apt install -y ca-certificates curl
 
 # Create keyrings directory
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -21,11 +21,11 @@ echo \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Update again and upgrade
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt update
+sudo apt upgrade -y
 
 # Install Docker
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
 
 # Add user to docker group
 sudo usermod -aG docker $USER
