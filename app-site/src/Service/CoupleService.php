@@ -22,7 +22,7 @@ class CoupleService
         return $this->coupleRepository->findByUserId($userId);
     }
 
-    public function getCoupleById(int $coupleId): Couple
+    public function getCoupleById(int $coupleId): ?Couple
     {
         return $this->coupleRepository->findOneBy(
             ['id' => $coupleId]
