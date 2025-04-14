@@ -160,6 +160,47 @@ final class CoupleController extends AbstractController{
         ]);
     }
 
+    #[Route('/couples/{id}/stream/quality/{level}', name: 'app_couples_stream_quality')]
+    public function setStreamQuality(string $id, string $level, UserInterface $user): Response
+    {
+        if (!$user) {
+            return $this->apiResponseService->error('You are not authorized to access capture route! Sign in first!');
+        }
+
+        $couple = $this->coupleService->getCoupleById($id);
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+//            if ($couple->getUser() !== $user) {
+//                return $this->apiResponseService->error('Not authorized');
+//            }
+
+        $cameraDevice = $couple->getCameraDevice();
+        if ($cameraDevice === null) {
+            return $this->apiResponseService->error('Camera not found');
+        }
+        if ($cameraDevice->isPaired() === false) {
+            return $this->apiResponseService->error('Camera not paired');
+        }
+
+        $client = HttpClient::create();
+
+        try {
+            $url = 'http://' . $cameraDevice->getIp() . '/control?var=framesize&val=' . $level;
+            $response = $client->request('GET', $url);
+
+            if ($response->getStatusCode() !== 200) {
+                return $this->apiResponseService->error('Unable to set stream quality: ' . $response->getStatusCode());
+            }
+
+            return new StreamedResponse(function () use ($response) {
+                echo $response->getContent();
+            }, 200);
+        } catch (\Exception $e) {
+            return $this->apiResponseService->error('Unable set stream quality: ' . $e->getMessage());
+        }
+    }
+
     #[Route('/couples/{id}/capture', name: 'app_couples_capture', methods: 'GET')]
     public function getSecureCapture(int $id, UserInterface $user): Response
     {

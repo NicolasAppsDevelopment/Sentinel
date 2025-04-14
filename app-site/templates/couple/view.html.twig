@@ -17,6 +17,19 @@
     <section class="camera-section">
         <div class="camera-preview">
             <img src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="Aperçu de la caméra">
+
+            <div class="controls">
+                <button  class="rect-btn"
+                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 19} ) }}"
+                         hx-trigger="click">
+                    <i class="fa-solid fa-arrow-up">HD</i>
+                </button>
+                <button  class="rect-btn"
+                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 6} ) }}"
+                         hx-trigger="click">
+                    <i class="fa-solid fa-arrow-down">SD</i>
+                </button>
+            </div>
         </div>
 
         <a class="rect-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>

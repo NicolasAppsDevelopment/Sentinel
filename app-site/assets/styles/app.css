@@ -742,12 +742,22 @@ hr {
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
+    position: relative;
 }
 
 .camera-preview img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.camera-preview .controls {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
 
 /* Icône représentant la caméra ou l'écran avec un bouton play */
