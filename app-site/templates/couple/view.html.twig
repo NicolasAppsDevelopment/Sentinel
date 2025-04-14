@@ -21,12 +21,20 @@
             <div class="controls">
                 <button  class="rect-btn"
                          hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 19} ) }}"
-                         hx-trigger="click">
+                         hx-trigger="click"
+                         hx-swap="none">
                     <i class="fa-solid fa-arrow-up">HD</i>
                 </button>
                 <button  class="rect-btn"
-                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 6} ) }}"
-                         hx-trigger="click">
+                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 12} ) }}"
+                         hx-trigger="click"
+                         hx-swap="none">
+                    <i class="fa-solid fa-minus">Mid</i>
+                </button>
+                <button  class="rect-btn"
+                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 7} ) }}"
+                         hx-trigger="click"
+                         hx-swap="none">
                     <i class="fa-solid fa-arrow-down">SD</i>
                 </button>
             </div>
