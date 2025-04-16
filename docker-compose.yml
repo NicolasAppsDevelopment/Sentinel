@@ -2,6 +2,7 @@ services:
   php:
     container_name: sentinel-php
     env_file: ".env"
+    restart: always
     build:
       context: ./php
     volumes:
@@ -12,6 +13,7 @@ services:
   nginx:
     container_name: sentinel-nginx
     image: nginx:stable-alpine
+    restart: always
     ports:
       - ${PORT_APP_SITE}:80
     links:
@@ -27,3 +29,4 @@ services:
       ports:
         - "3307:3306"
       env_file: ".env"
+      restart: always
