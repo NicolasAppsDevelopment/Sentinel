@@ -86,6 +86,9 @@ EOF
 # Update hostapd default config
 sed -i 's|#DAEMON_CONF="".*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 
+#Unblock the wlan0 if there is a lack of power
+sudo rfkill unblock all 
+
 # Enable and start hostapd
 systemctl unmask hostapd
 systemctl enable hostapd
