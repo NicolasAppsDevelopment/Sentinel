@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 # If the vendor directory doesn't exist or you need to ensure it's up to date,
 # you can run composer install here.
