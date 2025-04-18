@@ -1,15 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block header %}
-
-<header>
-    <a href="{{path('app_couples')}}" > <h1>Alarm</h1> </a>
-    <a href="{{path('app_logout')}}" > <i class="fa-solid fa-right-from-bracket"></i> Logout </a>
-</header>
-
-{% endblock %}
-
 {% block body %}
+
+    {% block header %}
+        <header>
+            <a href="{{path('app_couples')}}" > <h1>Alarm</h1> </a>
+            <a href="{{path('app_logout')}}" > <i class="fa-solid fa-right-from-bracket"></i> Logout </a>
+        </header>
+    {% endblock %}
 
 <div class="page-camera">
     <section class="camera-section">
@@ -45,7 +43,7 @@
                     <i class="fa-solid fa-camera"></i>
                 </a>
                 <button  class="rect-btn-red"
-                         hx-get="{{path('app_couples_toggle_alarm', {id: coupleInfo.id} ) }}"
+                         hx-get="{{path('app_couples_capture', {id: coupleInfo.id} ) }}"
                          hx-trigger="click"
                          hx-swap="none">
                     <i class="fa-solid fa-bell"></i>
