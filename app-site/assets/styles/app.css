@@ -769,6 +769,7 @@ hr {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    z-index: 2;
 }
 
 /* Icône représentant la caméra ou l'écran avec un bouton play */
