@@ -12,7 +12,8 @@
 <div class="page-camera">
     <section class="camera-section">
         <div class="camera-preview">
-            <img src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="Aperçu de la caméra">
+            <span class="loading">Loading...</span>
+            <img src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="">
 
             <div class="controls">
                 <button  class="rect-btn"
