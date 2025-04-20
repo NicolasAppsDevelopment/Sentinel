@@ -137,6 +137,7 @@ input::placeholder {
     width: 100%;
     box-shadow: var(--card-box-shadow);
     padding: 2rem;
+    margin: 1rem;
     max-width: 24rem;
     gap: 1rem;
 }
