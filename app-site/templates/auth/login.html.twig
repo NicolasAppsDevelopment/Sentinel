@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="centered radial-bg">
+        <div class="card">
+
+            <div class="logo-card-header">
+                <img src="{{ asset('icons/sentinel.svg') }}" alt="Logo" class="logo">
+                <p>Sentinel</p>
+            </div>
+            <form method="post">
+                <h1>Sign in</h1>
+                {% if error %}
+                    <div class="form-message error">
+                        <img src="{{ asset('icons/error.svg') }}" alt="Error">
+                        <p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                    </div>
+                {% endif %}
+                {% if app.user %}
+                    <div class="form-message info">
+                        <img src="{{ asset('icons/info.svg') }}" alt="Info">
+                        You are logged in as {{ app.user.userIdentifier }},<a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+                <div class="form-control">
+                    <label for="_username">Username</label>
+                    <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" placeholder="tomtom96" required autofocus>
+                </div>
+                <div class="form-control">
+                    <label for="_password">Password</label>
+                    <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" placeholder="••••••••" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div>
+                    <input type="checkbox" name="_remember_me" id="_remember_me">
+                    <label for="_remember_me">Remember me</label>
+                </div>
+
+                <button class="btn-primary" type="submit">
+                    Sign in
+                </button>
+            </form>
+
+            <div class="or-divider">
+                <span>or</span>
+            </div>
+
+            <p class="text-center">
+                If you don't have an account yet, you can
+                <a href="{{ path('app_register') }}">Register</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,32 @@
+<nav class="sidebar">
+    <div class="top">
+        <div class="header">
+            <img src="{{ asset('icons/sentinel.svg') }}" alt="Logo" class="logo">
+            <p>Sentinel</p>
+        </div>
+        <a class="nav-item {{ index == 0 ? "active" : ""  }}" href="{{ path('app_couples') }}">
+            <span class="icon fa-solid fa-camera"></span>
+            <span class="text">Caméras</span>
+        </a>
+        <a class="nav-item {{ index == 1 ? "active" : ""  }}" href="{{ path('app_couples') }}">
+            <span class="icon fa-solid fa-bolt"></span>
+            <span class="text">Détéctions</span>
+        </a>
+        <a class="nav-item {{ index == 2 ? "active" : ""  }}" href="{{ path('app_couples') }}">
+            <span class="icon fa-solid fa-gear"></span>
+            <span class="text">Réglages</span>
+        </a>
+    </div>
+
+    <div class="bottom">
+        {% if app.user %}
+            <div class="user-info">
+                <span class="icon fa-solid fa-user"></span>
+                <span class="text">{{ app.user.getUsername() }}</span>
+            </div>
+            <a href="{{ path('app_logout') }}" class="icon-btn">
+                <span class="fa-solid fa-power-off"></span>
+            </a>
+        {% endif %}
+    </div>
+</nav>

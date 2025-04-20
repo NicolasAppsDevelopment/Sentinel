@@ -1,16 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {# {{ component('alert') }} #}
-
-    <div class="top-container">
-      <a href="{{path('app_couples')}}" > <h1>Your alarm</h1> </a>
-
-        <a href="{{path('app_logout')}}" > <i class="fa-solid fa-right-from-bracket"></i> Logout </a>
-
-    </div>
-
-    <div class="p1">
+    {{ component('sidebar', {index: 0}) }}
+    <div class="content">
         <a href="{{ path('app_couples_add') }}" class="rounded-btn"><i class="fa-solid fa-plus"></i> Ajouter une nouvelle alarme</a>
 
         {% if couple is not null %}

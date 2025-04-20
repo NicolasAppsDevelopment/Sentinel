@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="centered radial-bg">
+        <div class="card">
+            <div class="logo-card-header">
+                <img src="{{ asset('icons/sentinel.svg') }}" alt="Logo" class="logo">
+                <p>Sentinel</p>
+            </div>
+            {{ form_start(registrationForm) }}
+                <h1>Sign up</h1>
+
+                {% for error in errors %}
+                    <div class="form-message error">
+                        <img src="{{ asset('icons/info.svg') }}" alt="Error">
+                        <p>{{ error }}</p>
+                    </div>
+                {% endfor %}
+
+                {% if app.user %}
+                    <div class="form-message info">
+                        <img src="{{ asset('icons/info.svg') }}" alt="Info">
+                        You are logged in as {{ app.user.userIdentifier }},<a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+                <div class="form-control">
+                    <label>Username</label>
+                    <input type="text" name="{{ field_name(registrationForm.username) }}" value="{{ field_value(registrationForm.username) }}" id="username" autocomplete="username" placeholder="tomtom96" required autofocus>
+                </div>
+                <div class="form-control">
+                    <label>Email</label>
+                    <input type="email" name="{{ field_name(registrationForm.email) }}" value="{{ field_value(registrationForm.email) }}" id="email" autocomplete="email" placeholder="your@email.com" required autofocus>
+                </div>
+                <div class="form-control">
+                    <label>Password</label>
+                    <input type="password" name="{{ field_name(registrationForm.plainPassword) }}" autocomplete="current-password" placeholder="••••••••" required>
+                </div>
+
+                <button class="btn-primary" type="submit">
+                    Sign up
+                </button>
+            {{ form_end(registrationForm) }}
+
+            <div class="or-divider">
+                <span>or</span>
+            </div>
+
+            <p class="text-center">
+                If you already have an account, you can
+                <a href="{{ path('app_login') }}">Login</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
