@@ -40,6 +40,8 @@
 
     --border-radius: .5rem;
     --side-menu-width: 12rem;
+    --top-mobile-menu-height: 3rem;
+    --top-mobile-menu-padding: 1rem;
 }
 
 @font-face {
@@ -347,19 +349,68 @@ div.content {
 }
 
 @media screen and (max-width: 700px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
+    nav.sidebar {
+        display: none;
     }
-    .sidebar a {float: left;}
-    div.content {margin-left: 0;}
+    nav.topbar {
+        display: flex;
+    }
+    div.content {
+        margin-left: 0;
+        margin-top: calc((var(--top-mobile-menu-padding) * 2) + var(--top-mobile-menu-height));
+    }
 }
-@media screen and (max-width: 400px) {
-    .sidebar a {
-        text-align: center;
-        float: none;
-    }
+
+/* ---------------------------------
+             CSS top menu
+   --------------------------------- */
+
+.topbar {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: var(--top-mobile-menu-padding);
+    width: calc(100% - (var(--top-mobile-menu-padding) * 2));
+    background-color: var(--side-menu-background-color);
+    border-bottom: 1px solid var(--separator-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: var(--top-mobile-menu-height);
+    z-index: 1000;
+}
+
+.topbar .logo {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+}
+
+.topbar .logo img {
+    width: 2rem;
+    height: 2rem;
+}
+.topbar .logo p {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.sidebar.mobile {
+    position: fixed;
+    top: calc((var(--top-mobile-menu-padding) * 2) + var(--top-mobile-menu-height) + 1px);
+    right: calc(var(--side-menu-width) * -1 - 1px);
+    border: none;
+    border-left: 1px solid var(--separator-color);
+    height: calc(100% - ((var(--top-mobile-menu-padding) * 2) + var(--top-mobile-menu-height)) - 1px);
+    transition: right 0.3s ease-in-out;
+}
+
+.sidebar.mobile.opened {
+    right: 0;
 }
 
 /* ---------------------------------

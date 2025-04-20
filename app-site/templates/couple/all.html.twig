@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ component('sidebar', {index: 0}) }}
+    {{ component('navigation', {index: 0}) }}
     <div class="content">
         <a href="{{ path('app_couples_add') }}" class="rounded-btn"><i class="fa-solid fa-plus"></i> Ajouter une nouvelle alarme</a>
 

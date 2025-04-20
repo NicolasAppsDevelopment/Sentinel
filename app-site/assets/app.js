@@ -9,4 +9,19 @@ import './fontawesome/css/fontawesome.css';
 import './fontawesome/css/solid.css';
 import './fontawesome/css/regular.css';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+let mobileMenuOpened = false;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    // add event listener to the button
+    mobileMenuButton.addEventListener('click', function () {
+        if (mobileMenuOpened) {
+            mobileMenu.classList.remove('opened');
+        } else {
+            mobileMenu.classList.add('opened');
+        }
+        mobileMenuOpened = !mobileMenuOpened;
+    });
+});
