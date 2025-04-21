@@ -76,7 +76,7 @@ p {
     font-size: 0.875rem;
 }
 
-input {
+input, select {
     background-color: var(--input-background-color);
     border: 1px solid var(--input-border-color);
     border-radius: var(--border-radius);
@@ -85,6 +85,15 @@ input {
     font-size: 0.875rem;
     padding: .65rem .8rem;
 }
+
+select {
+    background-image: url('../icons/chevron-down.svg');
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: .75rem;
+    appearance: none;
+}
+
 input:hover {
     border: 1px solid var(--input-border-hover-color);
 }
@@ -94,6 +103,17 @@ input:focus {
 }
 input::placeholder {
     color: var(--input-placeholder-color);
+}
+
+.w100 {
+    width: 100% !important;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
 }
 
 .centered {
@@ -161,7 +181,9 @@ form .form-control {
 }
 
 .btn-primary {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: max-content;
     background-color: var(--button-cta-background-color);
     background-image: var(--button-cta-background-gradient);

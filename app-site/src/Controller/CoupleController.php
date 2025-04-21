@@ -58,9 +58,15 @@ final class CoupleController extends AbstractController{
             return $this->saveCoupleForm($form, $user);
         }
 
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
         // just display add page, save logic in /couple/save !
         return $this->render('couple/add.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'errors' => $errors,
         ]);
     }
 

@@ -1,19 +1,41 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {# {{ component('navbar', {index: 0}) }} #}
-    {# {{ component('alert') }} #}
+    {{ component('navigation', {index: 0}) }}
 
-    <div class="p1">
-        <h1>Add a new couple</h1>
+    <div class="content">
+        <h2>Add a new camera</h2>
 
         {{ form_start(form) }}
-        {{ form_row(form.title) }}
-        {{ form_row(form.actionDevice) }}
-        {{ form_row(form.cameraDevice) }}
+            {% for error in errors %}
+                <div class="form-message error">
+                    <img src="{{ asset('icons/info.svg') }}" alt="Error">
+                    <p>{{ error }}</p>
+                </div>
+            {% endfor %}
 
-        <button type="submit" class="rounded-btn"><i class="fa-solid fa-floppy-disk"></i> Finish & Save</button>
-        <a class="rounded-btn cancel" href="{{ path('app_couples') }}">Cancel</a>
+            <div class="form-control">
+                <label>Title</label>
+                <input type="text" name="{{ field_name(form.title) }}" value="{{ field_value(form.title) }}" id="title" autocomplete="title" placeholder="Outdoor" required autofocus>
+            </div>
+            <div class="form-control">
+                <label>Action module</label>
+                {{ form_widget(form.actionDevice) }}
+            </div>
+            <div class="form-control">
+                <label>Vision module</label>
+                {{ form_widget(form.cameraDevice) }}
+            </div>
+
+            <div class="row">
+                <button class="btn-primary w100" type="submit">
+                    <i class="fa-solid fa-plus"></i> Add
+                </button>
+                <a class="btn-primary w100" href="{{ path('app_couples') }}">
+                    Cancel <i class="fa-solid fa-eraser"></i>
+                </a>
+            </div>
+
         {{ form_end(form) }}
     </div>
 {% endblock %}
