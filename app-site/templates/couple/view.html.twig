@@ -1,54 +1,50 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-    {% block header %}
-        <header>
-            <a href="{{path('app_couples')}}" > <h1>Alarm</h1> </a>
-            <a href="{{path('app_logout')}}" > <i class="fa-solid fa-right-from-bracket"></i> Logout </a>
-        </header>
-    {% endblock %}
-
-<div class="page-camera">
-    <section class="camera-section">
-        <div class="camera-preview">
+    {{ component('navigation', {index: 0}) }}
+    <div class="content">
+        <div class="stream-player-container">
             <span class="loading">Loading...</span>
-            <img src="{{path('app_couples_stream', {id:coupleInfo.id} ) }}" alt="">
-
+            <img src="http://10.0.0.27:81/stream" alt=""> {# <img src="{{ path('app_couples_capture', {id: coupleInfo.id}) }}" alt=""> #}
+            <div class="dark-overlay"></div>
+            <div class="title">
+                <h2>{{ coupleInfo.title }}</h2>
+            </div>
             <div class="controls">
-                <button  class="rect-btn"
-                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 20} ) }}"
-                         hx-trigger="click"
-                         hx-swap="none">
-                    1440p
-                </button>
-                <button  class="rect-btn"
-                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 16} ) }}"
-                         hx-trigger="click"
-                         hx-swap="none">
-                    1080p
-                </button>
-                <button  class="rect-btn"
-                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 13} ) }}"
-                         hx-trigger="click"
-                         hx-swap="none">
-                    720p
-                </button>
-                <button  class="rect-btn"
-                         hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 10} ) }}"
-                         hx-trigger="click"
-                         hx-swap="none">
-                    480p
-                </button>
-                <a class="rect-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>
+                <div class="dropup">
+                    <button class="player-btn dropup-btn">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                    <div class="dropup-content">
+                        <button  class="rect-btn"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 20} ) }}"
+                                 hx-trigger="click, touchstart"
+                                 hx-swap="none">
+                            1440p
+                        </button>
+                        <button  class="rect-btn"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 16} ) }}"
+                                 hx-trigger="click, touchstart"
+                                 hx-swap="none">
+                            1080p
+                        </button>
+                        <button  class="rect-btn"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 13} ) }}"
+                                 hx-trigger="click, touchstart"
+                                 hx-swap="none">
+                            720p
+                        </button>
+                        <button  class="rect-btn"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 10} ) }}"
+                                 hx-trigger="click, touchstart"
+                                 hx-swap="none">
+                            480p
+                        </button>
+                    </div>
+                </div>
+                <a class="player-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>
                     <i class="fa-solid fa-camera"></i>
                 </a>
-                <button  class="rect-btn-red"
-                         hx-get="{{path('app_couples_capture', {id: coupleInfo.id} ) }}"
-                         hx-trigger="click"
-                         hx-swap="none">
-                    <i class="fa-solid fa-bell"></i>
-                </button>
             </div>
         </div>
 
@@ -74,29 +70,26 @@
             </div>
         {% endif %}
 
+        <!-- Historique des photos prises -->
+        <section class="history-section">
+            <h2 class="history-title">Historique :</h2>
 
-    </section>
+            {% block history %}
+                {% if detections is not null %}
+                    <div class="history-grid">
+                        {% for detect in detections %}
+                            <div class="history-item">
+                                <img class="history-image" src="{{ asset('camera_picture/' ~ detect.image_filename) }}">
 
-    <!-- Historique des photos prises -->
-    <section class="history-section">
-        <h2 class="history-title">Historique :</h2>
-
-        {% block history %}
-            {% if detections is not null %}
-                <div class="history-grid">
-                    {% for detect in detections %}
-                        <div class="history-item">
-                            <img class="history-image" src="{{ asset('camera_picture/' ~ detect.image_filename) }}">
-
-                            <div class="history-info">
-                                <p class="history-date"> {{detect.triggered_at|date("d/m/Y H:i:s")}} </p>
+                                <div class="history-info">
+                                    <p class="history-date"> {{detect.triggered_at|date("d/m/Y H:i:s")}} </p>
+                                </div>
                             </div>
-                        </div>  
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endblock %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endblock %}
 
-    </section>
-</div>
+        </section>
+    </div>
 {% endblock %}

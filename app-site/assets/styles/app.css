@@ -493,6 +493,8 @@ div.content {
 .img-card img {
     width: 100%;
     height: 100%;
+    min-width: 20rem;
+    min-height: 15rem;
     object-fit: cover;
     border-radius: var(--border-radius);
     transition: transform 0.3s ease-in-out;
@@ -560,4 +562,138 @@ div.content {
 }
 .fa-solid.green {
     color: #29bc86 !important;
+}
+
+
+/* ---------------------------------
+             Stream Player
+   --------------------------------- */
+
+.stream-player-container {
+    width: fit-content;
+    height: 100%;
+    background-color: var(--card-border-color);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto auto 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.stream-player-container .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: var(--secondary-font-color);
+    z-index: 0;
+}
+
+.stream-player-container img {
+    width: 100%;
+    height: 100%;
+    max-height: calc(100vh - 2rem);
+    object-fit: contain;
+    z-index: 1;
+}
+
+.stream-player-container .title {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.stream-player-container .dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.65));
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.stream-player-container .controls {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    padding: 0 .5rem;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.stream-player-container .controls .player-btn {
+    background: none;
+    border: none;
+    color: var(--primary-font-color);
+    padding: 1rem .5rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    filter: drop-shadow(0 0 1px #000);
+}
+
+.stream-player-container.display-ui .controls,
+.stream-player-container.display-ui .dark-overlay,
+.stream-player-container.display-ui .title,
+.stream-player-container:hover .controls,
+.stream-player-container:hover .dark-overlay,
+.stream-player-container:hover .title
+{
+    opacity: 1;
+    pointer-events: all;
+}
+
+
+
+/* ---------------------------------
+             Drop up
+   --------------------------------- */
+
+.dropup {
+    position: relative;
+    display: inline-block;
+}
+.dropup-content {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    background-color: var(--side-menu-background-color);
+    border: 1px solid var(--separator-color);
+    border-radius: var(--border-radius);
+    bottom: 85%;
+    right: calc(-50% + .25rem);
+    z-index: 1;
+    overflow: hidden;
+}
+.dropup-content * {
+    color: var(--primary-font-color);
+    background: none;
+    border: none;
+    padding: .5rem .75rem;
+    text-decoration: none;
+    display: block;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+.dropup-content *:hover {
+    background-color: var(--side-menu-item-hover-background-color);
+}
+.dropup.opened .dropup-content,
+.dropup:hover .dropup-content {
+    display: flex;
 }
