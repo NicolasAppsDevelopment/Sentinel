@@ -3,8 +3,8 @@
 {% block body %}
     {{ component('navigation', {index: 0}) }}
     {{ component('confirmdialog', {
-        title: 'Confirm Action',
-        message: 'Are you sure you want to proceed?',
+        title: 'Remove camera',
+        message: 'Are you sure you want to remove this camera? You could always add it again later.',
         confirmUrl: path('app_couples_enabledisable', {'id': coupleInfo.id}),
         confirmMethod: 'POST'
     }) }}
