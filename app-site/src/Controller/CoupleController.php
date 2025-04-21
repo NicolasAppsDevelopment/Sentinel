@@ -119,16 +119,12 @@ final class CoupleController extends AbstractController{
     #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]
     public function enableDisableCouple(int $id): Response
     {
-        $couple = $this->coupleService->getCoupleById($id);
+        $this->coupleService->enableDisableCouple($id);
 
-        $coupleState = $this->coupleService->enableDisableCouple($id);
-        // dd($detections);
-        return $this->render('couple/enable-disable-button.html.twig', [
-            'controller_name' => 'CoupleController',
-            'coupleInfo'=> $couple,
-            'coupleState'=> $coupleState,
+        $res = $this->apiResponseService->ok(null);
+        $res->headers->set('Hx-Refresh', 'true');
 
-        ]);
+        return $res;
     }
 
     #[Route('/couples/{id}/stream', name: 'app_couples_stream')]

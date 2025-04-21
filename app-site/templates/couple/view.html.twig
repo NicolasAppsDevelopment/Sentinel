@@ -2,6 +2,12 @@
 
 {% block body %}
     {{ component('navigation', {index: 0}) }}
+    {{ component('confirmdialog', {
+        title: 'Confirm Action',
+        message: 'Are you sure you want to proceed?',
+        confirmUrl: path('app_couples_enabledisable', {'id': coupleInfo.id}),
+        confirmMethod: 'POST'
+    }) }}
     <div class="content">
         <div class="stream-player-container">
             <span class="loading">Loading...</span>
@@ -48,48 +54,67 @@
             </div>
         </div>
 
-        {% if coupleInfo.enabled == 1 %}
-            <div id="btnUpdateCoupleState">
-                <button  class="rect-btn"
-                         hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-                         hx-trigger="click"
-                         hx-target="#btnUpdateCoupleState"
-                         hx-swap="outerHTML">
-                    <i id="iconAlarmOn" class="fa-solid fa-power-off"> On </i>
-                </button>
+        <div class="camera-states card">
+            <div class="state">
+                <span class="fa-solid fa-wifi green"></span>
+                <p class="desc">Good vision module Wi-Fi strength</p>
             </div>
-        {% else %}
-            <div id="btnUpdateCoupleState">
-                <button  class="rect-btn-red"
-                         hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-                         hx-trigger="click"
-                         hx-target="#btnUpdateCoupleState"
-                         hx-swap="outerHTML">
-                    <i class="fa-solid fa-power-off"> Off</i>
-                </button>
+            <div class="separator"></div>
+            <div class="state">
+                <span class="fa-solid fa-wifi green"></span>
+                <p class="desc">Good action module Wi-Fi strength</p>
             </div>
-        {% endif %}
+            <div class="separator"></div>
+            <div class="state">
+                <span class="fa-solid fa-power-off {{ coupleInfo.enabled == true ? "green" : "red"  }}"></span>
+                <p class="desc">Camera {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+            </div>
+        </div>
+        <div class="camera-actions">
+            <a class="card action">
+                <span class="fa-solid fa-bell"></span>
+                <p class="desc">Enable buzzer</p>
+            </a>
+            <button  class="card action"
+                     hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                     hx-trigger="click"
+                     hx-swap="none">
+                <span class="fa-solid fa-power-off"></span>
+                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} camera</p>
+            </button>
+            <a class="card action">
+                <span class="fa-solid fa-pencil"></span>
+                <p class="desc">Edit camera</p>
+            </a>
+            <button type="button"
+                    class="card action"
+                    onclick="document.getElementById('confirm-modal').showModal()">
+                <span class="fa-solid fa-trash red"></span>
+                <p class="desc">Remove camera</p>
+            </button>
+        </div>
 
-        <!-- Historique des photos prises -->
-        <section class="history-section">
-            <h2 class="history-title">Historique :</h2>
+        <div class="row">
+            <h2>
+                History
+            </h2>
+            <div class="notif big">
+                <span class="fa-solid fa-bell"></span>
+                <span>{{ detections|length }}</span>
+            </div>
+        </div>
 
-            {% block history %}
-                {% if detections is not null %}
-                    <div class="history-grid">
-                        {% for detect in detections %}
-                            <div class="history-item">
-                                <img class="history-image" src="{{ asset('camera_picture/' ~ detect.image_filename) }}">
-
-                                <div class="history-info">
-                                    <p class="history-date"> {{detect.triggered_at|date("d/m/Y H:i:s")}} </p>
-                                </div>
-                            </div>
-                        {% endfor %}
+        <div class="history-list">
+            {% for detect in detections %}
+                <div class="card item">
+                    <div class="infos">
+                        <p class="date">{{detect.triggered_at|date("d/m/Y H:i:s")}}</p>
+                        <p class="type">Movements</p>
+                        <p class="source">{{coupleInfo.title}}</p>
                     </div>
-                {% endif %}
-            {% endblock %}
-
-        </section>
+                    <img class="preview" src="{{ asset('camera_picture/' ~ detect.image_filename) }}">
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
