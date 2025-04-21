@@ -554,3 +554,10 @@ div.content {
     color: white;
     margin-right: .15rem;
 }
+
+.fa-solid.red {
+    color: #ff0033 !important;
+}
+.fa-solid.green {
+    color: #29bc86 !important;
+}
