@@ -3,22 +3,20 @@
 {% block body %}
     {{ component('navigation', {index: 0}) }}
     <div class="content">
-        <a href="{{ path('app_couples_add') }}" class="rounded-btn"><i class="fa-solid fa-plus"></i> Ajouter une nouvelle alarme</a>
+        <h2>Your cameras</h2>
 
-        {% if couple is not null %}
-            <h2>🔎 alarm list</h2>
-            <div class="quiz-grid-container">
-                {% for device in couple %}
-                    {{ component('couplecard', {couple: device, wifi:wifi}) }}
+        <a href="{{ path('app_couples_add') }}" class="btn-primary"><i class="fa-solid fa-plus"></i> Add a camera</a>
+
+        {% if couples is not null %}
+            <div class="grid-container couples">
+                {% for couple in couples %}
+                    {{ component('couplecard', {couple: couple, wifi: wifi}) }}
                 {% endfor %}
-                {% if couple is empty %}
-                    <p class="no-result">You have no alarm</p>
+                {% if couples is empty %}
+                    <p class="no-result">You have no cameras yet. Start by adding a new one.</p>
                 {% endif %}
             </div>
-            <hr>
         {% endif %}
-
-
     </div>
 
 {% endblock %}

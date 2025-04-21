@@ -32,14 +32,12 @@ final class CoupleController extends AbstractController{
     #[Route('/couples', name: 'app_couples')]
     public function index(UserInterface $user): Response
     {
-        $couple = $this->coupleService->getAllCouplesByUser($user->getId());
-        //dd($couple);
+        $couples = $this->coupleService->getAllCouplesByUser($user->getId());
         $wifi = "good";
 
-        //dd($couple);
         return $this->render('couple/all.html.twig', [
             'controller_name' => 'CoupleController',
-            'couple'=> $couple,
+            'couples'=> $couples,
             'wifi'=>$wifi,
         ]);
     }

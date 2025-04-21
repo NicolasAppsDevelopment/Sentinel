@@ -1,11 +1,11 @@
 <?php
 namespace App\Twig\Components;
 
-use App\Entity\Quiz;
+use App\Entity\Couple;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-class QuizCard
+class CoupleCard
 {
-    public Quiz $quiz;
+    public Couple $couple;
 }
