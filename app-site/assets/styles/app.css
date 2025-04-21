@@ -598,6 +598,8 @@ div.content {
     max-height: calc(100vh - 2rem);
     object-fit: contain;
     z-index: 1;
+    min-width: 20rem;
+    min-height: 15rem;
 }
 
 .stream-player-container .title {
