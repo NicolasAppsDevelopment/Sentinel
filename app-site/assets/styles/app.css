@@ -640,11 +640,15 @@ div.content {
 .stream-player-container .controls .player-btn {
     background: none;
     border: none;
-    color: var(--primary-font-color);
+    color: rgba(255, 255, 255, 0.85);
     padding: 1rem .5rem;
     cursor: pointer;
     font-size: 1.25rem;
     filter: drop-shadow(0 0 1px #000);
+    transition: color 0.2s ease-in-out;
+}
+.stream-player-container .controls .player-btn:hover {
+    color: white;
 }
 
 .stream-player-container.display-ui .controls,
