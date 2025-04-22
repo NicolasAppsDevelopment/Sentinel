@@ -67,22 +67,30 @@
             <div class="separator"></div>
             <div class="state">
                 <span class="fa-solid fa-power-off {{ coupleInfo.enabled == true ? "green" : "red"  }}"></span>
-                <p class="desc">Camera {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+                <p class="desc">Detection {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+            </div>
+            <div class="separator"></div>
+            <div class="state">
+                <span class="fa-solid fa-bell {{ coupleInfo.enabled == true ? "red" : ""  }}"></span>
+                <p class="desc">Buzzer {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
             </div>
         </div>
         <div class="camera-actions">
-            <a class="card action">
+            <button  class="card action"
+                     hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                     hx-trigger="click"
+                     hx-swap="none">
                 <span class="fa-solid fa-bell"></span>
-                <p class="desc">Enable buzzer</p>
-            </a>
+                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} buzzer</p>
+            </button>
             <button  class="card action"
                      hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
                      hx-trigger="click"
                      hx-swap="none">
                 <span class="fa-solid fa-power-off"></span>
-                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} camera</p>
+                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} detection</p>
             </button>
-            <a class="card action">
+            <a class="card action" href="{{ path('app_couples_enabledisable', {id: coupleInfo.id}) }}">
                 <span class="fa-solid fa-pencil"></span>
                 <p class="desc">Edit camera</p>
             </a>
