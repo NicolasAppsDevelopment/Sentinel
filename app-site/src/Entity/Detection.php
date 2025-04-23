@@ -24,6 +24,11 @@ class Detection
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Couple $couple = null;
 
+    public function __construct()
+    {
+        $this->triggeredAt = new \DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

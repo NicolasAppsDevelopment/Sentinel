@@ -29,10 +29,17 @@ class CoupleService
         );
     }
 
-    public function getCouplesByCameraId(int $cameraId): Couple
+    public function getCoupleByCameraId(int $cameraId): ?Couple
     {
         return $this->coupleRepository->findOneBy(
             ['camera_id' => $cameraId]
+        );
+    }
+
+    public function getCoupleByActionId(int $actionId): ?Couple
+    {
+        return $this->coupleRepository->findOneBy(
+            ['action_id' => $actionId]
         );
     }
 

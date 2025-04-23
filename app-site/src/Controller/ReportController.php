@@ -24,7 +24,7 @@ final class ReportController extends AbstractController {
     #[Route('/report/{id}', name: 'app_report', methods: 'POST')]
     public function report(int $id): Response
     {
-        $couple = $this->coupleService->getCouplesByCameraId($id);
+        $couple = $this->coupleService->getCoupleByCameraId($id);
 
         dd($couple);
 

@@ -252,7 +252,7 @@ final class CoupleController extends AbstractController{
 
         $client = HttpClient::create();
 
-        try {
+        try {//TODO Extract into a specific file
             $url = 'http://' . $cameraDevice->getIp() . '/capture?_cb=1744097322029';
             $response = $client->request('GET', $url);
 
