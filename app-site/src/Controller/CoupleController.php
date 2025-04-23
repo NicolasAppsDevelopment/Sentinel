@@ -36,7 +36,6 @@ final class CoupleController extends AbstractController{
         $wifi = "good";
 
         return $this->render('couple/all.html.twig', [
-            'controller_name' => 'CoupleController',
             'couples'=> $couples,
             'wifi'=>$wifi,
         ]);
@@ -63,7 +62,7 @@ final class CoupleController extends AbstractController{
             $errors[] = $error->getMessage();
         }
 
-        // just display add page, save logic in /couple/save !
+        // just display add page, save logic in /save !
         return $this->render('couple/add.html.twig', [
             'form' => $form,
             'errors' => $errors,
@@ -78,10 +77,18 @@ final class CoupleController extends AbstractController{
             $this->addFlash('error', 'Couple not found');
             return $this->redirectToRoute('app_couples');
         }
+
+        // TODO: Get user last detections today
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
 
+        // TODO: Get number of new detections since last seek from service
+
+
+        $couple->setLastDetectionSeekDate(new DateTime());
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
+
         return $this->render('couple/view.html.twig', [
-            'controller_name' => 'CoupleController',
             'coupleInfo' => $couple,
             'detections' => $detections,
         ]);
@@ -119,7 +126,7 @@ final class CoupleController extends AbstractController{
     }
 
     #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]
-    public function enableDisableCouple(int $id): Response
+    public function enableDisableCouple(string $id): Response
     {
         $this->coupleService->enableDisableCouple($id);
 
@@ -221,7 +228,7 @@ final class CoupleController extends AbstractController{
     }
 
     #[Route('/couples/{id}/capture', name: 'app_couples_capture', methods: 'GET')]
-    public function getSecureCapture(int $id, UserInterface $user): Response
+    public function getSecureCapture(string $id, UserInterface $user): Response
     {
         if (!$user) {
             return $this->apiResponseService->error('You are not authorized to access capture route! Sign in first!');

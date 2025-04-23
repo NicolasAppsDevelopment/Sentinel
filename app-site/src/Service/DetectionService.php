@@ -64,4 +64,9 @@ class DetectionService
         return $this->detectionRepository->findByUserId($userId);
     }
 
+    public function getDetectionById(int $id)
+    {
+        return $this->detectionRepository->find($id);
+    }
+
 }

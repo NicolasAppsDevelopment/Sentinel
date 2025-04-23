@@ -36,4 +36,34 @@ final class DetectionController extends AbstractController{
             'detections'=> $detections,
         ]);
     }
+
+    #[Route('/detections/view/{id}', name: 'app_detections_view')]
+    public function viewDetection(string $id): Response
+    {
+        $detection = $this->detectionService->getDetectionById($id);
+        if (!$detection) {
+            $this->addFlash('error', 'Detection not found');
+            return $this->redirectToRoute('app_detections');
+        }
+
+        return $this->render('detection/view.html.twig', [
+            'detection' => $detection,
+        ]);
+    }
+
+    #[Route('/detections/delete/{id}', name: 'app_detections_delete')]
+    public function deleteDetection(string $id): Response
+    {
+        $detection = $this->detectionService->getDetectionById($id);
+        if (!$detection) {
+            $this->addFlash('error', 'Detection not found');
+            return $this->redirectToRoute('app_detections');
+        }
+
+        $this->entityManager->remove($detection);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Detection deleted successfully');
+        return $this->redirectToRoute('app_detections');
+    }
 }

@@ -5,13 +5,13 @@
     <div class="content">
         <h2>Your detections</h2>
 
-        <div class="grid-container couples">
+        <div class="history-list">
             {% if detections is not null %}
                 {% for detection in detections %}
-                    {{ component('detectioncard', {detection: detection, coupleName: 's'}) }}
+                    {{ component('detectioncard', {detection: detection, coupleName: detection.couple.title }) }}
                 {% endfor %}
             {% else %}
-                <p class="no-result">You have no detections yet. Start by adding a new one.</p>
+                <p class="no-result">You have no detections yet.</p>
             {% endif %}
         </div>
     </div>

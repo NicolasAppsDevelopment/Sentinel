@@ -805,6 +805,7 @@ body > div.content {
     justify-content: space-between;
     overflow: hidden;
     padding: 0;
+    text-decoration: none;
 }
 .history-list .item .infos {
     display: flex;

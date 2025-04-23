@@ -1,127 +1,35 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ component('navigation', {index: 0}) }}
+    {{ component('navigation', {index: 1}) }}
     {{ component('confirmdialog', {
-        title: 'Remove camera',
-        message: 'Are you sure you want to remove this camera? You could always add it again later if no one add it to his account before you.',
-        confirmUrl: path('app_couples_delete', {'id': coupleInfo.id}),
+        title: 'Remove detection',
+        message: 'Are you sure you want to remove this detection? This action is irreversible.',
+        confirmUrl: path('app_detections_delete', {id: detection.id}),
     }) }}
     <div class="content">
         <div class="stream-player-container">
-            <span class="loading">Loading...</span>
-            <img src="{{ path('app_couples_stream', {id: coupleInfo.id}) }}" alt="">
-            <div class="dark-overlay"></div>
-            <div class="title">
-                <h2>{{ coupleInfo.title }}</h2>
-            </div>
-            <div class="controls">
-                <div class="dropup">
-                    <button class="player-btn dropup-btn">
-                        <i class="fa-solid fa-gear"></i>
-                    </button>
-                    <div class="dropup-content">
-                        <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 20} ) }}"
-                                 hx-trigger="click, touchstart"
-                                 hx-swap="none">
-                            1440p
-                        </button>
-                        <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 16} ) }}"
-                                 hx-trigger="click, touchstart"
-                                 hx-swap="none">
-                            1080p
-                        </button>
-                        <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 13} ) }}"
-                                 hx-trigger="click, touchstart"
-                                 hx-swap="none">
-                            720p
-                        </button>
-                        <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 10} ) }}"
-                                 hx-trigger="click, touchstart"
-                                 hx-swap="none">
-                            480p
-                        </button>
-                    </div>
-                </div>
-                <a class="player-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>
-                    <i class="fa-solid fa-camera"></i>
-                </a>
-            </div>
+            <img src="{{ asset('eeuuuuhhh') }}" alt="">
         </div>
 
         <div class="camera-states card">
             <div class="state">
-                <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">Good vision module Wi-Fi strength</p>
+                <span class="fa-solid fa-calendar"></span>
+                <p class="desc">{{ detection.triggeredAt|date("d/m/Y H:i:s") }}</p>
             </div>
             <div class="separator"></div>
             <div class="state">
-                <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">Good action module Wi-Fi strength</p>
-            </div>
-            <div class="separator"></div>
-            <div class="state">
-                <span class="fa-solid fa-power-off {{ coupleInfo.enabled == true ? "green" : "red"  }}"></span>
-                <p class="desc">Detection {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
-            </div>
-            <div class="separator"></div>
-            <div class="state">
-                <span class="fa-solid fa-bell {{ coupleInfo.enabled == true ? "red" : ""  }}"></span>
-                <p class="desc">Buzzer {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+                <span class="fa-solid fa-camera"></span>
+                <p class="desc">Oui</p>
             </div>
         </div>
         <div class="camera-actions">
-            <button  class="card action"
-                     hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-                     hx-trigger="click"
-                     hx-swap="none">
-                <span class="fa-solid fa-bell"></span>
-                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} buzzer</p>
-            </button>
-            <button  class="card action"
-                     hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
-                     hx-trigger="click"
-                     hx-swap="none">
-                <span class="fa-solid fa-power-off"></span>
-                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} detection</p>
-            </button>
-            <a class="card action" href="{{ path('app_couples_enabledisable', {id: coupleInfo.id}) }}">
-                <span class="fa-solid fa-pencil"></span>
-                <p class="desc">Edit camera</p>
-            </a>
             <button type="button"
                     class="card action"
                     onclick="document.getElementById('confirm-modal').showModal()">
                 <span class="fa-solid fa-trash red"></span>
-                <p class="desc">Remove camera</p>
+                <p class="desc">Remove detection</p>
             </button>
-        </div>
-
-        <div class="row">
-            <h2>
-                History
-            </h2>
-            <div class="notif big">
-                <span class="fa-solid fa-bell"></span>
-                <span>{{ detections|length }}</span>
-            </div>
-        </div>
-
-        <div class="history-list">
-            {% for detection in detections %}
-                <div class="card item">
-                    <div class="infos">
-                        <p class="date">{{detection.triggeredAt|date("d/m/Y H:i:s")}}</p>
-                        <p class="type">Movements</p>
-                        <p class="source">{{coupleInfo.title}}</p>
-                    </div>
-                    <img class="preview" src="{{ asset('camera_picture/' ~ detection.imageFilename) }}">
-                </div>
-            {% endfor %}
         </div>
     </div>
 {% endblock %}
