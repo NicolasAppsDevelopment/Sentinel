@@ -113,7 +113,14 @@
 
         <div class="history-list">
             {% for detection in detections %}
-                {{ component('detectioncard', {detection: detection, coupleName: coupleInfo.title}) }}
+                <div class="card item">
+                    <div class="infos">
+                        <p class="date">{{detection.triggeredAt|date("d/m/Y H:i:s")}}</p>
+                        <p class="type">Movements</p>
+                        <p class="source">{{coupleInfo.title}}</p>
+                    </div>
+                    <img class="preview" src="{{ asset('camera_picture/' ~ detection.imageFilename) }}">
+                </div>
             {% endfor %}
         </div>
     </div>

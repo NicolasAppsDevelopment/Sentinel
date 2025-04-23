@@ -10,9 +10,9 @@
             <span class="fa-solid fa-warning"></span>
             <p>{{ message }}</p>
         </div>
-        <form hx-{{ confirmMethod|lower }}="{{ confirmUrl }}" hx-target="this" hx-swap="outerHTML" class="footer">
-            <button type="button" class="cancel-btn" onclick="document.getElementById('confirm-modal').close()">Cancel</button>
-            <button type="submit" class="confirm-btn">Confirm</button>
-        </form>
+        <div class="footer">
+            <button class="cancel-btn" onclick="document.getElementById('confirm-modal').close()">Cancel</button>
+            <a class="confirm-btn" href="{{ confirmUrl }}">Confirm</a>
+        </div>
     </div>
 </dialog>

@@ -24,6 +24,9 @@ class Couple
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    public ?\DateTimeInterface $lastDetectionSeekDate = null;
+
     #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Device $actionDevice = null;
@@ -34,6 +37,12 @@ class Couple
 
     #[ORM\Column]
     private ?bool $enabled = null;
+
+    public function __construct()
+    {
+        $this->associationDate = new \DateTime();
+        $this->lastDetectionSeekDate = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -115,6 +124,18 @@ class Couple
     public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function getLastDetectionSeekDate(): ?\DateTimeInterface
+    {
+        return $this->lastDetectionSeekDate;
+    }
+
+    public function setLastDetectionSeekDate(\DateTimeInterface $lastDetectionSeekDate): static
+    {
+        $this->lastDetectionSeekDate = $lastDetectionSeekDate;
 
         return $this;
     }

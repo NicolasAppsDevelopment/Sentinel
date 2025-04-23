@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\DetectionsRepository;
+use App\Repository\DetectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DetectionsRepository::class)]
-class Detections
+#[ORM\Entity(repositoryClass: DetectionRepository::class)]
+class Detection
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,13 +15,13 @@ class Detections
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    public ?string $image_filename = null;
+    public ?string $imageFilename = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    public ?\DateTimeInterface $triggered_at = null;
+    public ?\DateTimeInterface $triggeredAt = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Couple $couple = null;
 
     public function getId(): ?int
@@ -31,34 +31,34 @@ class Detections
 
     public function getImageFilename(): ?string
     {
-        return $this->image_filename;
+        return $this->imageFilename;
     }
 
-    public function setImageFilename(?string $image_filename): static
+    public function setImageFilename(?string $imageFilename): static
     {
-        $this->image_filename = $image_filename;
+        $this->imageFilename = $imageFilename;
 
         return $this;
     }
 
     public function getTriggeredAt(): ?\DateTimeInterface
     {
-        return $this->triggered_at;
+        return $this->triggeredAt;
     }
 
-    public function setTriggeredAt(\DateTimeInterface $triggered_at): static
+    public function setTriggeredAt(\DateTimeInterface $triggeredAt): static
     {
-        $this->triggered_at = $triggered_at;
+        $this->triggeredAt = $triggeredAt;
 
         return $this;
     }
 
-    public function getCoupleId(): ?Couple
+    public function getCouple(): ?Couple
     {
         return $this->couple;
     }
 
-    public function setCoupleId(?Couple $couple): static
+    public function setCouple(?Couple $couple): static
     {
         $this->couple = $couple;
 

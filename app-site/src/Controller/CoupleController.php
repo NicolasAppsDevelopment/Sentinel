@@ -71,13 +71,15 @@ final class CoupleController extends AbstractController{
     }
 
     #[Route('/couples/view/{id}', name: 'app_couples_view')]
-    public function getCoupleById(int $id): Response
+    public function getCoupleById(string $id): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
-        //dd($couple);
+        if ($couple === null) {
+            $this->addFlash('error', 'Couple not found');
+            return $this->redirectToRoute('app_couples');
+        }
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
 
-        // dd($detections);
         return $this->render('couple/view.html.twig', [
             'controller_name' => 'CoupleController',
             'coupleInfo' => $couple,
@@ -125,6 +127,23 @@ final class CoupleController extends AbstractController{
         $res->headers->set('Hx-Refresh', 'true');
 
         return $res;
+    }
+
+    #[Route('/couples/delete/{id}', name: 'app_couples_delete')]
+    public function deleteCouple(string $id): Response
+    {
+        $couple = $this->coupleService->getCoupleById($id);
+        if ($couple !== null) {
+            $couple->getActionDevice()?->setIsPaired(false);
+            $couple->getCameraDevice()?->setIsPaired(false);
+
+            $this->entityManager->remove($couple);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Camera deleted successfully!');
+        }
+
+        return $this->redirectToRoute('app_couples');
     }
 
     #[Route('/couples/{id}/stream', name: 'app_couples_stream')]

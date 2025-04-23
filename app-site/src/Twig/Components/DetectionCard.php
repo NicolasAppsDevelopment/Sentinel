@@ -1,12 +1,12 @@
 <?php
 namespace App\Twig\Components;
 
+use App\Entity\Detection;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-class ConfirmDialog
+class DetectionCard
 {
-    public string $title;
-    public string $message;
-    public string $confirmUrl;
+    public Detection $detection;
+    public string $coupleName;
 }

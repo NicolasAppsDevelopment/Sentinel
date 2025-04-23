@@ -1,0 +1,8 @@
+<a class="card item" href="{{ path('app_detections_view', {id: detection.id}) }}">
+    <div class="infos">
+        <p class="date">{{detection.triggeredAt|date("d/m/Y H:i:s")}}</p>
+        <p class="type">Movements</p>
+        <p class="source">{{ coupleName }}</p>
+    </div>
+    <img class="preview" src="{{ asset('camera_picture/' ~ detection.imageFilename) }}">
+</a>

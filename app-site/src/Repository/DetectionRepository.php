@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Detections;
+use App\Entity\Detection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Detections>
+ * @extends ServiceEntityRepository<Detection>
  */
-class DetectionsRepository extends ServiceEntityRepository
+class DetectionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Detections::class);
+        parent::__construct($registry, Detection::class);
     }
 
     public function findByCoupleId(int $coupleId): array
@@ -52,4 +52,13 @@ class DetectionsRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findByUserId(int $userId)
+    {
+        return $this->createQueryBuilder('d')
+            ->innerJoin('d.couple', 'c')
+            ->where('c.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 }

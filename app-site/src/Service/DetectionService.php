@@ -2,14 +2,14 @@
 
 namespace App\Service;
 
-use App\Entity\Detections;
-use App\Repository\DetectionsRepository;
+use App\Entity\Detection;
+use App\Repository\DetectionRepository;
 
 class DetectionService
 {
-    private DetectionsRepository $detectionRepository;
+    private DetectionRepository $detectionRepository;
 
-    public function __construct(DetectionsRepository $detectionRepository)
+    public function __construct(DetectionRepository $detectionRepository)
     {
         $this->detectionRepository = $detectionRepository;
     }
@@ -35,16 +35,33 @@ class DetectionService
      *   'user_id'            => 123
      * ]
      */
-    public function createNewDetection(array $data): Detections
+    public function createNewDetection(array $data): Detection
     {
         // Convert association_date to a DateTime
-        $triggered_at = new \DateTime($data['triggered_at']);
+        $triggeredAt = new \DateTime($data['triggered_at']);
 
         return $this->detectionRepository->createDetection(
             $data['image_filename'],
-            $triggered_at,
+            $triggeredAt,
             $data['couple'],
 
         );
     }
+
+    /**
+     * Delete a Detection.
+     */
+    public function deleteDetection(Detection $detection): void
+    {
+        $this->detectionRepository->remove($detection, true);
+    }
+
+    /**
+     * Get detections by couple ID belong to a User ID passed in parameter.
+     */
+    public function getAllDetectionsByUser(int $userId): array
+    {
+        return $this->detectionRepository->findByUserId($userId);
+    }
+
 }
