@@ -101,7 +101,7 @@ final class DeviceController extends AbstractController {
         $filename = $date->format('Y-m-d_H-i-s') . '.jpg';
 
         // Define save path
-        $saveDir = $this->getParameter('kernel.project_dir') . '/public/pictures/';
+        $saveDir = '/var/www/app-site/assets/camera_picture';
         $fullPath = $saveDir . $filename;
 
         // Save image to disk
