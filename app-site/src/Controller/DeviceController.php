@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\DeviceDto;
+use App\Dto\DiscoverDeviceDto;
 use App\Entity\Detection;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
@@ -26,7 +26,7 @@ final class DeviceController extends AbstractController {
     ) {}
 
     #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
-    public function discoverDevice(#[MapRequestPayload] DeviceDto $deviceDto): Response
+    public function discoverDevice(#[MapRequestPayload] DiscoverDeviceDto $deviceDto): Response
     {
         // Check if the device already exists
         $deviceRepository = $this->entityManager->getRepository(Device::class);
@@ -70,10 +70,15 @@ final class DeviceController extends AbstractController {
     }
 
     //TODO Save image (by using extract function in coupleController and had path to detection entity
-    #[Route(path: '/devices/{deviceId}/triggered', name: 'action_device_trigger')]
-    public function triggered(int $deviceId, UserInterface $user, EntityManagerInterface $entityManager): Response
+    #[Route(path: '/devices/triggered', name: 'action_device_trigger')]
+    public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, UserInterface $user, EntityManagerInterface $entityManager): Response
     {
-        $couple = $this->coupleService->getCoupleByActionId($deviceId);
+        $device = $this->deviceService->getDeviceByIpAndMac($deviceDto->ip, $deviceDto->mac);
+        if (!$device) {
+            return $this->apiResponseService->error('Failed to retrieve device.');
+        }
+
+        $couple = $this->coupleService->getCoupleByActionId($device->getId());
 
         $response = $this->coupleController->getSecureCapture($couple->getId(), $user);
 

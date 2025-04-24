@@ -32,6 +32,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/devices/discover, role: PUBLIC_ACCESS }
+        - { path: ^/devices/triggered, role: PUBLIC_ACCESS }
         - { path: ^/login, role: PUBLIC_ACCESS }
         - { path: ^/register, role: PUBLIC_ACCESS }
         - { path: ^/, role: IS_AUTHENTICATED_FULLY }
