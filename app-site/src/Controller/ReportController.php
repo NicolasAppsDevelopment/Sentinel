@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\DeviceDto;
+use App\Dto\DiscoverDeviceDto;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;

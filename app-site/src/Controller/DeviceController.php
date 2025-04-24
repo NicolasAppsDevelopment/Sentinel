@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\DeviceDto;
+use App\Dto\DiscoverDeviceDto;
 use App\Entity\Detection;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
@@ -26,7 +26,7 @@ final class DeviceController extends AbstractController {
     ) {}
 
     #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
-    public function discoverDevice(#[MapRequestPayload] DeviceDto $deviceDto): Response
+    public function discoverDevice(#[MapRequestPayload] DiscoverDeviceDto $deviceDto): Response
     {
         // Check if the device already exists
         $deviceRepository = $this->entityManager->getRepository(Device::class);
