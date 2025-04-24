@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Couple;
 use App\Repository\CoupleRepository;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CoupleService
 {
@@ -80,5 +81,12 @@ class CoupleService
             return true;
         }
     }
-    
+    public function updateTitle(int $id, string $newTitle): void
+    {
+        if ('' === trim($newTitle)) {
+            throw new BadRequestException('Le titre ne peut pas être vide.');
+        }
+
+        $this->coupleRepository->updateTitle($id, $newTitle);
+    }
 }

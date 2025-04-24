@@ -71,7 +71,25 @@ class CoupleRepository extends ServiceEntityRepository
     }   
 
 
+    /**
+     * Met à jour directement le titre du Couple en base
+     *
+     * @param int    $id
+     * @param string $newTitle
+     * @return int  
+     */
+    public function updateTitle(int $id, string $newTitle): int
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.title', ':title')
+            ->where('c.id = :id')
+            ->setParameter('title', $newTitle)
+            ->setParameter('id', $id)
+            ->getQuery();
 
+        return $qb->execute(); 
+    }
 
 
 //    /**

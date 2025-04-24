@@ -271,4 +271,16 @@ final class CoupleController extends AbstractController{
             return $this->apiResponseService->error('Unable fetching image: ' . $e->getMessage());
         }
     }
+
+    #[Route('/couple/{id}/update', name: 'app_couple_update_name', methods: ['POST'])]
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $newTitle = $request->request->get('title', '');
+
+        $this->coupleService->updateTitle($id, $newTitle);
+
+        return $this->redirectToRoute('app_couples_view', [
+            'id' => $id,
+        ]);
+    }
 }

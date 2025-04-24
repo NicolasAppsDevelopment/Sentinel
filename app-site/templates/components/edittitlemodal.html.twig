@@ -1,0 +1,31 @@
+<dialog id="edit-modal" class="modal-wrapper">
+    <div class="modal">
+        <div class="header">
+            <h2 class="title">{{message}}</h2>
+            <button type="button" class="close-btn"
+                    onclick="document.getElementById('edit-modal').close()">
+                <!-- Icône de fermeture (SVG ou FontAwesome) -->
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.01186 7.00933L12.27 2.75116C12.341 2.68501 ... Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+
+        <form class="content" method="post"
+              action="{{ path('app_couple_update_name', {id: couple.id}) }}">
+            <label for="couple-title">New title :</label>
+            <input id="couple-title" name="title" type="text"
+                   value="{{ couple.title }}" required autofocus />
+
+        <div class="footer">
+            <button type="button" class="cancel-btn"
+                    onclick="document.getElementById('edit-modal').close()">
+                Annuler
+            </button>
+            <button type="submit" class="confirm-btn">
+                Enregistrer
+            </button>
+        </div>
+        </form>
+    </div>
+</dialog>
