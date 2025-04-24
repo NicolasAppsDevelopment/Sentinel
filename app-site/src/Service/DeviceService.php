@@ -24,10 +24,10 @@ class DeviceService
 
     public function getDeviceByIpAndMac(string $ip, string $mac): ?Device
     {
-        return $this->deviceRepository->findOneBy(
-            ['ip' => $ip],
-            ['macAddress' => $mac]
-        );
+        return $this->deviceRepository->findOneBy([
+            'ip' => $ip,
+            'macAddress' => $mac,
+        ]);
     }
 
     public function getUnpairedActionDevices(): array
