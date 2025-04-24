@@ -32,16 +32,12 @@ class CoupleService
 
     public function getCoupleByCameraId(int $cameraId): ?Couple
     {
-        return $this->coupleRepository->findOneBy(
-            ['camera_device_id' => $cameraId]
-        );
+        return $this->coupleRepository->findOneByCameraDeviceId($cameraId);
     }
 
     public function getCoupleByActionId(int $actionId): ?Couple
     {
-        return $this->coupleRepository->findOneBy(
-            ['action_device_id' => $actionId]
-        );
+        return $this->coupleRepository->findOneByActionDeviceId($actionId);
     }
 
     /**
