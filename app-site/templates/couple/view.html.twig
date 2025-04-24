@@ -7,6 +7,14 @@
         message: 'Are you sure you want to remove this camera? You could always add it again later if no one add it to his account before you.',
         confirmUrl: path('app_couples_delete', {'id': coupleInfo.id}),
     }) }}
+
+    {{ component('edittitlemodal', {
+        title: 'Edit camera name',
+        message: 'Enter a new name for the camera',
+        couple: coupleInfo,
+        editUrl: path('app_couple_update_name', {'id': coupleInfo.id}),
+    }) }}
+
     <div class="content">
         <div class="stream-player-container">
             <span class="loading">Loading...</span>
@@ -89,10 +97,12 @@
                 <span class="fa-solid fa-power-off"></span>
                 <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} detection</p>
             </button>
-            <a class="card action" href="{{ path('app_couples_enabledisable', {id: coupleInfo.id}) }}">
+            <button type="button"
+                    class="card action"
+                    onclick="document.getElementById('edit-modal').showModal()">
                 <span class="fa-solid fa-pencil"></span>
                 <p class="desc">Edit camera</p>
-            </a>
+            </button>
             <button type="button"
                     class="card action"
                     onclick="document.getElementById('confirm-modal').showModal()">
