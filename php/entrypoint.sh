@@ -15,7 +15,7 @@ chown -R www-data:www-data /camera_pictures
 if [ -d "/var/www/app-site/public/camera_pictures" ]; then
     rm -R /var/www/app-site/public/camera_pictures
 fi
-ln -s /camera_picture /var/www/app-site/public/camera_pictures
+ln -s /camera_pictures /var/www/app-site/public/camera_pictures
 
 # wait MariaDB to be ready
 until mariadb -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; do
