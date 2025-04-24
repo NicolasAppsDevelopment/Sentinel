@@ -260,7 +260,7 @@ final class CoupleController extends AbstractController{
                 return $this->apiResponseService->error('Unable to capture image: ' . $response->getStatusCode());
             }
 
-            $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpeg';
+            $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpg';
 
             return new StreamedResponse(function () use ($response) {
                 echo $response->getContent();
@@ -272,7 +272,7 @@ final class CoupleController extends AbstractController{
         }
     }
 
-    public function getSecureCaptureFromTriggerDevice(string $id) : Response
+    public function getSecureCaptureFromTriggeredDevice(string $id) : Response
     {
         $couple = $this->coupleService->getCoupleById($id);
         if ($couple === null) {
@@ -297,7 +297,7 @@ final class CoupleController extends AbstractController{
                 return $this->apiResponseService->error('Unable to capture image: ' . $response->getStatusCode());
             }
 
-            $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpeg';
+            $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpg';
 
             return new StreamedResponse(function () use ($response) {
                 echo $response->getContent();

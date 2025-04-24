@@ -72,7 +72,7 @@ final class DeviceController extends AbstractController {
 
     //TODO Save image (by using extract function in coupleController and had path to detection entity
     #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
-    public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, UserInterface $user, EntityManagerInterface $entityManager): Response
+    public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, EntityManagerInterface $entityManager): Response
     {
         $device = $this->deviceService->getDeviceByIpAndMac($deviceDto->ip, $deviceDto->mac);
         if (!$device) {
@@ -81,7 +81,7 @@ final class DeviceController extends AbstractController {
 
         $couple = $this->coupleService->getCoupleByActionId($device->getId());
 
-        $response = $this->coupleController->getSecureCaptureFromTriggerDevice($couple->getId());
+        $response = $this->coupleController->getSecureCaptureFromTriggeredDevice($couple->getId());
 
 
         // Get image content
@@ -95,7 +95,7 @@ final class DeviceController extends AbstractController {
 
         // Generate unique filename
         $date = new \DateTime();
-        $filename = $date->format('Y-m-d_H-i-s') . '.jpeg';
+        $filename = $date->format('Y-m-d_H-i-s') . '.jpg';
 
         // Define save path
         $saveDir = $this->getParameter('kernel.project_dir') . '/public/pictures/';
