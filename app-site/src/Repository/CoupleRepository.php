@@ -29,7 +29,7 @@ class CoupleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findOneByCameraDeviceId(int $actionDeviceId): ?Couple
+    public function findOneByActionDeviceId(int $actionDeviceId): ?Couple
     {
         return $this->createQueryBuilder('c')
             ->where('c.actionDevice = :actionDevice')
@@ -38,7 +38,7 @@ class CoupleRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findOneByActionDeviceId(int $cameraDeviceId): ?Couple
+    public function findOneByCameraDeviceId(int $cameraDeviceId): ?Couple
     {
         return $this->createQueryBuilder('c')
             ->where('c.cameraDevice = :cameraDevice')

@@ -80,6 +80,9 @@ final class DeviceController extends AbstractController {
         }
 
         $couple = $this->coupleService->getCoupleByActionId($device->getId());
+        if (!$couple) {
+            return $this->apiResponseService->error('Failed to retrieve couple.');
+        }
 
         $response = $this->coupleController->getSecureCaptureFromTriggeredDevice($couple->getId());
 
