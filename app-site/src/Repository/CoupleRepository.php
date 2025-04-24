@@ -35,7 +35,7 @@ class CoupleRepository extends ServiceEntityRepository
             ->where('c.actionDevice = :actionDevice')
             ->setParameter('actionDevice', $actionDeviceId)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
     public function findOneByActionDeviceId(int $cameraDeviceId): ?Couple
@@ -44,7 +44,7 @@ class CoupleRepository extends ServiceEntityRepository
             ->where('c.cameraDevice = :cameraDevice')
             ->setParameter('cameraDevice', $cameraDeviceId)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
 
