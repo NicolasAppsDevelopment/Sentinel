@@ -116,6 +116,6 @@ final class DeviceController extends AbstractController {
         $entityManager->flush();
 
 
-        return $this->apiResponseService->okRaw('Image captured and saved.');
+        return $this->apiResponseService->ok(null);
     }
 }
