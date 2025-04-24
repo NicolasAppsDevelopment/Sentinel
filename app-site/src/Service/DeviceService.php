@@ -22,7 +22,7 @@ class DeviceService
         );
     }
 
-    public function getDeviceByIpAndMac(int $ip, int $mac): ?Device
+    public function getDeviceByIpAndMac(string $ip, string $mac): ?Device
     {
         return $this->deviceRepository->findOneBy(
             ['ip' => $ip],
