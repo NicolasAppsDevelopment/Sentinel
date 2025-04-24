@@ -271,4 +271,41 @@ final class CoupleController extends AbstractController{
             return $this->apiResponseService->error('Unable fetching image: ' . $e->getMessage());
         }
     }
+
+    public function getSecureCaptureFromTriggerDevice(string $id) : Response
+    {
+        $couple = $this->coupleService->getCoupleById($id);
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
+        $cameraDevice = $couple->getCameraDevice();
+        if ($cameraDevice === null) {
+            return $this->apiResponseService->error('Camera not found');
+        }
+        if ($cameraDevice->isPaired() === false) {
+            return $this->apiResponseService->error('Camera not paired');
+        }
+
+        $client = HttpClient::create();
+
+        try {//TODO Extract into a specific file
+            $url = 'http://' . $cameraDevice->getIp() . '/capture?_cb=1744097322029';
+            $response = $client->request('GET', $url);
+
+            if ($response->getStatusCode() !== 200) {
+                return $this->apiResponseService->error('Unable to capture image: ' . $response->getStatusCode());
+            }
+
+            $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpeg';
+
+            return new StreamedResponse(function () use ($response) {
+                echo $response->getContent();
+            }, 200, [
+                'Content-Type' => $contentType,
+            ]);
+        } catch (\Exception $e) {
+            return $this->apiResponseService->error('Unable fetching image: ' . $e->getMessage());
+        }
+    }
 }

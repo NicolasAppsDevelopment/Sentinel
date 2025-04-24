@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\DiscoverDeviceDto;
+use App\Dto\TriggeredDeviceDto;
 use App\Entity\Detection;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
@@ -70,7 +71,7 @@ final class DeviceController extends AbstractController {
     }
 
     //TODO Save image (by using extract function in coupleController and had path to detection entity
-    #[Route(path: '/devices/triggered', name: 'action_device_trigger')]
+    #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
     public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, UserInterface $user, EntityManagerInterface $entityManager): Response
     {
         $device = $this->deviceService->getDeviceByIpAndMac($deviceDto->ip, $deviceDto->mac);
@@ -80,7 +81,7 @@ final class DeviceController extends AbstractController {
 
         $couple = $this->coupleService->getCoupleByActionId($device->getId());
 
-        $response = $this->coupleController->getSecureCapture($couple->getId(), $user);
+        $response = $this->coupleController->getSecureCaptureFromTriggerDevice($couple->getId());
 
 
         // Get image content
