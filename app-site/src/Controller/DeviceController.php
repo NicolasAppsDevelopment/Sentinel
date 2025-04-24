@@ -71,22 +71,42 @@ final class DeviceController extends AbstractController {
 
     //TODO Save image (by using extract function in coupleController and had path to detection entity
     #[Route(path: '/devices/{deviceId}/triggered', name: 'action_device_trigger')]
-    public function triggered(int $deviceId, UserInterface $user, EntityManagerInterface $entityManager): void
+    public function triggered(int $deviceId, UserInterface $user, EntityManagerInterface $entityManager): Response
     {
         $couple = $this->coupleService->getCoupleByActionId($deviceId);
 
-        $picture = $this->coupleController->getSecureCapture($couple->getId(), $user);
+        $response = $this->coupleController->getSecureCapture($couple->getId(), $user);
+
+
+        // Get image content
+        ob_start();
+        $response->sendContent();
+        $imageData = ob_get_clean();
+
+        if (!$imageData) {
+            return $this->apiResponseService->error('Failed to capture image content.');
+        }
+
+        // Generate unique filename
+        $date = new \DateTime();
+        $filename = $date->format('Y-m-d_H-i-s') . '.jpeg';
+
+        // Define save path
+        $saveDir = $this->getParameter('kernel.project_dir') . '/public/pictures/';
+        $fullPath = $saveDir . $filename;
+
+        // Save image to disk
+        file_put_contents($fullPath, $imageData);
+
 
         $detection = new Detection();
         $detection->setCouple($couple);
-        $detection->setImageFilename();
-
+        $detection->setImageFilename($filename);
         $entityManager->persist($detection);
 
-        //Update the database
         $entityManager->flush();
 
 
-
+        return $this->apiResponseService->okRaw('Image captured and saved.');
     }
 }
