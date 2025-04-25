@@ -15,10 +15,10 @@ class DeviceService
     }
 
 
-    public function getDevicesById(int $coupleId): ?Device
+    public function getDeviceById(int $deviceId): ?Device
     {
         return $this->deviceRepository->findOneBy(
-            ['id' => $coupleId]
+            ['id' => $deviceId]
         );
     }
 
