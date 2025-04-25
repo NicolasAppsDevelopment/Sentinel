@@ -4,5 +4,5 @@
         <p class="type">Movements</p>
         <p class="source">{{ coupleName }}</p>
     </div>
-    <img class="preview" src="{{ asset('camera_pictures/' ~ detection.imageFilename) }}">
+    <img class="preview" src="{{ path('app_detections_image', {filename: detection.imageFilename}) }}" alt="détéction">
 </a>
