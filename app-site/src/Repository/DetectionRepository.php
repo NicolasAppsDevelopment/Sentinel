@@ -60,7 +60,7 @@ class DetectionRepository extends ServiceEntityRepository
             ->innerJoin('d.couple', 'c')
             ->where('c.user = :userId')
             ->setParameter('userId', $userId)
-            ->orderBy('c.triggeredAt', 'DESC')
+            ->orderBy('d.triggeredAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
