@@ -347,6 +347,10 @@ final class CoupleController extends AbstractController{
     public function getSecureCaptureFromTriggeredDevice(string $id) : Response
     {
         $couple = $this->coupleService->getCoupleById($id);
+        if (!$couple->isEnabled()){
+            return $this->apiResponseService->error('Couple disabled');
+        }
+
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
