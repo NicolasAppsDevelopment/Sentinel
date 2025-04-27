@@ -146,9 +146,6 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
         if ($couple !== null) {
-            $couple->getActionDevice()?->setIsPaired(false);
-            $couple->getCameraDevice()?->setIsPaired(false);
-
             $this->entityManager->remove($couple);
             $this->entityManager->flush();
 
