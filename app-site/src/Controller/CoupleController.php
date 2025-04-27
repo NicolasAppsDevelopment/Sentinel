@@ -305,7 +305,7 @@ final class CoupleController extends AbstractController {
         //if ($couple->getUser() !== $user) {
         //    return $this->apiResponseService->error('Not authorized');
         //}
-        $actionDevice = $couple->coupleEntity->getCameraDevice();
+        $actionDevice = $couple->coupleEntity->getActionDevice();
         if ($actionDevice === null) {
             return $this->apiResponseService->error('Action module not found');
         }
@@ -314,11 +314,12 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $internalEnableBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         return new Response('', 200, [
-            'X-Accel-Redirect' => $internalEnableBuzzerPath,
+            'X-Accel-Redirect' => $toggleBuzzerPath,
             'Content-Type' => 'application/json',
+            'Hx-Refresh' => 'true'
         ]);
     }
 }
