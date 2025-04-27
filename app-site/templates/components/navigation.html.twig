@@ -20,10 +20,10 @@
 
     <div class="bottom">
         {% if app.user %}
-            <div class="user-info">
+            <a class="user-info" href="{{ path('app_account_edit', {id: app.user.getId() }) }}">
                 <span class="icon fa-solid fa-user"></span>
                 <span class="text">{{ app.user.getUsername() }}</span>
-            </div>
+            </a>
             <a href="{{ path('app_logout') }}" class="icon-btn">
                 <span class="fa-solid fa-power-off"></span>
             </a>

@@ -7,7 +7,7 @@ services:
       context: ./php
     volumes:
       - ./app-site:/var/www/app-site
-      - './camera_picture:/camera_picture'
+      - ./camera_pictures:/camera_pictures
     networks:
       - default
   nginx:

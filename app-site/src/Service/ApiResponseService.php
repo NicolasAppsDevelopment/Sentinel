@@ -7,7 +7,7 @@ use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiResponseService
+readonly class ApiResponseService
 {
     public function ok(array | null $data): JsonResponse
     {

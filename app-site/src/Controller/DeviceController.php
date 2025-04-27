@@ -3,17 +3,18 @@
 namespace App\Controller;
 
 use App\Dto\DiscoverDeviceDto;
+use App\Dto\TriggeredDeviceDto;
 use App\Entity\Detection;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;
+use App\Service\ImageManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\DeviceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class DeviceController extends AbstractController {
     public function __construct(
@@ -21,8 +22,7 @@ final class DeviceController extends AbstractController {
         private readonly ApiResponseService $apiResponseService,
         private readonly DeviceService $deviceService,
         private readonly CoupleService $coupleService,
-        private readonly CoupleController $coupleController,
-
+        private readonly ImageManagerService $imageManagerService,
     ) {}
 
     #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
@@ -69,9 +69,11 @@ final class DeviceController extends AbstractController {
         ]);
     }
 
-    //TODO Save image (by using extract function in coupleController and had path to detection entity
-    #[Route(path: '/devices/triggered', name: 'action_device_trigger')]
-    public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, UserInterface $user, EntityManagerInterface $entityManager): Response
+    /**
+     * @throws \Exception
+     */
+    #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
+    public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, EntityManagerInterface $entityManager): Response
     {
         $device = $this->deviceService->getDeviceByIpAndMac($deviceDto->ip, $deviceDto->mac);
         if (!$device) {
@@ -79,30 +81,15 @@ final class DeviceController extends AbstractController {
         }
 
         $couple = $this->coupleService->getCoupleByActionId($device->getId());
-
-        $response = $this->coupleController->getSecureCapture($couple->getId(), $user);
-
-
-        // Get image content
-        ob_start();
-        $response->sendContent();
-        $imageData = ob_get_clean();
-
-        if (!$imageData) {
-            return $this->apiResponseService->error('Failed to capture image content.');
+        if (!$couple) {
+            return $this->apiResponseService->error('Failed to retrieve couple.');
         }
 
-        // Generate unique filename
-        $date = new \DateTime();
-        $filename = $date->format('Y-m-d_H-i-s') . '.jpeg';
+        if (!$couple->isEnabled()) {
+            return $this->apiResponseService->error('Couple is disabled.');
+        }
 
-        // Define save path
-        $saveDir = $this->getParameter('kernel.project_dir') . '/public/pictures/';
-        $fullPath = $saveDir . $filename;
-
-        // Save image to disk
-        file_put_contents($fullPath, $imageData);
-
+        $filename = $this->imageManagerService->saveDetectionImage($couple->getCameraDevice()->getIp());
 
         $detection = new Detection();
         $detection->setCouple($couple);
@@ -112,6 +99,6 @@ final class DeviceController extends AbstractController {
         $entityManager->flush();
 
 
-        return $this->apiResponseService->okRaw('Image captured and saved.');
+        return $this->apiResponseService->ok(null);
     }
 }

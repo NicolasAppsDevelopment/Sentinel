@@ -2,18 +2,20 @@
 
 namespace App\Service;
 
+use App\Dto\ActionDeviceStatusDto;
+use App\Dto\CameraDeviceStatusDto;
+use App\Dto\CoupleStatusDto;
 use App\Entity\Couple;
 use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CoupleService
 {
-    private CoupleRepository $coupleRepository;
-
-    public function __construct(CoupleRepository $coupleRepository)
-    {
-        $this->coupleRepository = $coupleRepository;
-    }
+    public function __construct(
+        private readonly CoupleRepository $coupleRepository,
+        private readonly DeviceService $deviceService,
+        private readonly RssiStateService $rssiStateService,
+    ) {}
 
     /**
      * Get all couples for a given user ID.
@@ -39,16 +41,12 @@ class CoupleService
 
     public function getCoupleByCameraId(int $cameraId): ?Couple
     {
-        return $this->coupleRepository->findOneBy(
-            ['camera_id' => $cameraId]
-        );
+        return $this->coupleRepository->findOneByCameraDeviceId($cameraId);
     }
 
     public function getCoupleByActionId(int $actionId): ?Couple
     {
-        return $this->coupleRepository->findOneBy(
-            ['action_id' => $actionId]
-        );
+        return $this->coupleRepository->findOneByActionDeviceId($actionId);
     }
 
     /**
@@ -95,5 +93,30 @@ class CoupleService
         }
 
         $this->coupleRepository->updateTitle($id, $newTitle);
+    }
+
+    public function getStatus(Couple $couple): CoupleStatusDto
+    {
+        return new CoupleStatusDto(
+            actionDeviceStatus: $this->getActionDeviceStatus($couple),
+            cameraDeviceStatus: $this->getCameraDeviceStatus($couple),
+        );
+    }
+
+    private function getActionDeviceStatus(Couple $couple): ActionDeviceStatusDto
+    {
+        $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
+        return new ActionDeviceStatusDto(
+            rssiState: $this->rssiStateService->toString($data['rssi']),
+            buzzer: $data['buzzer']
+        );
+    }
+
+    private function getCameraDeviceStatus(Couple $couple): CameraDeviceStatusDto
+    {
+        $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
+        return new CameraDeviceStatusDto(
+            rssiState: $this->rssiStateService->toString($data['rssi']),
+        );
     }
 }

@@ -5,17 +5,11 @@
 cd /var/www/app-site
 composer install 
 
-# set permision for symfony
+# set permission for symfony
 chmod -R 775 /var/www/app-site
 chown -R www-data:www-data /var/www/app-site
-chmod -R 775 /camera_picture
-chown -R www-data:www-data /camera_picture
-
-# set symbolic link for image upload folder
-if [ -d "/var/www/app-site/assets/camera_picture" ]; then
-    rm -R /var/www/app-site/assets/camera_picture
-fi
-ln -s /camera_picture /var/www/app-site/assets/camera_picture
+chmod -R 775 /camera_pictures
+chown -R www-data:www-data /camera_pictures
 
 # wait MariaDB to be ready
 until mariadb -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; do

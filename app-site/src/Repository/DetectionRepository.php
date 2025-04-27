@@ -22,6 +22,8 @@ class DetectionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('d')
             ->where('d.couple = :couple')
             ->setParameter('couple', $coupleId)
+            ->orderBy('d.triggeredAt', 'DESC')
+            ->setMaxResults(20)
             ->getQuery()
             ->getResult();
     }
@@ -73,6 +75,7 @@ class DetectionRepository extends ServiceEntityRepository
             ->innerJoin('d.couple', 'c')
             ->where('c.user = :userId')
             ->setParameter('userId', $userId)
+            ->orderBy('d.triggeredAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

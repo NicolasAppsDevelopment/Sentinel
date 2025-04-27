@@ -2,28 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Couple;
-use App\Form\CoupleFormType;
 use App\Service\ApiResponseService;
 use App\Service\DetectionService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Form\FormInterface;
 
 final class DetectionController extends AbstractController{
 
     public function __construct(
         private readonly DetectionService $detectionService,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ApiResponseService $apiResponseService
+        private readonly ApiResponseService $apiResponseService,
+        private readonly ParameterBagInterface $parameterBag,
     ) {}
 
 
@@ -65,5 +60,29 @@ final class DetectionController extends AbstractController{
 
         $this->addFlash('success', 'Detection deleted successfully');
         return $this->redirectToRoute('app_detections');
+    }
+
+    #[Route('/detections/image/{filename}', name: 'app_detections_image', methods: ['GET'])]
+    public function getProtectedImage(string $filename, UserInterface $user): Response
+    {
+        // 1. Auth check
+        if (!$user) {
+            return $this->apiResponseService->error('You are not authorized to access this stream! Sign in first!');
+        }
+
+        // read the image file
+        $filePath = $this->parameterBag->get('detections_dir') . "/" . $filename;
+        if (!file_exists($filePath)) {
+            return $this->apiResponseService->error('Image not found');
+        }
+        $response = new StreamedResponse(function() use ($filePath) {
+            $handle = fopen($filePath, 'rb');
+            if ($handle) {
+                fpassthru($handle);
+                fclose($handle);
+            }
+        });
+        $response->headers->set('Content-Type', 'image/jpeg');
+        return $response;
     }
 }

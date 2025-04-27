@@ -30,6 +30,24 @@ class CoupleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findOneByActionDeviceId(int $actionDeviceId): ?Couple
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.actionDevice = :actionDevice')
+            ->setParameter('actionDevice', $actionDeviceId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findOneByCameraDeviceId(int $cameraDeviceId): ?Couple
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.cameraDevice = :cameraDevice')
+            ->setParameter('cameraDevice', $cameraDeviceId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
 
     /**

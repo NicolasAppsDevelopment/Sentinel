@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\DetectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\EventListener\DetectionListener;
 
 #[ORM\Entity(repositoryClass: DetectionRepository::class)]
+#[ORM\EntityListeners([DetectionListener::class])]
 class Detection
 {
     #[ORM\Id]
