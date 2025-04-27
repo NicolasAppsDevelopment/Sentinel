@@ -24,10 +24,11 @@ readonly class ImageManagerService {
             throw new Exception('Failed to create image from camera capture.');
         }
 
-        $success = file_put_contents($destFolderPath . '/' . $destFilename, $image);
+        $path = $destFolderPath . '/' . $destFilename;
+        $success = file_put_contents($path, $image);
 
         if ($success === false) {
-            throw new Exception('Failed to save image to destination folder.');
+            throw new Exception('Failed to save image to destination folder: ' . $path);
         }
 
         return $destFilename;
