@@ -28,6 +28,7 @@ final class CoupleController extends AbstractController{
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
+        private readonly DeviceService $deviceService,
         private readonly EntityManagerInterface $entityManager,
         private readonly ApiResponseService $apiResponseService
     ) {}
@@ -82,68 +83,7 @@ final class CoupleController extends AbstractController{
             return $this->redirectToRoute('app_couples');
         }
 
-        $actionDevice = $couple->getActionDevice();
-        $cameraDevice = $couple->getCameraDevice();
-
-        $client = HttpClient::create();
-
-        try {
-            //get action device status
-            $url = 'http://' . $actionDevice->getIp() . '/status';
-            $actionDeviceResponse = $client->request('GET', $url);
-
-            if ($actionDeviceResponse->getStatusCode() !== 200) {
-                return $this->apiResponseService->error('Unable to get action status: ' . $actionDeviceResponse->getStatusCode());
-            }
-
-            //get camera device status
-            $url = 'http://' . $cameraDevice->getIp() . '/status';
-            $cameraDeviceResponse = $client->request('GET', $url);
-
-            if ($cameraDeviceResponse->getStatusCode() !== 200) {
-                return $this->apiResponseService->error('Unable to get camera status: ' . $cameraDeviceResponse->getStatusCode());
-            }
-
-        } catch (\Exception $e) {
-            return $this->apiResponseService->error('Unable fetching devices status: ' . $e->getMessage());
-        }
-
-        $data = $actionDeviceResponse->toArray(); // Symfony's HttpClient automatically decodes JSON
-        $actionDeviceStatus = new ActionDeviceStatusDto(
-            rssi: $data['rssi'],
-            buzzer: $data['buzzer']
-        );
-
-        $data = $cameraDeviceResponse->toArray(); // Symfony's HttpClient automatically decodes JSON
-        $cameraDeviceStatus = new CameraDeviceStatusDto(
-            rssi: $data['rssi'],
-        );
-
-        $actionDeviceSignalStrength = "";
-        $cameraDeviceSignalStrength = "";
-
-        if ($actionDeviceStatus->rssi >= -50) {
-            $actionDeviceSignalStrength = "Good";
-        }
-        elseif ($actionDeviceStatus->rssi < -50 and $actionDeviceStatus->rssi >= -70) {
-            $actionDeviceSignalStrength = "Okay";
-        }
-        elseif ($actionDeviceStatus->rssi < -70) {
-            $actionDeviceSignalStrength = "Bad";
-        }
-
-        if ($cameraDeviceStatus->rssi >= -50) {
-            $cameraDeviceSignalStrength = "Good";
-        }
-        elseif ($cameraDeviceStatus->rssi < -50 and $cameraDeviceStatus->rssi >= -70) {
-            $cameraDeviceSignalStrength = "Okay";
-        }
-        elseif ($cameraDeviceStatus->rssi < -70) {
-            $cameraDeviceSignalStrength = "Bad";
-        }
-
-
-
+        $coupleStatus = $this->coupleService->getStatus($couple);
 
         // TODO: Get user last detections today
         $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
@@ -161,8 +101,8 @@ final class CoupleController extends AbstractController{
         return $this->render('couple/view.html.twig', [
             'coupleInfo' => $couple,
             'detections' => $detections,
-            'actionDeviceSignalStrength' => $actionDeviceSignalStrength,
-            'cameraDeviceSignalStrength' => $cameraDeviceSignalStrength,
+            'actionDeviceSignalStrength' => $coupleStatus->actionDeviceStatus->rssi,
+            'cameraDeviceSignalStrength' => $coupleStatus->cameraDeviceStatus->rssi,
         ]);
     }
 

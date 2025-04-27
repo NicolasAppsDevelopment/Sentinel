@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CameraDeviceStatusDto {
     public function __construct(
         #[Assert\NotBlank]
-        public readonly int $rssi,
+        public readonly string $rssiState,
 
     ) {}
 }

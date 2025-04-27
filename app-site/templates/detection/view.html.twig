@@ -20,10 +20,14 @@
             <div class="separator"></div>
             <div class="state">
                 <span class="fa-solid fa-camera"></span>
-                <p class="desc">Oui</p>
+                <p class="desc">{{ detection.couple.title }}</p>
             </div>
         </div>
         <div class="camera-actions">
+            <a href="{{ path('app_detections_image', {filename: detection.imageFilename}) }}" class="card action" download>
+                <span class="fa-solid fa-download"></span>
+                <p>Download image</p>
+            </a>
             <button type="button"
                     class="card action"
                     onclick="document.getElementById('confirm-modal').showModal()">

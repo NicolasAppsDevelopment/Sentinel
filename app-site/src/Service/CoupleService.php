@@ -2,18 +2,19 @@
 
 namespace App\Service;
 
+use App\Dto\ActionDeviceStatusDto;
+use App\Dto\CameraDeviceStatusDto;
+use App\Dto\CoupleStatusDto;
 use App\Entity\Couple;
 use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CoupleService
 {
-    private CoupleRepository $coupleRepository;
-
-    public function __construct(CoupleRepository $coupleRepository)
-    {
-        $this->coupleRepository = $coupleRepository;
-    }
+    public function __construct(
+        private readonly CoupleRepository $coupleRepository,
+        private readonly DeviceService $deviceService
+    ) {}
 
     /**
      * Get all couples for a given user ID.
@@ -84,5 +85,30 @@ class CoupleService
         }
 
         $this->coupleRepository->updateTitle($id, $newTitle);
+    }
+
+    public function getStatus(Couple $couple): CoupleStatusDto
+    {
+        return new CoupleStatusDto(
+            actionDeviceStatus: $this->getActionDeviceStatus($couple),
+            cameraDeviceStatus: $this->getCameraDeviceStatus($couple),
+        );
+    }
+
+    private function getActionDeviceStatus(Couple $couple): ActionDeviceStatusDto
+    {
+        $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
+        return new ActionDeviceStatusDto(
+            rssiState: RssiStateService::class->toString($data['rssi']),
+            buzzer: $data['buzzer']
+        );
+    }
+
+    private function getCameraDeviceStatus(Couple $couple): CameraDeviceStatusDto
+    {
+        $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
+        return new CameraDeviceStatusDto(
+            rssiState: RssiStateService::class->toString($data['rssi']),
+        );
     }
 }

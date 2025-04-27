@@ -3,12 +3,12 @@ namespace App\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ActionDeviceStatusDto {
+class CoupleStatusDto {
     public function __construct(
         #[Assert\NotBlank]
-        public readonly string $rssiState,
+        public readonly ActionDeviceStatusDto $actionDeviceStatus,
 
         #[Assert\NotBlank]
-        public readonly string $buzzer,
+        public readonly CameraDeviceStatusDto $cameraDeviceStatus,
     ) {}
 }
