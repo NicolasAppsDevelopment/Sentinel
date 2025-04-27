@@ -76,7 +76,6 @@ class DetectionRepository extends ServiceEntityRepository
             ->where('c.user = :userId')
             ->setParameter('userId', $userId)
             ->orderBy('d.triggeredAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 }

@@ -62,7 +62,7 @@ class DetectionService
     /**
      * Get detections by couple ID belong to a User ID passed in parameter.
      */
-    public function getAllDetectionsByUser(int $userId): array
+    public function getAllDetectionsByUser(int $userId)
     {
         return $this->detectionRepository->findByUserId($userId);
     }

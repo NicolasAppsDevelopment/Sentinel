@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 final class DetectionController extends AbstractController{
 
@@ -23,9 +25,15 @@ final class DetectionController extends AbstractController{
 
 
     #[Route('/detections', name: 'app_detections')]
-    public function index(UserInterface $user): Response
+    public function index(UserInterface $user, PaginatorInterface $paginator, Request $request): Response
     {
-        $detections = $this->detectionService->getAllDetectionsByUser($user->getId());
+        $query = $this->detectionService->getAllDetectionsByUser($user->getId());
+
+        $detections = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1), // current page, default 1
+            15 // number of items per page
+        );
 
         return $this->render('detection/all.html.twig', [
             'detections'=> $detections,
