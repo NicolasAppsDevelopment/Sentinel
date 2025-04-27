@@ -7,7 +7,7 @@ use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class RssiStateService
+readonly class RssiStateService
 {
     public function toString(int $rssi): string
     {

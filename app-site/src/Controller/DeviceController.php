@@ -8,6 +8,7 @@ use App\Entity\Detection;
 use App\Entity\Device;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;
+use App\Service\ImageManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\DeviceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +23,7 @@ final class DeviceController extends AbstractController {
         private readonly ApiResponseService $apiResponseService,
         private readonly DeviceService $deviceService,
         private readonly CoupleService $coupleService,
-        private readonly CoupleController $coupleController,
-
+        private readonly ImageManagerService $imageManagerService,
     ) {}
 
     #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
@@ -70,7 +70,6 @@ final class DeviceController extends AbstractController {
         ]);
     }
 
-    //TODO Save image (by using extract function in coupleController and had path to detection entity
     #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
     public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, EntityManagerInterface $entityManager): Response
     {
@@ -84,29 +83,11 @@ final class DeviceController extends AbstractController {
             return $this->apiResponseService->error('Failed to retrieve couple.');
         }
 
-        $response = $this->coupleController->getSecureCaptureFromTriggeredDevice($couple->getId());
-
-
-        // Get image content
-        ob_start();
-        $response->sendContent();
-        $imageData = ob_get_clean();
-
-        if (!$imageData) {
-            return $this->apiResponseService->error('Failed to capture image content.');
+        if (!$couple->isEnabled()) {
+            return $this->apiResponseService->error('Couple is disabled.');
         }
 
-        // Generate unique filename
-        $date = new \DateTime();
-        $filename = $date->format('Y-m-d_H-i-s') . '.jpg';
-
-        // Define save path
-        $saveDir = '/var/www/app-site/public/camera_pictures/';
-        $fullPath = $saveDir . $filename;
-
-        // Save image to disk
-        file_put_contents($fullPath, $imageData);
-
+        $filename = $this->imageManagerService->saveDetectionImage($couple->getCameraDevice()->getIp());
 
         $detection = new Detection();
         $detection->setCouple($couple);

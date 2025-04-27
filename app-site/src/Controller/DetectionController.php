@@ -6,6 +6,7 @@ use App\Entity\Couple;
 use App\Form\CoupleFormType;
 use App\Service\ApiResponseService;
 use App\Service\DetectionService;
+use App\Service\ImageManagerService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +24,7 @@ final class DetectionController extends AbstractController{
     public function __construct(
         private readonly DetectionService $detectionService,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ApiResponseService $apiResponseService
+        private readonly ApiResponseService $apiResponseService,
     ) {}
 
 
