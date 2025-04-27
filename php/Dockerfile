@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install zip xml
+    && docker-php-ext-install zip xml \
+    && docker-php-ext-configure gd --with-jpeg \
+    && docker-php-ext-install gd
 
 RUN apt-get update && apt-get install -y ssmtp
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
