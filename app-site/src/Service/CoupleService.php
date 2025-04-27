@@ -29,7 +29,7 @@ class CoupleService
      */
     public function getAllCouplesByUserWithDetections(int $userId): array
     {
-        return $this->coupleRepository->findCouplesWithDetectionsByUserId($userId);
+        return $this->coupleRepository->findCouplesWithNewDetectionCountByUser($userId);
     }
 
     public function getCoupleById(int $coupleId): ?Couple

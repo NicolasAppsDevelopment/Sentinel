@@ -88,24 +88,24 @@ class CoupleRepository extends ServiceEntityRepository
     }
 
     public function findCouplesWithNewDetectionCountByUser(int $userId): array
-{
-    $qb = $this->createQueryBuilder('c')
-        ->select('c', 'COUNT(d.id) AS detectionCount')
-        ->leftJoin('c.detections', 'd', 'WITH', 'd.triggeredAt > c.lastDetectionSeekDate')
-        ->where('c.user = :userId')
-        ->groupBy('c.id')
-        ->setParameter('userId', $userId);
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c', 'COUNT(d.id) AS detectionCount')
+            ->leftJoin('c.detections', 'd', 'WITH', 'd.triggeredAt > c.lastDetectionSeekDate')
+            ->where('c.user = :userId')
+            ->groupBy('c.id')
+            ->setParameter('userId', $userId);
 
-        // On récupère les résultats bruts
-        $result = $qb->getQuery()->getResult();
+            // On récupère les résultats bruts
+            $result = $qb->getQuery()->getResult();
 
-        // On transforme les résultats bruts en objets Dto
-        $coupleDetectionDto = array_map(function ($row) {
-            return new CoupleDetectionDto($row[0], (int) $row['detectionCount']);
-        }, $result);
+            // On transforme les résultats bruts en objets Dto
+            $coupleDetectionDto = array_map(function ($row) {
+                return new CoupleDetectionDto($row[0], (int) $row['detectionCount']);
+            }, $result);
 
-        return $coupleDetectionDto;
-    }
+            return $coupleDetectionDto;
+        }
 
 
 //    /**
