@@ -319,7 +319,6 @@ final class CoupleController extends AbstractController {
         return new Response('', 200, [
             'X-Accel-Redirect' => $internalEnableBuzzerPath,
             'Content-Type' => 'application/json',
-            'Hx-Refresh' => 'true'
         ]);
     }
 }
