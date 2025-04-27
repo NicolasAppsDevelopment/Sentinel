@@ -78,21 +78,20 @@ class CoupleService
     public function enableDisableCouple(int $coupleId): bool
     {
         $couple = $this->getCoupleById($coupleId);
-        if ($couple->isEnabled()){
-            $this->coupleRepository->disableCouple($coupleId);
-            return false;
-        }else{
-            $this->coupleRepository->enableCouple($coupleId);
-            return true;
-        }
+        $couple->setEnabled(!$couple->isEnabled());
+
+        return $couple->isEnabled();
+
     }
-    public function updateTitle(int $id, string $newTitle): void
+    public function updateTitle(int $coupleId, string $newTitle): void
     {
+        $couple = $this->getCoupleById($coupleId);
+
         if ('' === trim($newTitle)) {
             throw new BadRequestException('Le titre ne peut pas être vide.');
         }
 
-        $this->coupleRepository->updateTitle($id, $newTitle);
+        $couple->setTitle($newTitle);
     }
 
     public function getStatus(Couple $couple): CoupleStatusDto
