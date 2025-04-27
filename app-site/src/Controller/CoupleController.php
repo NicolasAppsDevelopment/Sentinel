@@ -85,6 +85,8 @@ final class CoupleController extends AbstractController {
         );
 
         $couple->coupleEntity->setLastDetectionSeekDate(new DateTime());
+        $this->entityManager->persist($couple->coupleEntity);
+        $this->entityManager->flush();
 
         return $this->render('couple/view.html.twig', [
             'coupleInfo' => $couple,
@@ -130,6 +132,8 @@ final class CoupleController extends AbstractController {
         }
 
         $couple->setEnabled(!$couple->isEnabled());
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
 
         $res = $this->apiResponseService->ok(null);
         $res->headers->set('Hx-Refresh', 'true');
