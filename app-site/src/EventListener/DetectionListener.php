@@ -4,8 +4,11 @@ namespace App\EventListener;
 
 use App\Entity\Detection;
 use App\Service\ImageManagerService;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Doctrine\ORM\Events;
 
+#[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Detection::class)]
 class DetectionListener
 {
     public function __construct(
