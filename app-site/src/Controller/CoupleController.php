@@ -101,8 +101,8 @@ final class CoupleController extends AbstractController{
         return $this->render('couple/view.html.twig', [
             'coupleInfo' => $couple,
             'detections' => $detections,
-            'actionDeviceSignalStrength' => $coupleStatus->actionDeviceStatus->rssi,
-            'cameraDeviceSignalStrength' => $coupleStatus->cameraDeviceStatus->rssi,
+            'actionDeviceSignalStrength' => $coupleStatus->actionDeviceStatus->rssiState,
+            'cameraDeviceSignalStrength' => $coupleStatus->cameraDeviceStatus->rssiState,
         ]);
     }
 
