@@ -1,13 +1,38 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ component('navbar', {index: 3}) }}
-    {{ component('alert') }}
+    {{ component('navigation', {index: 3}) }}
 
-    <div class="container-card small">
-        <h1>Edit Account</h1>
-        {{ include('account/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="content">
+            <h2>Account</h2>
 
-        {{ include('account/_delete_form.html.twig') }}
-    </div>
+            {{ form_start(form) }}
+                <div class="form-control">
+                    <label>Username</label>
+                    <input type="text" name="{{ field_name(form.username) }}" value="{{ field_value(form.username) }}" id="username" autocomplete="username" placeholder="username">
+                </div>
+                <div class="form-control">
+                    <label>Password</label>
+                    <input type="text" name="{{ field_name(form.plainPassword) }}" value="{{ field_value(form.plainPassword) }}" id="plainPassword" autocomplete="plainPassword" placeholder="password">
+                </div>
+                <div class="form-control">
+                    <label>Email</label>
+                    <input type="text" name="{{ field_name(form.email) }}" value="{{ field_value(form.email) }}" id="email" autocomplete="email" placeholder="email">
+                </div>
+
+                {% if app.user.id == user.id %}
+                <div class="row">
+                    <button class="btn-primary w100" type="submit">
+                        <i class="fa-solid fa-save"></i> Save
+                    </button>
+                    <a class="btn-primary w100 red" href="{{ path('app_account_remove') }}">
+                        Remove <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+                {% endif %}
+
+            {{ form_end(form) }}
+        </div>
+
+
 {% endblock %}
