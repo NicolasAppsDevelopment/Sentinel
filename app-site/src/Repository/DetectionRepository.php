@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Detection;
+use App\Entity\Couple;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,6 +24,20 @@ class DetectionRepository extends ServiceEntityRepository
             ->setParameter('couple', $coupleId)
             ->orderBy('d.triggeredAt', 'DESC')
             ->setMaxResults(20)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Retourne les détections après une certaine date pour un couple donné
+     */
+    public function findNewDetectionsSince(int $coupleId, \DateTimeInterface $since): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.couple = :coupleId')
+            ->andWhere('d.triggeredAt > :since')
+            ->setParameter('coupleId', $coupleId)
+            ->setParameter('since', $since)
             ->getQuery()
             ->getResult();
     }

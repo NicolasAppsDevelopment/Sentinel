@@ -4,14 +4,17 @@ namespace App\Service;
 
 use App\Entity\Detection;
 use App\Repository\DetectionRepository;
+use App\Repository\CoupleRepository;
 
 class DetectionService
 {
     private DetectionRepository $detectionRepository;
-
-    public function __construct(DetectionRepository $detectionRepository)
+    private $coupleRepository; // Define the coupleRepository property
+    public function __construct(DetectionRepository $detectionRepository, CoupleRepository $coupleRepository)
     {
         $this->detectionRepository = $detectionRepository;
+        $this->coupleRepository = $coupleRepository;
+
     }
 
     /**
