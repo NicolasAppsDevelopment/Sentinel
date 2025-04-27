@@ -4,6 +4,8 @@ namespace App\Service;
 
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 readonly class ImageManagerService {
     public function __construct(
@@ -13,19 +15,23 @@ readonly class ImageManagerService {
 
     /**
      * @throws Exception
+     * @throws TransportExceptionInterface
      */
     public function saveDetectionImage(string $cameraIp): string
     {
         $destFolderPath = $this->parameterBag->get('detections_dir');
         $destFilename = uniqid() . '.jpg';
-        $image = imagecreatefromjpeg('http://' . $cameraIp . '/capture');
+        $url = 'http://' . $cameraIp . '/capture';
 
-        if (!$image) {
-            throw new Exception('Failed to create image from camera capture.');
+        $client = HttpClient::create();
+
+        $response = $client->request('GET', $url);
+        if ($response->getStatusCode() !== 200) {
+            throw new Exception('Unable to capture image, camera returned: ' . $response->getStatusCode());
         }
 
         $path = $destFolderPath . '/' . $destFilename;
-        $success = file_put_contents($path, $image);
+        $success = file_put_contents($path, $response->getContent());
 
         if ($success === false) {
             throw new Exception('Failed to save image to destination folder: ' . $path);
