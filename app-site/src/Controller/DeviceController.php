@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class DeviceController extends AbstractController {
     public function __construct(
@@ -70,6 +69,9 @@ final class DeviceController extends AbstractController {
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
     public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, EntityManagerInterface $entityManager): Response
     {
