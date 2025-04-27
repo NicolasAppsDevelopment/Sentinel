@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ component('navigation', {index: 0}) }}
+    <div class="content">
+    <button id="updateTimes">Mettre à jour les heures</button>
+
+    <div>
+    <strong>Heure client :</strong>
+    <span id="clientTime">--:--:--</span>
+    </div>
+
+    <div>
+    <strong>Heure serveur :</strong>
+    <span
+        id="serverTime"
+        hx-get="{{ path('api_server_time') }}"
+        hx-trigger="load, click"
+        hx-swap="innerHTML"
+    >
+        Chargement…
+    </span>
+    </div>
+
+{% endblock %}
+
+<script>
+  // Met à jour l'affichage de l'heure locale du navigateur
+  function updateClientTime() {
+    const now = new Date();
+    // format lisible local, ex. "27/04/2025 20:15:03"
+    document.getElementById('clientTime').innerText =
+      now.toLocaleString();
+  }
+
+  // On exécute au chargement, puis on rattache le même handler au bouton
+  window.addEventListener('load', updateClientTime);
+  document
+    .getElementById('updateTimes')
+    .addEventListener('click', updateClientTime);
+</script>
