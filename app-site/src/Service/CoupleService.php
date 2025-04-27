@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Dto\ActionDeviceStatusDto;
 use App\Dto\CameraDeviceStatusDto;
-use App\Dto\CoupleStatusDto;
 use App\Entity\Couple;
+use App\Entity\Custom\CoupleStatus;
 use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -14,22 +14,40 @@ class CoupleService
     public function __construct(
         private readonly CoupleRepository $coupleRepository,
         private readonly DeviceService $deviceService,
-        private readonly RssiStateService $rssiStateService,
+        private readonly DetectionService $detectionService,
     ) {}
 
     /**
      * Get all couples for a given user ID.
+     * @return Couple[]
      */
     public function getAllCouplesByUser(int $userId): array
     {
         return $this->coupleRepository->findByUserId($userId);
     }
-        /**
-     * Get all couples for a given user ID with the number of detections
+
+    /**
+     * Get all couples for a given user ID.
+     * @return CoupleStatus[]
      */
-    public function getAllCouplesByUserWithDetections(int $userId): array
+    public function getAllCouplesWithStatusByUser(int $userId): array
     {
-        return $this->coupleRepository->findCouplesWithNewDetectionCountByUser($userId);
+        $result = [];
+        foreach ($this->coupleRepository->findByUserId($userId) as $couple) {
+            $result[] = $this->getCoupleWithStatus($couple);
+        }
+
+        return $result;
+    }
+
+    public function getCoupleWithStatusById(int $coupleId): ?CoupleStatus
+    {
+        $couple = $this->coupleRepository->findOneBy(['id' => $coupleId]);
+        if (null === $couple) {
+            return null;
+        }
+
+        return $this->getCoupleWithStatus($couple);
     }
 
     public function getCoupleById(int $coupleId): ?Couple
@@ -39,40 +57,9 @@ class CoupleService
         );
     }
 
-    public function getCoupleByCameraId(int $cameraId): ?Couple
-    {
-        return $this->coupleRepository->findOneByCameraDeviceId($cameraId);
-    }
-
     public function getCoupleByActionId(int $actionId): ?Couple
     {
         return $this->coupleRepository->findOneByActionDeviceId($actionId);
-    }
-
-    /**
-     * Create a new Couple.
-     * 
-     * $data might look like:
-     * [
-     *   'action_device_id'   => 1,
-     *   'camera_device_id'   => 2,
-     *   'title'              => 'My Title',
-     *   'association_date'   => '2025-03-17',
-     *   'user_id'            => 123
-     * ]
-     */
-    public function createNewCouple(array $data): Couple
-    {
-        // Convert association_date to a DateTime
-        $associationDate = new \DateTime($data['association_date']);
-
-        return $this->coupleRepository->createCouple(
-            $data['action_device_id'],
-            $data['camera_device_id'],
-            $data['title'],
-            $associationDate,
-            $data['user_id']
-        );
     }
 
     public function enableDisableCouple(int $coupleId): bool
@@ -94,11 +81,13 @@ class CoupleService
         $couple->setTitle($newTitle);
     }
 
-    public function getStatus(Couple $couple): CoupleStatusDto
+    public function getCoupleWithStatus(Couple $couple): CoupleStatus
     {
-        return new CoupleStatusDto(
-            actionDeviceStatus: $this->getActionDeviceStatus($couple),
-            cameraDeviceStatus: $this->getCameraDeviceStatus($couple),
+        return new CoupleStatus(
+            couple: $couple,
+            actionStatus: $this->getActionDeviceStatus($couple),
+            cameraStatus: $this->getCameraDeviceStatus($couple),
+            newDetectionCount: $this->detectionService->countNewDetectionsSince($couple->getId(), $couple->getLastDetectionSeekDate()),
         );
     }
 
@@ -106,8 +95,8 @@ class CoupleService
     {
         $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
         return new ActionDeviceStatusDto(
-            rssiState: $this->rssiStateService->toString($data['rssi']),
-            buzzer: $data['buzzer']
+            rssiValue: $data['rssi'],
+            buzzerEnabled: $data['buzzer']
         );
     }
 
@@ -115,7 +104,7 @@ class CoupleService
     {
         $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
         return new CameraDeviceStatusDto(
-            rssiState: $this->rssiStateService->toString($data['rssi']),
+            rssiValue: $data['rssi'],
         );
     }
 }

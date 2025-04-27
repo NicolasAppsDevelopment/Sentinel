@@ -1,20 +1,23 @@
-<a class="img-card-wrapper" href="{{ path('app_couples_view', {id: couple.id}) }}">
+<a class="img-card-wrapper" href="{{ path('app_couples_view', {id: couple.coupleEntity.id}) }}">
     <div class="img-card">
-        <img src="{{ path('app_couples_capture', {id: couple.id}) }}" alt="preview">
+        <img src="{{ path('app_couples_capture', {id: couple.coupleEntity.id}) }}" alt="preview">
         <div class="dark-overlay"></div>
         <div class="infos">
             <div class="couple-name">
-                <p>{{ couple.title }}</p>
+                <p>{{ couple.coupleEntity.title }}</p>
             </div>
             <div class="couple-status">
-                <span class="fa-solid fa-volume-high"></span>
-                <span class="fa-solid fa-wifi"></span>
-                <span class="fa-solid fa-power-off {{ couple.enabled == true ? "green" : "red"  }}"></span>
+                <span class="fa-solid fa-volume-high {{ couple.actionStatus.buzzerEnabled == true ? "red" : ""  }}"></span>
+                <span class="fa-solid fa-wifi {{ couple.lowerRssiState == "Weak" ? "red" : "green"  }}"></span>
+                <span class="fa-solid fa-power-off {{ couple.coupleEntity.enabled == true ? "green" : "red"  }}"></span>
             </div>
         </div>
     </div>
-    <div class="notif">
-        <span class="fa-solid fa-bell"></span>
-        <span>{{nbDetection}}</span>
-    </div>
+
+    {% if couple.newDetectionCount > 0 %}
+        <div class="notif">
+            <span class="fa-solid fa-bell"></span>
+            <span>{{ couple.newDetectionCount }}</span>
+        </div>
+    {% endif %}
 </a>

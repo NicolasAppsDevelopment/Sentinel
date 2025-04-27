@@ -20,15 +20,16 @@ class DetectionRepository extends ServiceEntityRepository
     /**
      * Retourne les détections après une certaine date pour un couple donné
      */
-    public function findNewDetectionsSince(int $coupleId, \DateTimeInterface $since): array
+    public function countNewDetectionsSince(int $coupleId, \DateTimeInterface $since): int
     {
         return $this->createQueryBuilder('d')
+            ->select('count(d.id)')
             ->where('d.couple = :coupleId')
             ->andWhere('d.triggeredAt > :since')
             ->setParameter('coupleId', $coupleId)
             ->setParameter('since', $since)
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 
     public function findByUserId(int $userId)

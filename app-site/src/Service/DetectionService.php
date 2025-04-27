@@ -71,4 +71,8 @@ class DetectionService
         return $this->detectionRepository->find($id);
     }
 
+    public function countNewDetectionsSince(int $coupleId, \DateTimeInterface $since): int
+    {
+        return $this->detectionRepository->countNewDetectionsSince($coupleId, $since);
+    }
 }

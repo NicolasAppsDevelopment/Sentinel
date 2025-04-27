@@ -32,38 +32,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
-
-    public function getUserLeaderboard(): array
-    {
-        $users = $this->createQueryBuilder('user')
-            ->select('user.id', 'user.username', 'user.score')
-            ->orderBy('user.score', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-
-        $rank = 1;
-        foreach ($users as &$user) {
-            $user['rank'] = $rank++;
-        }
-
-        return $users;
-    }
-
-    public function getUserRank(int $userId): ?int
-    {
-        $users = $this->createQueryBuilder('user')
-            ->select('user.id', 'user.score')
-            ->orderBy('user.score', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-        foreach ($users as $index => $user) {
-            if ($user['id'] === $userId) {
-                return $index + 1;
-            }
-        }
-
-        return null;
-    }
 }

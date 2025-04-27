@@ -5,23 +5,23 @@
     {{ component('confirmdialog', {
         title: 'Remove camera',
         message: 'Are you sure you want to remove this camera? You could always add it again later if no one add it to his account before you.',
-        confirmUrl: path('app_couples_delete', {'id': coupleInfo.id}),
+        confirmUrl: path('app_couples_delete', {'id': coupleInfo.coupleEntity.id}),
     }) }}
 
     {{ component('edittitlemodal', {
         title: 'Edit camera name',
         message: 'Enter a new name for the camera',
         couple: coupleInfo,
-        editUrl: path('app_couple_update_name', {'id': coupleInfo.id}),
+        editUrl: path('app_couple_update_name', {'id': coupleInfo.coupleEntity.id}),
     }) }}
 
     <div class="content">
         <div class="stream-player-container">
             <span class="loading">Loading...</span>
-            <img src="{{ path('app_couples_stream', {id: coupleInfo.id}) }}" alt="">
+            <img src="{{ path('app_couples_stream', {id: coupleInfo.coupleEntity.id}) }}" alt="">
             <div class="dark-overlay"></div>
             <div class="title">
-                <h2>{{ coupleInfo.title }}</h2>
+                <h2>{{ coupleInfo.coupleEntity.title }}</h2>
             </div>
             <div class="controls">
                 <div class="dropup">
@@ -30,32 +30,32 @@
                     </button>
                     <div class="dropup-content">
                         <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 20} ) }}"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.coupleEntity.id, level: 20} ) }}"
                                  hx-trigger="click, touchstart"
                                  hx-swap="none">
                             1440p
                         </button>
                         <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 16} ) }}"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.coupleEntity.id, level: 16} ) }}"
                                  hx-trigger="click, touchstart"
                                  hx-swap="none">
                             1080p
                         </button>
                         <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 13} ) }}"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.coupleEntity.id, level: 13} ) }}"
                                  hx-trigger="click, touchstart"
                                  hx-swap="none">
                             720p
                         </button>
                         <button  class="rect-btn"
-                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.id, level: 10} ) }}"
+                                 hx-get="{{path('app_couples_stream_quality', {id: coupleInfo.coupleEntity.id, level: 10} ) }}"
                                  hx-trigger="click, touchstart"
                                  hx-swap="none">
                             480p
                         </button>
                     </div>
                 </div>
-                <a class="player-btn" href="{{path('app_couples_capture', {id:coupleInfo.id} ) }}" download>
+                <a class="player-btn" href="{{path('app_couples_capture', {id:coupleInfo.coupleEntity.id} ) }}" download>
                     <i class="fa-solid fa-camera"></i>
                 </a>
             </div>
@@ -64,38 +64,38 @@
         <div class="camera-states card">
             <div class="state">
                 <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">{{ cameraDeviceSignalStrength }} vision module Wi-Fi strength</p>
+                <p class="desc">{{ coupleInfo.cameraStatus.rssiState }} vision module Wi-Fi strength</p>
             </div>
             <div class="separator"></div>
             <div class="state">
                 <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">{{ actionDeviceSignalStrength }} action module Wi-Fi strength</p>
+                <p class="desc">{{ coupleInfo.actionStatus.rssiState }} action module Wi-Fi strength</p>
             </div>
             <div class="separator"></div>
             <div class="state">
-                <span class="fa-solid fa-power-off {{ coupleInfo.enabled == true ? "green" : "red"  }}"></span>
-                <p class="desc">Detection {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+                <span class="fa-solid fa-power-off {{ coupleInfo.coupleEntity.enabled == true ? "green" : "red"  }}"></span>
+                <p class="desc">Detection {{ coupleInfo.coupleEntity.enabled == true ? "enabled" : "disabled"  }}</p>
             </div>
             <div class="separator"></div>
             <div class="state">
-                <span class="fa-solid fa-bell {{ coupleInfo.enabled == true ? "red" : ""  }}"></span>
-                <p class="desc">Buzzer {{ coupleInfo.enabled == true ? "enabled" : "disabled"  }}</p>
+                <span class="fa-solid fa-bell {{ coupleInfo.actionStatus.buzzerEnabled == true ? "red" : ""  }}"></span>
+                <p class="desc">Buzzer {{ coupleInfo.actionStatus.buzzerEnabled == true ? "enabled" : "disabled"  }}</p>
             </div>
         </div>
         <div class="camera-actions">
             <button  class="card action"
-                     hx-get="{{path('app_couples_enable_buzzer', {id:coupleInfo.id} ) }}"
+                     hx-get="{{path('app_couples_enable_disable_buzzer', {id:coupleInfo.coupleEntity.id} ) }}"
                      hx-trigger="click"
                      hx-swap="none">
                 <span class="fa-solid fa-bell"></span>
-                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} buzzer</p>
+                <p class="desc">{{ coupleInfo.actionStatus.buzzerEnabled == true ? "Disable" : "Enable" }} buzzer</p>
             </button>
             <button  class="card action"
-                     hx-get="{{path('app_couples_enable_disable', {id:coupleInfo.id} ) }}"
+                     hx-get="{{path('app_couples_enable_disable', {id:coupleInfo.coupleEntity.id} ) }}"
                      hx-trigger="click"
                      hx-swap="none">
                 <span class="fa-solid fa-power-off"></span>
-                <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} detection</p>
+                <p class="desc">{{ coupleInfo.coupleEntity.enabled == true ? "Disable" : "Enable"  }} detection</p>
             </button>
             <button type="button"
                     class="card action"
@@ -115,10 +115,12 @@
             <h2>
                 History
             </h2>
-            <div class="notif big">
-                <span class="fa-solid fa-bell"></span>
-                <span>{{ detections|length }}</span>
-            </div>
+            {% if coupleInfo.newDetectionCount > 0 %}
+                <div class="notif big">
+                    <span class="fa-solid fa-bell"></span>
+                    <span>{{ coupleInfo.newDetectionCount }}</span>
+                </div>
+            {% endif %}
         </div>
 
         <div class="history-list">

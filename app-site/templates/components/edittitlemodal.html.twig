@@ -12,10 +12,10 @@
         </div>
 
         <form class="content" method="post"
-              action="{{ path('app_couple_update_name', {id: couple.id}) }}">
+              action="{{ path('app_couple_update_name', {id: couple.coupleEntity.id}) }}">
             <label for="couple-title">New title :</label>
             <input id="couple-title" name="title" type="text"
-                   value="{{ couple.title }}" required autofocus />
+                   value="{{ couple.coupleEntity.title }}" required autofocus />
 
         <div class="footer">
             <button type="button" class="cancel-btn"

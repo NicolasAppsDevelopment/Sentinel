@@ -1,14 +1,19 @@
 <?php
 namespace App\Dto;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\RssiStateService;
 
 class ActionDeviceStatusDto {
-    public function __construct(
-        #[Assert\NotBlank]
-        public readonly string $rssiState,
 
-        #[Assert\NotBlank]
-        public readonly string $buzzer,
-    ) {}
+    public readonly string $rssiState;
+    public readonly int $rssiValue;
+    public readonly bool $buzzerEnabled;
+    public function __construct(
+        int $rssiValue,
+        string $buzzerEnabled,
+    ) {
+        $this->rssiState = (new RssiStateService())->toString($rssiValue);
+        $this->rssiValue = $rssiValue;
+        $this->buzzerEnabled = $buzzerEnabled === 'on';
+    }
 }

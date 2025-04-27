@@ -1,12 +1,15 @@
 <?php
 namespace App\Dto;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\RssiStateService;
 
 class CameraDeviceStatusDto {
+    public readonly string $rssiState;
+    public readonly int $rssiValue;
     public function __construct(
-        #[Assert\NotBlank]
-        public readonly string $rssiState,
-
-    ) {}
+        int $rssiValue,
+    ) {
+        $this->rssiState = (new RssiStateService())->toString($rssiValue);
+        $this->rssiValue = $rssiValue;
+    }
 }

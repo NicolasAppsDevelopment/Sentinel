@@ -35,13 +35,10 @@ final class CoupleController extends AbstractController {
     #[Route('/couples', name: 'app_couples')]
     public function index(UserInterface $user): Response
     {
-        $couples = $this->coupleService->getAllCouplesByUserWithDetections($user->getId());
-        //dd($couples);
-        $wifi = "good";
+        $couples = $this->coupleService->getAllCouplesWithStatusByUser($user->getId());
 
         return $this->render('couple/all.html.twig', [
             'couples'=> $couples,
-            'wifi'=>$wifi,
         ]);
     }
 
@@ -66,7 +63,7 @@ final class CoupleController extends AbstractController {
             $errors[] = $error->getMessage();
         }
 
-        // just display add page, save logic in /save !
+        // display add page, save logic in /save !
         return $this->render('couple/add.html.twig', [
             'form' => $form,
             'errors' => $errors,
@@ -76,41 +73,26 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/view/{id}', name: 'app_couples_view')]
     public function getCoupleById(string $id, PaginatorInterface $paginator, Request $request): Response
     {
-        $couple = $this->coupleService->getCoupleById($id);
+        $couple = $this->coupleService->getCoupleWithStatusById($id);
         if ($couple === null) {
             $this->addFlash('error', 'Couple not found');
             return $this->redirectToRoute('app_couples');
         }
 
-        $coupleStatus = $this->coupleService->getStatus($couple);
-
-        $query = $this->detectionService->getAllDetectionsByCoupleId($id);;
-
+        $query = $this->detectionService->getAllDetectionsByCoupleId($id);
         $detections = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1), // current page, default 1
             15 // number of items per page
         );
 
-        // TODO: Get number of new detections since last seek from service
-
-        // TODO: Get status from camera and action module
-
-
-
-        $couple->setLastDetectionSeekDate(new DateTime());
-        $this->entityManager->persist($couple);
-        $this->entityManager->flush();
+        $couple->coupleEntity->setLastDetectionSeekDate(new DateTime());
 
         return $this->render('couple/view.html.twig', [
             'coupleInfo' => $couple,
             'detections' => $detections,
-            'actionDeviceSignalStrength' => $coupleStatus->actionDeviceStatus->rssiState,
-            'cameraDeviceSignalStrength' => $coupleStatus->cameraDeviceStatus->rssiState,
         ]);
     }
-
-
 
     /**
      * @param FormInterface $form
@@ -300,8 +282,8 @@ final class CoupleController extends AbstractController {
         ]);
     }
 
-    #[Route('/couples/{id}/enable-buzzer', name: 'app_couples_enable_buzzer')]
-    public function enableBuzzer(string $id, UserInterface $user): Response
+    #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
+    public function enableDisableBuzzer(string $id, UserInterface $user): Response
     {
         // 1. Auth check
         if (!$user) {
@@ -309,14 +291,14 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Lookup couple info from database
-        $couple = $this->coupleService->getCoupleById($id);
+        $couple = $this->coupleService->getCoupleWithStatusById($id);
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
         //if ($couple->getUser() !== $user) {
         //    return $this->apiResponseService->error('Not authorized');
         //}
-        $actionDevice = $couple->getCameraDevice();
+        $actionDevice = $couple->coupleEntity->getCameraDevice();
         if ($actionDevice === null) {
             return $this->apiResponseService->error('Action module not found');
         }
@@ -325,44 +307,12 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $internalEnableBuzzerPath = '/protected-enable-buzzer/?ip=' . $actionDevice->getIp();
+        $internalEnableBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         return new Response('', 200, [
             'X-Accel-Redirect' => $internalEnableBuzzerPath,
             'Content-Type' => 'application/json',
-        ]);
-    }
-
-    #[Route('/couples/{id}/disable-buzzer', name: 'app_couples_disable_buzzer')]
-    public function disableBuzzer(string $id, UserInterface $user): Response
-    {
-        // 1. Auth check
-        if (!$user) {
-            return $this->apiResponseService->error('You are not authorized to access this stream! Sign in first!');
-        }
-
-        // 2. Lookup couple info from database
-        $couple = $this->coupleService->getCoupleById($id);
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
-        }
-        //if ($couple->getUser() !== $user) {
-        //    return $this->apiResponseService->error('Not authorized');
-        //}
-        $actionDevice = $couple->getCameraDevice();
-        if ($actionDevice === null) {
-            return $this->apiResponseService->error('Action module not found');
-        }
-        if ($actionDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Action module not paired');
-        }
-
-        // 2. Send internal redirect
-        $internalEnableBuzzerPath = '/protected-disable-buzzer/?ip=' . $actionDevice->getIp();
-
-        return new Response('', 200, [
-            'X-Accel-Redirect' => $internalEnableBuzzerPath,
-            'Content-Type' => 'application/json',
+            'Hx-Refresh' => 'true'
         ]);
     }
 }
