@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Couple;
-use App\Dto\CoupleDetectionDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +15,6 @@ class CoupleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Couple::class);
     }
-
 
     /**
      * Get all couples for a given user ID.
@@ -37,53 +35,5 @@ class CoupleRepository extends ServiceEntityRepository
             ->setParameter('actionDevice', $actionDeviceId)
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    public function findOneByCameraDeviceId(int $cameraDeviceId): ?Couple
-    {
-        return $this->createQueryBuilder('c')
-            ->where('c.cameraDevice = :cameraDevice')
-            ->setParameter('cameraDevice', $cameraDeviceId)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-
-
-    /**
-     * Récupère les couples ayant au moins une détection pour un utilisateur donné.
-     *
-     * @param int $userId L'identifiant de l'utilisateur.
-     * @return Couple[] La liste des couples avec leurs détections.
-     */
-    public function findCouplesWithDetectionsByUserId(int $userId): array
-    {
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.detections', 'd')
-            ->where('c.user = :userId')
-            ->setParameter('userId', $userId)
-            ->orderBy('d.triggeredAt')
-            ->groupBy('c.id')
-            ->getQuery()
-            ->getResult();
-    }
-
-
-    /**
-     * Met à jour la date de dernière consultation pour un seul couple
-     */
-    public function updateLastDetectionSeekDate(int $coupleId): void
-    {
-        $qb= $this->createQueryBuilder('c')
-            ->update()
-            ->set('c.lastDetectionSeekDate', ':now')
-            ->where('c.id = :id')
-            ->setParameter('now', new \DateTimeImmutable())
-            ->setParameter('id', $coupleId)
-            ->getQuery()
-            ->execute();
-
-            $qb->execute();
-            $qb->getEntityManager()->flush();
     }
 }

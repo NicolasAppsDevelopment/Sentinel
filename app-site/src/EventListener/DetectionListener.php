@@ -9,10 +9,10 @@ use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Detection::class)]
-class DetectionListener
+readonly class DetectionListener
 {
     public function __construct(
-        private readonly ImageManagerService $imageManagerService
+        private ImageManagerService $imageManagerService
     ) {}
 
     public function preRemove(Detection $detection, PreRemoveEventArgs $args): void

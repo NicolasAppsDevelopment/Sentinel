@@ -7,7 +7,6 @@ use App\Form\CoupleFormType;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;
 use App\Service\DetectionService;
-use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -26,7 +25,6 @@ final class CoupleController extends AbstractController {
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
-        private readonly DeviceService $deviceService,
         private readonly EntityManagerInterface $entityManager,
         private readonly ApiResponseService $apiResponseService
     ) {}
@@ -126,7 +124,12 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/enable-disable/{id}', name: 'app_couples_enable_disable')]
     public function enableDisableCouple(int $id): Response
     {
-        $this->coupleService->enableDisableCouple($id);
+        $couple = $this->coupleService->getCoupleById($id);
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
+        $couple->setEnabled(!$couple->isEnabled());
 
         $res = $this->apiResponseService->ok(null);
         $res->headers->set('Hx-Refresh', 'true');
@@ -250,7 +253,7 @@ final class CoupleController extends AbstractController {
 
         $client = HttpClient::create();
 
-        try {//TODO Extract into a specific file
+        try {
             $url = 'http://' . $cameraDevice->getIp() . '/capture?_cb=1744097322029';
             $response = $client->request('GET', $url);
 

@@ -2,8 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Couple;
-use App\Repository\CoupleRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 

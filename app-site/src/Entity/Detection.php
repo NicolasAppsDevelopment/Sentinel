@@ -21,7 +21,7 @@ class Detection
     public ?\DateTimeInterface $triggeredAt = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Couple $couple = null;
 
     public function __construct()

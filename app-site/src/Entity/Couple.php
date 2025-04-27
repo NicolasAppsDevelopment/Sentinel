@@ -22,7 +22,7 @@ class Couple
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $associationDate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'couples')]
+    #[ORM\ManyToOne(inversedBy: 'couples', cascade: ['remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -30,17 +30,17 @@ class Couple
     public ?\DateTimeInterface $lastDetectionSeekDate = null;
 
     #[ORM\OneToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Device $actionDevice = null;
 
     #[ORM\OneToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Device $cameraDevice = null;
 
     #[ORM\Column]
     private ?bool $enabled = null;
 
-    #[ORM\OneToMany(mappedBy: 'couple', targetEntity: Detection::class)]
+    #[ORM\OneToMany(mappedBy: 'couple', targetEntity: Detection::class, cascade: ['remove'])]
     private Collection $detections;
 
     public function __construct()
