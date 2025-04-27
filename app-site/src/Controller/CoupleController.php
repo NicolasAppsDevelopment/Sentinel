@@ -134,8 +134,8 @@ final class CoupleController extends AbstractController {
         return $this->redirectToRoute('app_couples');
     }
 
-    #[Route('/couples/enabledisable/{id}', name: 'app_couples_enabledisable')]
-    public function enableDisableCouple(string $id): Response
+    #[Route('/couples/enable-disable/{id}', name: 'app_couples_enable_disable')]
+    public function enableDisableCouple(int $id): Response
     {
         $this->coupleService->enableDisableCouple($id);
 

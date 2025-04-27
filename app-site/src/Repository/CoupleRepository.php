@@ -67,48 +67,6 @@ class CoupleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function enableCouple(int $coupleId): void
-    {
-        $this->createQueryBuilder('c')
-            ->update()
-            ->set('c.enabled', '1')
-            ->where('c.id = :id')
-            ->setParameter('id', $coupleId)
-            ->getQuery()
-            ->execute();
-    }
-    public function disableCouple(int $coupleId): void
-    {
-        $this->createQueryBuilder('c')
-            ->update()
-            ->set('c.enabled', '0')
-            ->where('c.id = :id')
-            ->setParameter('id', $coupleId)
-            ->getQuery()
-            ->execute();
-    }   
-
-
-    /**
-     * Met à jour directement le titre du Couple en base
-     *
-     * @param int    $id
-     * @param string $newTitle
-     * @return int  
-     */
-    public function updateTitle(int $id, string $newTitle): int
-    {
-        $qb = $this->createQueryBuilder('c')
-            ->update()
-            ->set('c.title', ':title')
-            ->where('c.id = :id')
-            ->setParameter('title', $newTitle)
-            ->setParameter('id', $id)
-            ->getQuery();
-
-        return $qb->execute(); 
-    }
-
 
 //    /**
 //     * @return Couple[] Returns an array of Couple objects

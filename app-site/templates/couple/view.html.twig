@@ -91,7 +91,7 @@
                 <p class="desc">{{ coupleInfo.enabled == true ? "Disable" : "Enable"  }} buzzer</p>
             </button>
             <button  class="card action"
-                     hx-get="{{path('app_couples_enabledisable', {id:coupleInfo.id} ) }}"
+                     hx-get="{{path('app_couples_enable_disable', {id:coupleInfo.id} ) }}"
                      hx-trigger="click"
                      hx-swap="none">
                 <span class="fa-solid fa-power-off"></span>
