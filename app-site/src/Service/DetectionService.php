@@ -18,15 +18,6 @@ class DetectionService
     }
 
     /**
-     * Get all detections for a given user ID.
-     */
-
-    public function getAllDetectionsByCoupleId(int $coupleId): array
-    {
-        return $this->detectionRepository->findByCoupleId($coupleId);
-    }
-
-    /**
      * Create a new Detection.
      * 
      * $data might look like:
@@ -61,6 +52,14 @@ class DetectionService
 
     /**
      * Get detections by couple ID belong to a User ID passed in parameter.
+     */
+    public function getAllDetectionsByCoupleId(int $coupleId)
+    {
+        return $this->detectionRepository->findByCoupleId($coupleId);
+    }
+
+    /**
+     * Get all detections for a given user ID.
      */
     public function getAllDetectionsByUser(int $userId)
     {

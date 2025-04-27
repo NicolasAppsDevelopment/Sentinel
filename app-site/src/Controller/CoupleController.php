@@ -10,6 +10,7 @@ use App\Service\DetectionService;
 use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -73,7 +74,7 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/view/{id}', name: 'app_couples_view')]
-    public function getCoupleById(string $id): Response
+    public function getCoupleById(string $id, PaginatorInterface $paginator, Request $request): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
         if ($couple === null) {
@@ -83,8 +84,13 @@ final class CoupleController extends AbstractController {
 
         $coupleStatus = $this->coupleService->getStatus($couple);
 
-        // TODO: Get user last detections today
-        $detections = $this->detectionService->getAllDetectionsByCoupleId($id);
+        $query = $this->detectionService->getAllDetectionsByCoupleId($id);;
+
+        $detections = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1), // current page, default 1
+            15 // number of items per page
+        );
 
         // TODO: Get number of new detections since last seek from service
 
