@@ -13,7 +13,8 @@ class CoupleService
 {
     public function __construct(
         private readonly CoupleRepository $coupleRepository,
-        private readonly DeviceService $deviceService
+        private readonly DeviceService $deviceService,
+        private readonly RssiStateService $rssiStateService,
     ) {}
 
     /**
@@ -99,7 +100,7 @@ class CoupleService
     {
         $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
         return new ActionDeviceStatusDto(
-            rssiState: RssiStateService::class->toString($data['rssi']),
+            rssiState: $this->rssiStateService->toString($data['rssi']),
             buzzer: $data['buzzer']
         );
     }
@@ -108,7 +109,7 @@ class CoupleService
     {
         $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
         return new CameraDeviceStatusDto(
-            rssiState: RssiStateService::class->toString($data['rssi']),
+            rssiState: $this->rssiStateService->toString($data['rssi']),
         );
     }
 }
