@@ -62,7 +62,7 @@ class CoupleRepository extends ServiceEntityRepository
             ->leftJoin('c.detections', 'd')
             ->where('c.user = :userId')
             ->setParameter('userId', $userId)
-            ->orderBy('d.triggered_at')
+            ->orderBy('d.triggeredAt')
             ->groupBy('c.id')
             ->getQuery()
             ->getResult();
