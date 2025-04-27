@@ -34,7 +34,7 @@ final class CoupleController extends AbstractController {
     #[Route('/couples', name: 'app_couples')]
     public function index(UserInterface $user): Response
     {
-        $couples = $this->coupleService->getAllCouplesByUserWithDetections($user->getId());
+        $couples = $this->coupleService->findCouplesWithNewDetectionCountByUser($user->getId());
         //dd($couples);
         $wifi = "good";
 
