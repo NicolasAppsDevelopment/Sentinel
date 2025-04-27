@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Couple;
-use App\DTO\CoupleDetectionDto;
+use App\Dto\CoupleDetectionDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -141,12 +141,12 @@ class CoupleRepository extends ServiceEntityRepository
         // On récupère les résultats bruts
         $result = $qb->getQuery()->getResult();
 
-        // On transforme les résultats bruts en objets DTO
-        $coupleDetectionDTO = array_map(function ($row) {
-            return new CoupleDetectionDTO($row[0], (int) $row['detectionCount']);
+        // On transforme les résultats bruts en objets Dto
+        $coupleDetectionDto = array_map(function ($row) {
+            return new CoupleDetectionDto($row[0], (int) $row['detectionCount']);
         }, $result);
 
-        return $coupleDetectionDTO;
+        return $coupleDetectionDto;
     }
 
 
