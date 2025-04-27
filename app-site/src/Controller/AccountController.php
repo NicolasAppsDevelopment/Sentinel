@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 #[Route(path: '/account')]
 class AccountController extends AbstractController
@@ -20,18 +22,23 @@ class AccountController extends AbstractController
     ) {}
 
     #[Route(path: '/remove', name: 'app_account_remove', methods: ['GET','POST'])]
-    public function remove(): Response
+    public function remove(TokenStorageInterface $tokenStorage, RequestStack $requestStack): Response
     {
         if (!$this->getUser()) {
-            return $this->redirectToRoute('app_logout');
+            return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
         }
 
         $this->entityManager->remove($this->getUser());
         $this->entityManager->flush();
 
-        // TODO: remove user in cache
+        // Clear the security token (logout manually)
+        $tokenStorage->setToken(null);
 
-        return $this->redirectToRoute('app_logout');
+        // Invalidate the session
+        $session = $requestStack->getSession();
+        $session->invalidate();
+
+        return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route(path: '/edit/{id}', name: 'app_account_edit', methods: ['GET', 'POST'])]
