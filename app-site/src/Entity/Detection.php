@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\DetectionRepository;
-use App\Service\ImageManagerService;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\EventListener\DetectionListener;
 
 #[ORM\Entity(repositoryClass: DetectionRepository::class)]
-#[ORM\HasLifecycleCallbacks]
+#[ORM\EntityListeners([DetectionListener::class])]
 class Detection
 {
     #[ORM\Id]
@@ -26,9 +26,7 @@ class Detection
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Couple $couple = null;
 
-    public function __construct(
-        public readonly ImageManagerService $imageManagerService,
-    )
+    public function __construct()
     {
         $this->triggeredAt = new \DateTime();
     }
@@ -72,11 +70,5 @@ class Detection
         $this->couple = $couple;
 
         return $this;
-    }
-
-    #[ORM\PreRemove]
-    public function removeImage(): void
-    {
-        $this->imageManagerService->removeDetectionImage($this->imageFilename);;
     }
 }
