@@ -4,7 +4,7 @@
     {{ component('navigation', {index: 0}) }}
     {{ component('confirmdialog', {
         title: 'Remove camera',
-        message: 'Are you sure you want to remove this camera? You could always add it again later if no one add it to his account before you.',
+        message: 'Are you sure you want to remove this camera? You could always add it again later but all the associated detections will be removed.',
         confirmUrl: path('app_couples_delete', {'id': coupleInfo.coupleEntity.id}),
     }) }}
 
