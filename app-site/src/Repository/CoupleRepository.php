@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Couple;
+use App\DTO\CoupleDetectionDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -89,6 +90,45 @@ class CoupleRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $qb->execute(); 
+    }
+
+
+    /**
+     * Met à jour la date de dernière consultation pour un seul couple
+     */
+    public function updateLastDetectionSeekDate(int $coupleId): void
+    {
+        $qb= $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.lastDetectionSeekDate', ':now')
+            ->where('c.id = :id')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('id', $coupleId)
+            ->getQuery()
+            ->execute();
+
+            $qb->execute();
+            $qb->getEntityManager()->flush();
+    }
+
+    public function findCouplesWithNewDetectionCountByUser(int $userId): array
+{
+    $qb = $this->createQueryBuilder('c')
+        ->select('c', 'COUNT(d.id) AS detectionCount')
+        ->leftJoin('c.detections', 'd', 'WITH', 'd.triggeredAt > c.lastDetectionSeekDate')
+        ->where('c.user = :userId')
+        ->groupBy('c.id')
+        ->setParameter('userId', $userId);
+
+        // On récupère les résultats bruts
+        $result = $qb->getQuery()->getResult();
+
+        // On transforme les résultats bruts en objets DTO
+        $coupleDetectionDTO = array_map(function ($row) {
+            return new CoupleDetectionDTO($row[0], (int) $row['detectionCount']);
+        }, $result);
+
+        return $coupleDetectionDTO;
     }
 
 

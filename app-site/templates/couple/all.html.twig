@@ -10,7 +10,7 @@
         {% if couples is not null %}
             <div class="grid-container couples">
                 {% for couple in couples %}
-                    {{ component('couplecard', {couple: couple, wifi: wifi}) }}
+                    {{ component('couplecard', {couple: couple, wifi: wifi, nbDetection:couple.detectionCount}) }}
                 {% endfor %}
                 {% if couples is empty %}
                     <p class="no-result">You have no cameras yet. Start by adding a new one.</p>

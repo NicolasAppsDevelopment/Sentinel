@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\CoupleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CoupleRepository::class)]
 class Couple
@@ -38,10 +40,14 @@ class Couple
     #[ORM\Column]
     private ?bool $enabled = null;
 
+    #[ORM\OneToMany(mappedBy: 'couple', targetEntity: Detection::class)]
+    private Collection $detections;
+
     public function __construct()
     {
         $this->associationDate = new \DateTime();
         $this->lastDetectionSeekDate = new \DateTime();
+        $this->detections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -136,6 +142,35 @@ class Couple
     public function setLastDetectionSeekDate(\DateTimeInterface $lastDetectionSeekDate): static
     {
         $this->lastDetectionSeekDate = $lastDetectionSeekDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Detection>
+     */
+    public function getDetections(): Collection
+    {
+        return $this->detections;
+    }
+
+    public function addDetection(Detection $detection): self
+    {
+        if (!$this->detections->contains($detection)) {
+            $this->detections[] = $detection;
+            $detection->setCouple($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetection(Detection $detection): self
+    {
+        if ($this->detections->removeElement($detection)) {
+            if ($detection->getCouple() === $this) {
+                $detection->setCouple(null);
+            }
+        }
 
         return $this;
     }

@@ -22,6 +22,13 @@ class CoupleService
     {
         return $this->coupleRepository->findByUserId($userId);
     }
+        /**
+     * Get all couples for a given user ID with the number of detections
+     */
+    public function getAllCouplesByUserWithDetections(int $userId): array
+    {
+        return $this->coupleRepository->findCouplesWithDetectionsByUserId($userId);
+    }
 
     public function getCoupleById(int $coupleId): ?Couple
     {
