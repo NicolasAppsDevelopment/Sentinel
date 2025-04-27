@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 readonly class ImageManagerService {
@@ -10,12 +11,25 @@ readonly class ImageManagerService {
     )
     {}
 
+    /**
+     * @throws Exception
+     */
     public function saveDetectionImage(string $cameraIp): string
     {
         $destFolderPath = $this->parameterBag->get('detections_dir');
         $destFilename = uniqid() . '.jpg';
         $image = imagecreatefromjpeg('http://' . $cameraIp . '/capture');
-        file_put_contents($destFolderPath . '/' . $destFilename, $image);
+
+        if (!$image) {
+            throw new Exception('Failed to create image from camera capture.');
+        }
+
+        $success = file_put_contents($destFolderPath . '/' . $destFilename, $image);
+
+        if ($success === false) {
+            throw new Exception('Failed to save image to destination folder.');
+        }
+
         return $destFilename;
     }
 
