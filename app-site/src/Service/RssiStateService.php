@@ -16,7 +16,7 @@ readonly class RssiStateService
         } elseif ($rssi > -70) {
             return 'Good';
         } else {
-            return 'Very Weak';
+            return 'Weak';
         }
     }
 }

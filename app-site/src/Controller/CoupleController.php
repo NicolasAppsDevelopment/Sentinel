@@ -19,11 +19,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\FormInterface;
-use App\Dto\ActionDeviceStatusDto;
-use App\Dto\CameraDeviceStatusDto;
 
-
-final class CoupleController extends AbstractController{
+final class CoupleController extends AbstractController {
 
     public function __construct(
         private readonly CoupleService $coupleService,

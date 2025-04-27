@@ -3,29 +3,10 @@ ENV WORKDIR=/var/www
 ENV GIT_USER_EMAIL="you@example.com"
 ENV GIT_USER_NAME="Your Name"
 RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    g++ \
     git \
-    libicu-dev \
-    zip \
-    libzip-dev \
-    libpq-dev \
-    libxml2-dev \
-    libpng-dev \
-    libfreetype6-dev \
-    libwebp-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libxpm-dev \
     supervisor \
     mariadb-client \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
-    && pecl install apcu \
-    && docker-php-ext-enable apcu \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install zip xml \
-    && docker-php-ext-configure gd --with-jpeg \
-    && docker-php-ext-install gd
+    && docker-php-ext-install pdo pdo_mysql
 
 RUN apt-get update && apt-get install -y ssmtp
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
