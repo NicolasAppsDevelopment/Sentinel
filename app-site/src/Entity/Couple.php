@@ -22,7 +22,7 @@ class Couple
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $associationDate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'couples', cascade: ['remove'])]
+    #[ORM\ManyToOne(inversedBy: 'couples')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
