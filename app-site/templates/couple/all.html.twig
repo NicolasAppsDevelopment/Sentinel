@@ -3,9 +3,9 @@
 {% block body %}
     {{ component('navigation', {index: 0}) }}
     <div class="content">
-        <h2>Your cameras</h2>
+        <h2>Your alarms</h2>
 
-        <a href="{{ path('app_couples_add') }}" class="btn-primary"><i class="fa-solid fa-plus"></i> Add a camera</a>
+        <a href="{{ path('app_couples_add') }}" class="btn-primary"><i class="fa-solid fa-plus"></i> Add an alarm</a>
 
         {% if couples is not null %}
             <div class="grid-container couples">
@@ -13,7 +13,7 @@
                     {{ component('couplecard', {couple: couple}) }}
                 {% endfor %}
                 {% if couples is empty %}
-                    <p class="no-result">You have no cameras yet. Start by adding a new one.</p>
+                    <p class="no-result">You have no alarms yet. Start by adding a new one.</p>
                 {% endif %}
             </div>
         {% endif %}

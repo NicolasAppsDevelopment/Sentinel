@@ -53,22 +53,6 @@ final class DeviceController extends AbstractController {
         return $this->apiResponseService->okRaw($device->getId());
     }
 
-    #[Route('/devices', name: 'app_devices')]
-    public function index(): Response
-    {
-        return $this->render('device_manager/index.html.twig', [
-            'controller_name' => 'DeviceManagerController',
-        ]);
-    }
-
-    #[Route('/devices/get/{id}', name: 'app_devices_id')]
-    public function getDeviceById(int $id): Response
-    {
-        return $this->render('device_manager/all.html.twig', [
-            'controller_name' => 'DeviceManagerController',
-        ]);
-    }
-
     /**
      * @throws \Exception
      */

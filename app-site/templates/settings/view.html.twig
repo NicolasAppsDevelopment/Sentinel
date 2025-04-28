@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ component('navigation', {index: 0}) }}
+    {{ component('navigation', {index: 2}) }}
     <div class="content">
-
-        <div>
-            <strong>Heure client :</strong>
-            <span id="clientTime">--:--:--</span>
-        </div>
-
         <div class="form-control" id="serverTimeContainer">
-            <label for="serverTime">Date Serveur</label>
+            <label>Date et heure du client</label>
             <input
-                type="text"
+                    type="datetime-local"
+                    id="clientTime"
+                    value="{{ serverTime }}"
+                    readonly
+            />
+        </div>
+        <div class="form-control" id="serverTimeContainer">
+            <label for="serverTime">Date et heure du serveur</label>
+            <input
+                type="datetime-local"
                 name="server-time"
                 id="serverTime"
                 value="{{ serverTime }}"
-                autocomplete="title"
-                placeholder="Outdoor"
                 required
                 autofocus
                 hx-get="{{ path('app_settings_server_time') }}"
@@ -30,14 +31,14 @@
             hx-get="{{ path('app_settings_sync_time') }}"
             hx-target="#serverTime"
             hx-swap="outerHTML">
-            <i class="fa-solid fa-plus"></i> Mettre à jour les dates et heures
+            <i class="fa-solid fa-sync"></i> Mettre à jour les dates et heures
         </button>
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
             function updateClientTime() {
                 const now = new Date();
-                document.getElementById('clientTime').innerText =
+                document.getElementById('clientTime').value =
                     now.toLocaleString();
             }
 
