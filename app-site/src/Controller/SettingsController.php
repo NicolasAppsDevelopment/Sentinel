@@ -14,8 +14,11 @@ final class SettingsController extends AbstractController
     #[Route('/settings', name: 'app_settings')]
     public function index(): Response
     {
+        $serverTime = (new \DateTime())->format('Y-m-d H:i:s');
+
         return $this->render('settings/view.html.twig', [
             'controller_name' => 'SettingsController',
+            'serverTime' => $serverTime
         ]);
     }
 
@@ -37,7 +40,6 @@ final class SettingsController extends AbstractController
 
     public function serverTime(): JsonResponse
     {
-        $serverTime = (new \DateTime())->format('Y-m-d H:i:s');
 
         return $this->render('settings/inputserver.html.twig', [
             'serverTime' => $serverTime,
