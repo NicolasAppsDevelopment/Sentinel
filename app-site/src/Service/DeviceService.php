@@ -14,13 +14,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class DeviceService
 {
-    private DeviceRepository $deviceRepository;
-
-    public function __construct(DeviceRepository $deviceRepository)
-    {
-        $this->deviceRepository = $deviceRepository;
-    }
-
+    public function __construct(
+        private readonly DeviceRepository $deviceRepository
+    ) {}
 
     public function getDeviceById(int $deviceId): ?Device
     {

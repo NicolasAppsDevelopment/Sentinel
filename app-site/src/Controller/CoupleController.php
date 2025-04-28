@@ -7,7 +7,6 @@ use App\Form\CoupleFormType;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;
 use App\Service\DetectionService;
-use App\Service\DeviceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -26,7 +25,6 @@ final class CoupleController extends AbstractController {
     public function __construct(
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
-        private readonly DeviceService $deviceService,
         private readonly EntityManagerInterface $entityManager,
         private readonly ApiResponseService $apiResponseService
     ) {}
@@ -87,6 +85,8 @@ final class CoupleController extends AbstractController {
         );
 
         $couple->coupleEntity->setLastDetectionSeekDate(new DateTime());
+        $this->entityManager->persist($couple->coupleEntity);
+        $this->entityManager->flush();
 
         return $this->render('couple/view.html.twig', [
             'coupleInfo' => $couple,
@@ -126,7 +126,14 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/enable-disable/{id}', name: 'app_couples_enable_disable')]
     public function enableDisableCouple(int $id): Response
     {
-        $this->coupleService->enableDisableCouple($id);
+        $couple = $this->coupleService->getCoupleById($id);
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
+        $couple->setEnabled(!$couple->isEnabled());
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
 
         $res = $this->apiResponseService->ok(null);
         $res->headers->set('Hx-Refresh', 'true');
@@ -139,9 +146,6 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
         if ($couple !== null) {
-            $couple->getActionDevice()?->setIsPaired(false);
-            $couple->getCameraDevice()?->setIsPaired(false);
-
             $this->entityManager->remove($couple);
             $this->entityManager->flush();
 
@@ -250,7 +254,7 @@ final class CoupleController extends AbstractController {
 
         $client = HttpClient::create();
 
-        try {//TODO Extract into a specific file
+        try {
             $url = 'http://' . $cameraDevice->getIp() . '/capture?_cb=1744097322029';
             $response = $client->request('GET', $url);
 
@@ -298,7 +302,7 @@ final class CoupleController extends AbstractController {
         //if ($couple->getUser() !== $user) {
         //    return $this->apiResponseService->error('Not authorized');
         //}
-        $actionDevice = $couple->coupleEntity->getCameraDevice();
+        $actionDevice = $couple->coupleEntity->getActionDevice();
         if ($actionDevice === null) {
             return $this->apiResponseService->error('Action module not found');
         }
@@ -307,10 +311,10 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $internalEnableBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         return new Response('', 200, [
-            'X-Accel-Redirect' => $internalEnableBuzzerPath,
+            'X-Accel-Redirect' => $toggleBuzzerPath,
             'Content-Type' => 'application/json',
             'Hx-Refresh' => 'true'
         ]);

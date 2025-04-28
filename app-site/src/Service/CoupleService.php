@@ -62,14 +62,6 @@ class CoupleService
         return $this->coupleRepository->findOneByActionDeviceId($actionId);
     }
 
-    public function enableDisableCouple(int $coupleId): bool
-    {
-        $couple = $this->getCoupleById($coupleId);
-        $couple->setEnabled(!$couple->isEnabled());
-
-        return $couple->isEnabled();
-
-    }
     public function updateTitle(int $coupleId, string $newTitle): void
     {
         $couple = $this->getCoupleById($coupleId);
