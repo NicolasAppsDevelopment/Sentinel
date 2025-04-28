@@ -164,7 +164,7 @@ final class CoupleController extends AbstractController {
         if (!$user) {
             return $this->apiResponseService->error('You need to sign in to access this stream!');
         }
-        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             return $this->apiResponseService->error('You are not authorized to access this stream!');
         }
 
@@ -199,7 +199,7 @@ final class CoupleController extends AbstractController {
         if (!$user) {
             return $this->apiResponseService->error("You need to sign in to set this stream's quality !");
         }
-        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             return $this->apiResponseService->error("You are not authorized to set this stream's quality !");
         }
 
@@ -242,7 +242,7 @@ final class CoupleController extends AbstractController {
         if (!$user) {
             return $this->apiResponseService->error('You need to sign in to take a capture !');
         }
-        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             return $this->apiResponseService->error('You are not authorized to take a capture !');
         }
 
@@ -301,7 +301,7 @@ final class CoupleController extends AbstractController {
         if (!$user) {
             return $this->apiResponseService->error('You need to sign in to toggle this buzzer !');
         }
-        if ($user->getUserIdentifier() == $couple->coupleEntity->getUser()->getUsername()) {
+        if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             return $this->apiResponseService->error('You are not authorized to toggle this buzzer !');
         }
 
