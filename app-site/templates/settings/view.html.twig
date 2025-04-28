@@ -10,19 +10,30 @@
     <span id="clientTime">--:--:--</span>
     </div>
 
-    <div>
-    <strong>Heure serveur :</strong>
-    <span
-        id="serverTime"
-        hx-get="{{ path('api_server_time') }}"
-        hx-trigger="load, click"
-        hx-swap="innerHTML"
-    >
-        Chargement…
-    </span>
+    <div class="form-control">
+      <label for="serverTime">Date Serveur</label>
+      <input
+          type="text"
+          name="server-time"
+          id="serverTime"
+          value="Chargement"
+          autocomplete="title"
+          placeholder="Outdoor"
+          required
+          autofocus
+          hx-get="{{ path('app_settings_sync_time') }}"
+          hx-trigger="load"
+          hx-swap="outerHTML"
+      />
     </div>
 
-{% endblock %}
+    <button class="btn-primary w100" type="submit"
+        hx-get="{{ path('app_settings_server_time') }}"
+        hx-trigger="click"
+        target="#serverTime"
+        hx-swap="outerHTML">
+      <i class="fa-solid fa-plus"></i> Mettre à jour les dates et heures
+    </button>
 
 <script>
   // Met à jour l'affichage de l'heure locale du navigateur
@@ -38,4 +49,7 @@
   document
     .getElementById('updateTimes')
     .addEventListener('click', updateClientTime);
+
+
 </script>
+{% endblock %}

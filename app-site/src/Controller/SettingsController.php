@@ -14,7 +14,7 @@ final class SettingsController extends AbstractController
     #[Route('/settings', name: 'app_settings')]
     public function index(): Response
     {
-        return $this->render('settings/index.html.twig', [
+        return $this->render('settings/view.html.twig', [
             'controller_name' => 'SettingsController',
         ]);
     }
@@ -22,10 +22,6 @@ final class SettingsController extends AbstractController
     #[Route('/settings/sync-time', name: 'app_settings_sync_time')]
     public function syncTime(): Response
     {
-        $dateServeur = new \DateTime();
-        $dateClient = new \DateTime();
-
-
         $process = new Process(['sudo', 'date', '-s', 'true']);
         $process->run();
 
@@ -41,9 +37,10 @@ final class SettingsController extends AbstractController
 
     public function serverTime(): JsonResponse
     {
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
-        return new JsonResponse([
-            'serverTime' => $now->format('Y-m-d H:i:s'),
+        $serverTime = (new \DateTime())->format('Y-m-d H:i:s');
+
+        return $this->render('settings/inputserver.html.twig', [
+            'serverTime' => $serverTime,
         ]);
     }
 }
