@@ -71,18 +71,16 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/view/{id}', name: 'app_couples_view')]
     public function getCoupleById(string $id, PaginatorInterface $paginator, Request $request, UserInterface $user): Response
     {
-        $couple = $this->coupleService->getCoupleById($id);
+        $couple = $this->coupleService->getCoupleWithStatusById($id);
 
         // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to see this alarm !');
+            $this->addFlash('error', 'You need to sign in to see this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to see this alarm !');
-        }
-
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to see this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
 
         if ($couple === null) {
@@ -97,8 +95,8 @@ final class CoupleController extends AbstractController {
             15 // number of items per page
         );
 
-        $couple->setLastDetectionSeekDate(new DateTime());
-        $this->entityManager->persist($couple);
+        $couple->coupleEntity->setLastDetectionSeekDate(new DateTime());
+        $this->entityManager->persist($couple->coupleEntity);
         $this->entityManager->flush();
 
         return $this->render('couple/view.html.twig', [
@@ -194,7 +192,7 @@ final class CoupleController extends AbstractController {
             return $this->apiResponseService->error('You are not authorized to delete this alarm !');
         }
 
-        if ($couple !== null) {
+        if ($couple) {
             $this->entityManager->remove($couple);
             $this->entityManager->flush();
 
