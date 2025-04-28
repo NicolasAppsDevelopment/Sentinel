@@ -18,7 +18,6 @@ final class SettingsController extends AbstractController
         $serverTime = (new DateTime())->format('Y-m-d H:i:s');
 
         return $this->render('settings/view.html.twig', [
-            'controller_name' => 'SettingsController',
             'serverTime' => $serverTime
         ]);
     }

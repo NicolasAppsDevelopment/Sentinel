@@ -381,8 +381,8 @@ final class CoupleController extends AbstractController {
         $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         return new Response('', 200, [
+            'Hx-Refresh' => 'true',
             'X-Accel-Redirect' => $toggleBuzzerPath,
-            'Hx-Refresh' => 'true'
         ]);
     }
 }
