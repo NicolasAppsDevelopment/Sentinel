@@ -31,15 +31,14 @@
             hx-get="{{ path('app_settings_sync_time') }}"
             hx-target="#serverTime"
             hx-swap="outerHTML">
-            <i class="fa-solid fa-sync"></i> Mettre à jour les dates et heures
+            <i class="fa-solid fa-sync"></i> Mettre à jour la date et heure du serveur
         </button>
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
             function updateClientTime() {
                 const now = new Date();
-                document.getElementById('clientTime').value =
-                    now.toLocaleString();
+                document.getElementById('clientTime').value = now.toISOString();
             }
 
             // On exécute au chargement, puis on met à jour toutes les secondes
