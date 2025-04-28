@@ -4,51 +4,47 @@
     {{ component('navigation', {index: 0}) }}
     <div class="content">
 
-    <div>
-    <strong>Heure client :</strong>
-    <span id="clientTime">--:--:--</span>
+        <div>
+            <strong>Heure client :</strong>
+            <span id="clientTime">--:--:--</span>
+        </div>
+
+        <div class="form-control" id="serverTimeContainer">
+            <label for="serverTime">Date Serveur</label>
+            <input
+                type="text"
+                name="server-time"
+                id="serverTime"
+                value="{{ serverTime }}"
+                autocomplete="title"
+                placeholder="Outdoor"
+                required
+                autofocus
+                hx-get="{{ path('app_settings_server_time') }}"
+                hx-trigger="load"
+                hx-swap="outerHTML"
+            />
+        </div>
+
+        <button class="btn-primary w100" type="button"
+            hx-get="{{ path('app_settings_sync_time') }}"
+            hx-target="#serverTime"
+            hx-swap="outerHTML">
+            <i class="fa-solid fa-plus"></i> Mettre à jour les dates et heures
+        </button>
+
+        <script>
+            // Met à jour l'affichage de l'heure locale du navigateur
+            function updateClientTime() {
+                const now = new Date();
+                document.getElementById('clientTime').innerText =
+                    now.toLocaleString();
+            }
+
+            // On exécute au chargement, puis on met à jour toutes les secondes
+            window.addEventListener('load', () => {
+                updateClientTime();
+            });
+        </script>
     </div>
-
-    <div class="form-control">
-      <label for="serverTime">Date Serveur</label>
-      <input
-          type="text"
-          name="server-time"
-          id="serverTime"
-          value="Chargement"
-          autocomplete="title"
-          placeholder="Outdoor"
-          required
-          autofocus
-          hx-get="{{ path('app_settings_sync_time') }}"
-          hx-trigger="load"
-          hx-swap="outerHTML"
-      />
-    </div>
-
-    <button class="btn-primary w100" type="submit"
-        hx-get="{{ path('app_settings_server_time') }}"
-        hx-trigger="click"
-        target="#serverTime"
-        hx-swap="outerHTML">
-      <i class="fa-solid fa-plus"></i> Mettre à jour les dates et heures
-    </button>
-
-<script>
-  // Met à jour l'affichage de l'heure locale du navigateur
-  function updateClientTime() {
-    const now = new Date();
-    // format lisible local, ex. "27/04/2025 20:15:03"
-    document.getElementById('clientTime').innerText =
-      now.toLocaleString();
-  }
-
-  // On exécute au chargement, puis on rattache le même handler au bouton
-  window.addEventListener('load', updateClientTime);
-  document
-    .getElementById('updateTimes')
-    .addEventListener('click', updateClientTime);
-
-
-</script>
 {% endblock %}
