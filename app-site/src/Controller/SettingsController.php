@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,7 +15,7 @@ final class SettingsController extends AbstractController
     #[Route('/settings', name: 'app_settings')]
     public function index(): Response
     {
-        $serverTime = (new \DateTime())->format('Y-m-d H:i:s');
+        $serverTime = (new DateTime())->format('Y-m-d H:i:s');
 
         return $this->render('settings/view.html.twig', [
             'controller_name' => 'SettingsController',
@@ -35,11 +36,10 @@ final class SettingsController extends AbstractController
         return new Response('Heure synchronisée avec succès.');
     }
 
-
     #[Route('/settings/server-time', name: 'app_settings_server_time')]
-
-    public function serverTime(): JsonResponse
+    public function serverTime(): Response
     {
+        $serverTime = (new DateTime())->format('Y-m-d H:i:s');
 
         return $this->render('settings/inputserver.html.twig', [
             'serverTime' => $serverTime,

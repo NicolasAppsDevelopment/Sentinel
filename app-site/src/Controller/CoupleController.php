@@ -44,7 +44,7 @@ final class CoupleController extends AbstractController {
     public function addCouple(Request $request, UserInterface $user): Response
     {
         if (!$user) {
-            $this->addFlash('error', 'You are not authorized to add couple! Sign in first!');
+            $this->addFlash('error', 'You are not authorized to add an alarm! Sign in first!');
             return $this->redirectToRoute('app_couples_all');
         }
 
@@ -86,7 +86,7 @@ final class CoupleController extends AbstractController {
         }
 
         if ($couple === null) {
-            $this->addFlash('error', 'Couple not found');
+            $this->addFlash('error', 'Alarm not found');
             return $this->redirectToRoute('app_couples');
         }
 
@@ -146,7 +146,7 @@ final class CoupleController extends AbstractController {
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Alarm edited successfully!');
+        $this->addFlash('success', 'Alarm saved successfully!');
         return $this->redirectToRoute('app_couples');
     }
 
@@ -382,7 +382,6 @@ final class CoupleController extends AbstractController {
 
         return new Response('', 200, [
             'X-Accel-Redirect' => $toggleBuzzerPath,
-            'Content-Type' => 'application/json',
             'Hx-Refresh' => 'true'
         ]);
     }

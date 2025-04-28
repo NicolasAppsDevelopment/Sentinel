@@ -3,14 +3,14 @@
 {% block body %}
     {{ component('navigation', {index: 0}) }}
     {{ component('confirmdialog', {
-        title: 'Remove camera',
-        message: 'Are you sure you want to remove this camera? You could always add it again later but all the associated detections will be removed.',
+        title: 'Remove alarm',
+        message: 'Are you sure you want to remove this alarm? You could always add it again later but all the associated detections will be removed.',
         confirmUrl: path('app_couples_delete', {'id': coupleInfo.coupleEntity.id}),
     }) }}
 
     {{ component('edittitlemodal', {
-        title: 'Edit camera name',
-        message: 'Enter a new name for the camera',
+        title: 'Edit alarm name',
+        message: 'Enter a new name for the alarm',
         couple: coupleInfo,
         editUrl: path('app_couple_update_name', {'id': coupleInfo.coupleEntity.id}),
     }) }}
@@ -101,13 +101,13 @@
                     class="card action"
                     onclick="document.getElementById('edit-modal').showModal()">
                 <span class="fa-solid fa-pencil"></span>
-                <p class="desc">Edit camera</p>
+                <p class="desc">Edit alarm</p>
             </button>
             <button type="button"
                     class="card action"
                     onclick="document.getElementById('confirm-modal').showModal()">
                 <span class="fa-solid fa-trash red"></span>
-                <p class="desc">Remove camera</p>
+                <p class="desc">Remove alarm</p>
             </button>
         </div>
 
@@ -129,7 +129,7 @@
                     {{ component('detectioncard', {detection: detection, coupleName: detection.couple.title}) }}
                 {% endfor %}
             {% else %}
-                <p class="no-result">This couple has no detections yet.</p>
+                <p class="no-result">This alarm has no detections yet.</p>
             {% endif %}
         </div>
 
