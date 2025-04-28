@@ -362,30 +362,46 @@ final class CoupleController extends AbstractController {
 
         // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to toggle this buzzer !');
+            $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to toggle this buzzer !');
+            $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
+            return $this->redirectToRoute('app_login');
         }
 
         if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+            $this->addFlash('error', 'Alarm not found !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
         if ($actionDevice === null) {
-            return $this->apiResponseService->error('Action module not found');
+            $this->addFlash('error', 'Action module not found !');
+            return $this->redirectToRoute('app_couples');
         }
         if ($actionDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Action module not paired');
+            $this->addFlash('error', 'Action module not paired !');
+            return $this->redirectToRoute('app_couples');
         }
 
         // 2. Send internal redirect
         $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
-        return new Response('', 200, [
-            'Hx-Refresh' => 'true',
-            'X-Accel-Redirect' => $toggleBuzzerPath,
+        $client = HttpClient::create();
+        try {
+            $response = $client->request('GET', $toggleBuzzerPath);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Bad status code response: ' . $response->getStatusCode());
+            }
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
+            return $this->redirectToRoute('app_couples');
+        }
+
+        return $this->redirectToRoute('app_couples_view', [
+            'id' => $id,
         ]);
     }
 }
