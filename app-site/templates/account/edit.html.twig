@@ -2,22 +2,27 @@
 
 {% block body %}
     {{ component('navigation', {index: 3}) }}
+    {{ component('confirmdialog', {
+        title: 'Remove account',
+        message: 'Are you sure you want to remove this account? All the associated detections, alarms and settings will be removed.',
+        confirmUrl: path('app_account_remove'),
+    }) }}
 
     <div class="content">
             <h2>Account</h2>
 
             {{ form_start(form) }}
                 <div class="form-control">
-                    <label>Username</label>
+                    <label for="username">Username</label>
                     <input type="text" name="{{ field_name(form.username) }}" value="{{ field_value(form.username) }}" id="username" autocomplete="username" placeholder="username">
                 </div>
                 <div class="form-control">
-                    <label>Password</label>
-                    <input type="text" name="{{ field_name(form.plainPassword) }}" value="{{ field_value(form.plainPassword) }}" id="plainPassword" autocomplete="plainPassword" placeholder="password">
+                    <label for="plainPassword">Password</label>
+                    <input type="password" name="{{ field_name(form.plainPassword) }}" value="{{ field_value(form.plainPassword) }}" id="plainPassword" placeholder="password">
                 </div>
                 <div class="form-control">
-                    <label>Email</label>
-                    <input type="text" name="{{ field_name(form.email) }}" value="{{ field_value(form.email) }}" id="email" autocomplete="email" placeholder="email">
+                    <label for="email">Email</label>
+                    <input type="email" name="{{ field_name(form.email) }}" value="{{ field_value(form.email) }}" id="email" autocomplete="email" placeholder="email">
                 </div>
 
                 {% if app.user.id == user.id %}
@@ -25,14 +30,12 @@
                     <button class="btn-primary w100" type="submit">
                         <i class="fa-solid fa-save"></i> Save
                     </button>
-                    <a class="btn-primary w100 red" href="{{ path('app_account_remove') }}">
+                    <button class="btn-primary w100 red" onclick="document.getElementById('confirm-modal').showModal()">
                         Remove <i class="fa-solid fa-trash"></i>
-                    </a>
+                    </button>
                 </div>
                 {% endif %}
 
             {{ form_end(form) }}
         </div>
-
-
 {% endblock %}
