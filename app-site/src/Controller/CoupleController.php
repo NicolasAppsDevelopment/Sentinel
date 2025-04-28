@@ -120,9 +120,12 @@ final class CoupleController extends AbstractController {
         if (!$userInDB) {
             return $this->apiResponseService->error('You need to sign in to edit this alarm !');
         }
-        if ($userInDB->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to edit this alarm !');
+        if ($couple->getUser()) {
+            if ($userInDB->getUserIdentifier() != $couple->getUser()->getUsername()) {
+                return $this->apiResponseService->error('You are not authorized to edit this alarm !');
+            }
         }
+
 
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
