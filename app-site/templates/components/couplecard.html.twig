@@ -7,8 +7,10 @@
                 <p>{{ couple.coupleEntity.title }}</p>
             </div>
             <div class="couple-status">
-                <span class="fa-solid fa-volume-high {{ couple.actionStatus.buzzerEnabled == true ? "red" : ""  }}"></span>
-                <span class="fa-solid fa-wifi {{ couple.lowerRssiState == "Weak" ? "red" : "green"  }}"></span>
+                {% if couple.actionStatus.buzzerEnabled %}
+                    <span class="fa-solid fa-bell red"></span>
+                {% endif %}
+                <span class="fa-solid fa-wifi {{ couple.lowerRssi.color }}"></span>
                 <span class="fa-solid fa-power-off {{ couple.coupleEntity.enabled == true ? "green" : "red"  }}"></span>
             </div>
         </div>

@@ -11,7 +11,7 @@ class CoupleStatus
     public Couple $coupleEntity;
     public ActionDeviceStatusDto $actionStatus;
     public CameraDeviceStatusDto $cameraStatus;
-    public string $lowerRssiState;
+    public Rssi $lowerRssi;
     public int $newDetectionCount;
 
     public function __construct(Couple $couple, ActionDeviceStatusDto $actionStatus, CameraDeviceStatusDto $cameraStatus, int $newDetectionCount)
@@ -19,7 +19,7 @@ class CoupleStatus
         $this->coupleEntity = $couple;
         $this->actionStatus = $actionStatus;
         $this->cameraStatus = $cameraStatus;
-        $this->lowerRssiState = $actionStatus->rssiValue < $cameraStatus->rssiValue ? $actionStatus->rssiState : $cameraStatus->rssiState;
+        $this->lowerRssi = $actionStatus->rssi->value < $cameraStatus->rssi->value ? $actionStatus->rssi : $cameraStatus->rssi;
         $this->newDetectionCount = $newDetectionCount;
     }
 }
