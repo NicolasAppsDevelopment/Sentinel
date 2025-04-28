@@ -69,9 +69,22 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/view/{id}', name: 'app_couples_view')]
-    public function getCoupleById(string $id, PaginatorInterface $paginator, Request $request): Response
+    public function getCoupleById(string $id, PaginatorInterface $paginator, Request $request, UserInterface $user): Response
     {
-        $couple = $this->coupleService->getCoupleWithStatusById($id);
+        $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
+        if (!$user) {
+            return $this->apiResponseService->error('You need to sign in to see this alarm !');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to see this alarm !');
+        }
+
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
         if ($couple === null) {
             $this->addFlash('error', 'Couple not found');
             return $this->redirectToRoute('app_couples');
@@ -84,8 +97,8 @@ final class CoupleController extends AbstractController {
             15 // number of items per page
         );
 
-        $couple->coupleEntity->setLastDetectionSeekDate(new DateTime());
-        $this->entityManager->persist($couple->coupleEntity);
+        $couple->setLastDetectionSeekDate(new DateTime());
+        $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
         return $this->render('couple/view.html.twig', [
@@ -99,9 +112,23 @@ final class CoupleController extends AbstractController {
      * @param UserInterface $userInDB
      * @return RedirectResponse
      */
-    public function saveCoupleForm(FormInterface $form, UserInterface $userInDB): RedirectResponse
+    public function saveCoupleForm(FormInterface $form, UserInterface $userInDB): RedirectResponse | Response
     {
         $couple = $form->getData();
+
+        // Check authorization
+        if (!$userInDB) {
+            return $this->apiResponseService->error('You need to sign in to edit this alarm !');
+        }
+        if ($userInDB->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to edit this alarm !');
+        }
+
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
+
         $couple->setUser($userInDB);
         $couple->setAssociationDate(new DateTime());
         $couple->setEnabled(true);
@@ -119,14 +146,24 @@ final class CoupleController extends AbstractController {
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Couple saved successfully!');
+        $this->addFlash('success', 'Alarm edited successfully!');
         return $this->redirectToRoute('app_couples');
     }
 
     #[Route('/couples/enable-disable/{id}', name: 'app_couples_enable_disable')]
-    public function enableDisableCouple(int $id): Response
+    public function enableDisableCouple(int $id, UserInterface $user): Response
     {
+
         $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
+        if (!$user) {
+            return $this->apiResponseService->error('You need to sign in to enabled/disabled this alarm !');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to enabled/disabled this alarm !');
+        }
+
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
@@ -142,14 +179,23 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/delete/{id}', name: 'app_couples_delete')]
-    public function deleteCouple(string $id): Response
+    public function deleteCouple(string $id, UserInterface $user): Response
     {
         $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
+        if (!$user) {
+            return $this->apiResponseService->error('You need to sign in to delete this alarm !');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to delete this alarm !');
+        }
+
         if ($couple !== null) {
             $this->entityManager->remove($couple);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Camera deleted successfully!');
+            $this->addFlash('success', 'Alarm deleted successfully!');
         }
 
         return $this->redirectToRoute('app_couples');
@@ -281,11 +327,25 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couple/{id}/update', name: 'app_couple_update_name', methods: ['POST'])]
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, int $id, UserInterface $user): RedirectResponse | Response
     {
+        $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
+        if (!$user) {
+            return $this->apiResponseService->error('You need to sign in to update this alarm !');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to update this alarm !');
+        }
+
+        if ($couple === null) {
+            return $this->apiResponseService->error('Couple not found');
+        }
+
         $newTitle = $request->request->get('title', '');
 
-        $this->coupleService->updateTitle($id, $newTitle);
+        $couple->setTitle($newTitle);
 
         return $this->redirectToRoute('app_couples_view', [
             'id' => $id,
