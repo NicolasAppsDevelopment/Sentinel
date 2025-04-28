@@ -1,15 +1,13 @@
 <?php
 namespace App\Dto;
 
-use App\Service\RssiStateService;
+use App\Entity\Custom\Rssi;
 
 class CameraDeviceStatusDto {
-    public readonly string $rssiState;
-    public readonly int $rssiValue;
+    public readonly Rssi $rssi;
     public function __construct(
         int $rssiValue,
     ) {
-        $this->rssiState = (new RssiStateService())->toString($rssiValue);
-        $this->rssiValue = $rssiValue;
+        $this->rssi = new Rssi($rssiValue);
     }
 }

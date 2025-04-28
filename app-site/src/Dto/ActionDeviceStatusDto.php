@@ -1,19 +1,18 @@
 <?php
 namespace App\Dto;
 
-use App\Service\RssiStateService;
+use App\Entity\Custom\Rssi;
+
 
 class ActionDeviceStatusDto {
 
-    public readonly string $rssiState;
-    public readonly int $rssiValue;
+    public readonly Rssi $rssi;
     public readonly bool $buzzerEnabled;
     public function __construct(
         int $rssiValue,
         string $buzzerEnabled,
     ) {
-        $this->rssiState = (new RssiStateService())->toString($rssiValue);
-        $this->rssiValue = $rssiValue;
+        $this->rssi = new Rssi($rssiValue);
         $this->buzzerEnabled = $buzzerEnabled === 'on';
     }
 }

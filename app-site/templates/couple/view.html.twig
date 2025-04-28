@@ -63,13 +63,13 @@
 
         <div class="camera-states card">
             <div class="state">
-                <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">{{ coupleInfo.cameraStatus.rssiState }} vision module Wi-Fi strength</p>
+                <span class="fa-solid fa-wifi {{ coupleInfo.actionStatus.rssi.color }}"></span>
+                <p class="desc">{{ coupleInfo.cameraStatus.rssi.state }} vision module Wi-Fi strength</p>
             </div>
             <div class="separator"></div>
             <div class="state">
-                <span class="fa-solid fa-wifi green"></span>
-                <p class="desc">{{ coupleInfo.actionStatus.rssiState }} action module Wi-Fi strength</p>
+                <span class="fa-solid fa-wifi {{ coupleInfo.actionStatus.rssi.color }}"></span>
+                <p class="desc">{{ coupleInfo.actionStatus.rssi.state }} action module Wi-Fi strength</p>
             </div>
             <div class="separator"></div>
             <div class="state">
