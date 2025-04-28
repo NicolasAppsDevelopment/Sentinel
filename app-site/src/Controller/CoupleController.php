@@ -158,19 +158,21 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/{id}/stream', name: 'app_couples_stream')]
     public function getSecureStream(string $id, UserInterface $user): Response
     {
-        // 1. Auth check
+        $couple = $this->coupleService->getCoupleById($id);
+
+        // 1. Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You are not authorized to access this stream! Sign in first!');
+            return $this->apiResponseService->error('You need to sign in to access this stream!');
+        }
+        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to access this stream!');
         }
 
         // 2. Lookup couple info from database
-        $couple = $this->coupleService->getCoupleById($id);
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
-        //if ($couple->getUser() !== $user) {
-        //    return $this->apiResponseService->error('Not authorized');
-        //}
+
         $cameraDevice = $couple->getCameraDevice();
         if ($cameraDevice === null) {
             return $this->apiResponseService->error('Camera not found');
@@ -179,7 +181,7 @@ final class CoupleController extends AbstractController {
             return $this->apiResponseService->error('Camera not paired');
         }
 
-        // 2. Send internal redirect
+        // 3. Send internal redirect
         $streamPath = '/protected-stream/?ip=' . $cameraDevice->getIp();
 
         return new Response('', 200, [
@@ -191,17 +193,19 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/{id}/stream/quality/{level}', name: 'app_couples_stream_quality')]
     public function setStreamQuality(string $id, string $level, UserInterface $user): Response
     {
+        $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You are not authorized to access capture route! Sign in first!');
+            return $this->apiResponseService->error("You need to sign in to set this stream's quality !");
+        }
+        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error("You are not authorized to set this stream's quality !");
         }
 
-        $couple = $this->coupleService->getCoupleById($id);
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
-//            if ($couple->getUser() !== $user) {
-//                return $this->apiResponseService->error('Not authorized');
-//            }
 
         $cameraDevice = $couple->getCameraDevice();
         if ($cameraDevice === null) {
@@ -232,17 +236,19 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/{id}/capture', name: 'app_couples_capture', methods: 'GET')]
     public function getSecureCapture(string $id, UserInterface $user): Response
     {
+        $couple = $this->coupleService->getCoupleById($id);
+
+        // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You are not authorized to access capture route! Sign in first!');
+            return $this->apiResponseService->error('You need to sign in to take a capture !');
+        }
+        if ($user->getUserIdentifier() == $couple->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to take a capture !');
         }
 
-        $couple = $this->coupleService->getCoupleById($id);
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
-//            if ($couple->getUser() !== $user) {
-//                return $this->apiResponseService->error('Not authorized');
-//            }
 
         $cameraDevice = $couple->getCameraDevice();
         if ($cameraDevice === null) {
@@ -289,19 +295,20 @@ final class CoupleController extends AbstractController {
     #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
     public function enableDisableBuzzer(string $id, UserInterface $user): Response
     {
-        // 1. Auth check
+        $couple = $this->coupleService->getCoupleWithStatusById($id);
+
+        // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You are not authorized to access this stream! Sign in first!');
+            return $this->apiResponseService->error('You need to sign in to toggle this buzzer !');
+        }
+        if ($user->getUserIdentifier() == $couple->coupleEntity->getUser()->getUsername()) {
+            return $this->apiResponseService->error('You are not authorized to toggle this buzzer !');
         }
 
-        // 2. Lookup couple info from database
-        $couple = $this->coupleService->getCoupleWithStatusById($id);
         if ($couple === null) {
             return $this->apiResponseService->error('Couple not found');
         }
-        //if ($couple->getUser() !== $user) {
-        //    return $this->apiResponseService->error('Not authorized');
-        //}
+
         $actionDevice = $couple->coupleEntity->getActionDevice();
         if ($actionDevice === null) {
             return $this->apiResponseService->error('Action module not found');
