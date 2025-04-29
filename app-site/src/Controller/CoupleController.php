@@ -179,10 +179,8 @@ final class CoupleController extends AbstractController {
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
-        $res = $this->apiResponseService->ok(null);
-        $res->headers->set('Hx-Refresh', 'true');
-
-        return $res;
+        $this->addFlash('success', 'Alarm updated successfully!');
+        return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 
     #[Route('/couples/delete/{id}', name: 'app_couples_delete')]
@@ -378,6 +376,8 @@ final class CoupleController extends AbstractController {
         $newTitle = $request->request->get('title', '');
 
         $couple->setTitle($newTitle);
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
 
 
         $this->addFlash('success', 'Alarm updated successfully!');
@@ -414,7 +414,7 @@ final class CoupleController extends AbstractController {
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        // 2. Send internal redirect
+        // Send internal redirect
         $toggleBuzzerPath =  '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         $client = HttpClient::create();
