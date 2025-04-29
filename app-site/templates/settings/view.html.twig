@@ -8,31 +8,41 @@
             <input
                     type="datetime-local"
                     id="clientTime"
-                    value="{{ serverTime }}"
+                    value=""
                     readonly
             />
         </div>
-        <div class="form-control" id="serverTimeContainer">
-            <label for="serverTime">Date et heure du serveur</label>
-            <input
-                type="datetime-local"
-                name="server-time"
-                id="serverTime"
-                value="{{ serverTime }}"
-                required
-                autofocus
-                hx-get="{{ path('app_settings_server_time') }}"
-                hx-trigger="load"
-                hx-swap="outerHTML"
-            />
-        </div>
+        <form 
+            hx-post="{{ path('app_settings_sync_time') }}"
+            hx-target="#serverTimeContainer"
+            hx-swap="outerHTML"
+        >
+            <div class="form-control" id="serverTimeContainer">
+                <label for="serverTime">Date et heure du serveur</label>
+                <input
+                    type="datetime-local"
+                    name="server-time"
+                    id="serverTime"
+                    value="{{ serverTime }}"
+                    required
+                    autofocus
+                    hx-get="{{ path('app_settings_server_time') }}"
+                    hx-trigger="load"
+                    hx-swap="outerHTML"
+                />
+            </div>
 
-        <button class="btn-primary w100" type="button"
+            <button class="btn-primary w100" type="submit">
+                <i class="fa-solid fa-sync"></i> Mettre à jour la date et heure du serveur
+            </button>
+        </form>
+
+        {# <button class="btn-primary w100" type="button"
             hx-get="{{ path('app_settings_sync_time') }}"
             hx-target="#serverTime"
             hx-swap="outerHTML">
             <i class="fa-solid fa-sync"></i> Mettre à jour la date et heure du serveur
-        </button>
+        </button> #}
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
