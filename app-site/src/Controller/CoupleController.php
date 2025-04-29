@@ -384,7 +384,7 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $toggleBuzzerPath = $request->getBaseUrl() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath = $request->getSchemeAndHttpHost() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         $client = HttpClient::create();
         try {
