@@ -44,14 +44,14 @@ class AccountController extends AbstractController
     }
 
     #[Route(path: '/edit/{id}', name: 'app_account_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, int $id): Response
+    public function edit(UserInterface $loginUser, Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, int $id): Response
     {
         // Check authorization
-        if (!$user) {
+        if (!$loginUser) {
             $this->addFlash('error', 'You need to sign in to edit this account !');
             return $this->redirectToRoute('app_login');
         }
-        if ($user->getId() != $id) {
+        if ($user->getUserIdentifier() != $loginUser->getUserIdentifier()) {
             $this->addFlash('error', 'You are not authorized to edit this account !');
             return $this->redirectToRoute('app_couples');
         }
