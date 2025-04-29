@@ -29,7 +29,6 @@ final class CoupleController extends AbstractController {
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ApiResponseService $apiResponseService
     ) {}
 
 
@@ -180,10 +179,8 @@ final class CoupleController extends AbstractController {
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
-        $res = $this->apiResponseService->ok(null);
-        $res->headers->set('Hx-Refresh', 'true');
-
-        return $res;
+        $this->addFlash('success', 'Alarm enabled/disabled successfully!');
+        return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 
     #[Route('/couples/delete/{id}', name: 'app_couples_delete')]
@@ -380,6 +377,9 @@ final class CoupleController extends AbstractController {
 
         $couple->setTitle($newTitle);
 
+        $this->entityManager->persist($couple);
+        $this->entityManager->flush();
+
 
         $this->addFlash('success', 'Alarm updated successfully!');
         return $this->redirectToRoute('app_couples_view', array('id' => $id));
@@ -397,12 +397,12 @@ final class CoupleController extends AbstractController {
 
         // Check authorization
         if (!$user) {
-            $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
-            return $this->redirectToRoute('app_login');
+            $this->addFlash('error', 'You need to sign in to enabled/disabled this buzzer !');
+            return $this->redirectToRoute('app_couples');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
-            $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
-            return $this->redirectToRoute('app_login');
+            $this->addFlash('error', 'You are not authorized to enabled/disabled this buzzer !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
@@ -425,11 +425,11 @@ final class CoupleController extends AbstractController {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
             }
         } catch (Exception $e) {
-            $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
+            $this->addFlash('error', 'Unable to enabled/disabled buzzer: ' . $e->getMessage());
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        $this->addFlash('success', 'Buzzer toggled successfully!');
+        $this->addFlash('success', 'Buzzer enabled/disabled successfully!');
         return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 }

@@ -87,13 +87,10 @@
                 <span class="fa-solid fa-bell"></span>
                 <p class="desc">{{ coupleInfo.actionStatus.buzzerEnabled == true ? "Disable" : "Enable" }} buzzer</p>
             </a>
-            <button  class="card action"
-                     hx-get="{{path('app_couples_enable_disable', {id:coupleInfo.coupleEntity.id} ) }}"
-                     hx-trigger="click"
-                     hx-swap="none">
+            <a  class="card action" href="{{path('app_couples_enable_disable', {id:coupleInfo.coupleEntity.id} ) }}">
                 <span class="fa-solid fa-power-off"></span>
                 <p class="desc">{{ coupleInfo.coupleEntity.enabled == true ? "Disable" : "Enable"  }} detection</p>
-            </button>
+            </a>
             <button type="button"
                     class="card action"
                     onclick="document.getElementById('edit-modal').showModal()">
