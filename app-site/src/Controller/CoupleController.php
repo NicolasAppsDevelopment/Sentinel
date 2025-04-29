@@ -35,6 +35,11 @@ final class CoupleController extends AbstractController {
     #[Route('/couples', name: 'app_couples')]
     public function index(UserInterface $user): Response
     {
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to see the couples !');
+            return $this->redirectToRoute('app_login');
+        }
+
         $couples = $this->coupleService->getAllCouplesWithStatusByUser($user->getId());
 
         return $this->render('couple/all.html.twig', [
@@ -47,7 +52,7 @@ final class CoupleController extends AbstractController {
     {
         if (!$user) {
             $this->addFlash('error', 'You are not authorized to add an alarm! Sign in first!');
-            return $this->redirectToRoute('app_couples_all');
+            return $this->redirectToRoute('app_login');
         }
 
         $couple = new Couple();
@@ -83,7 +88,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to see this alarm !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to see this alarm !');
@@ -124,7 +129,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$userInDB) {
             $this->addFlash('error', 'You need to sign in to edit this alarm !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($couple->getUser()) {
             if ($userInDB->getUserIdentifier() != $couple->getUser()->getUsername()) {
@@ -168,7 +173,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to enabled/disabled this alarm !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to enabled/disabled this alarm !');
@@ -196,7 +201,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to delete this alarm !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to delete this alarm !');
@@ -223,7 +228,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to access this stream !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to access this stream !');
@@ -262,7 +267,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to set the quality of this stream !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to set the quality of this stream !');
@@ -312,7 +317,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to take a capture !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to take a capture !');
@@ -366,7 +371,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to update this alarm !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to update this alarm !');
@@ -398,7 +403,7 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to enabled/disabled this buzzer !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to enabled/disabled this buzzer !');

@@ -49,7 +49,7 @@ class AccountController extends AbstractController
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to edit this account !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getId() != $id) {
             $this->addFlash('error', 'You are not authorized to edit this account !');
