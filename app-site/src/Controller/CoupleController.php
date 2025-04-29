@@ -355,7 +355,7 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
-    public function enableDisableBuzzer(string $id, UserInterface $user): Response
+    public function enableDisableBuzzer(string $id, UserInterface $user, Request $request): Response
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
         if ($couple === null) {
@@ -384,7 +384,7 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath = $request->getBaseUrl() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         $client = HttpClient::create();
         try {
