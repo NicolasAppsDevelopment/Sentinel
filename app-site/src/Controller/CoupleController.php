@@ -9,6 +9,7 @@ use App\Service\CoupleService;
 use App\Service\DetectionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 final class CoupleController extends AbstractController {
 
@@ -383,23 +385,23 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
-    public function enableDisableBuzzer(string $id, UserInterface $user): Response
+    public function enableDisableBuzzer(string $id, UserInterface $user, Request $request): Response
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
 
         if (!$couple) {
-            $this->addFlash('error', 'Alarm not found');
+            $this->addFlash('error', 'Alarm not found !');
             return $this->redirectToRoute('app_couples');
         }
 
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
-            return $this->redirectToRoute('app_couples');
+            return $this->redirectToRoute('app_login');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
@@ -413,11 +415,25 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $toggleBuzzerPath = '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath =  '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
-        return new Response('', 200, [
-            'Hx-Refresh' => 'true',
-            'X-Accel-Redirect' => $toggleBuzzerPath,
-        ]);
+        $client = HttpClient::create();
+        try {
+            $response = $client->request('GET', $request->getSchemeAndHttpHost(), [
+                'headers' => [
+                    'X-Accel-Redirect' => $toggleBuzzerPath,
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new Exception('Bad status code response: ' . $response->getStatusCode());
+            }
+        } catch (Exception $e) {
+            $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
+        }
+
+        $this->addFlash('success', 'Buzzer toggled successfully!');
+        return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 }
