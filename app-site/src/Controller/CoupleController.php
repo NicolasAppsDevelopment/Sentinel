@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\FormInterface;
@@ -376,6 +377,7 @@ final class CoupleController extends AbstractController {
         $newTitle = $request->request->get('title', '');
 
         $couple->setTitle($newTitle);
+
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
@@ -385,7 +387,7 @@ final class CoupleController extends AbstractController {
     }
 
     #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
-    public function enableDisableBuzzer(string $id, UserInterface $user, Request $request): Response
+    public function enableDisableBuzzer(string $id, UserInterface $user): Response
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
 
@@ -414,19 +416,11 @@ final class CoupleController extends AbstractController {
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        // Send internal redirect
-        $toggleBuzzerPath =  '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
-
         $client = HttpClient::create();
-        try {
-            $response = $client->request('GET', $request->getSchemeAndHttpHost(), [
-                'headers' => [
-                    'X-Accel-Redirect' => $toggleBuzzerPath,
-                ]
-            ]);
 
-            dd($response);
-            die();
+        try {
+            $url = 'http://' . $actionDevice->getIp() . '/' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '_buzzer';
+            $response = $client->request('GET', $url);
 
             if ($response->getStatusCode() !== 200) {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
