@@ -3,53 +3,126 @@
 {% block body %}
     {{ component('navigation', {index: 2}) }}
     <div class="content">
-        <div class="form-control" id="serverTimeContainer">
-            <label>Date et heure du client</label>
-            <input
-                    type="datetime-local"
-                    id="clientTime"
-                    value=""
-                    readonly
-            />
-        </div>
-        <form 
-            hx-post="{{ path('app_settings_sync_time') }}"
-            hx-target="#serverTimeContainer"
-            hx-swap="outerHTML"
-        >
+        <form>
+            <h2>Sync server time</h2>
             <div class="form-control" id="serverTimeContainer">
-                <label for="serverTime">Date et heure du serveur</label>
-                <input
-                    type="datetime-local"
-                    name="server-time"
-                    id="serverTime"
-                    value="{{ serverTime }}"
-                    required
-                    autofocus
-                    hx-get="{{ path('app_settings_server_time') }}"
-                    hx-trigger="load"
-                    hx-swap="outerHTML"
-                />
+                <label>You device time</label>
+                <input type="datetime-local" id="clientTime" readonly />
             </div>
-
+            <div class="form-control" id="serverTimeContainer">
+                <label for="serverTime">Sentinel's time</label>
+                <input type="datetime-local" name="server-time" id="serverTime" value="{{ serverTime }}" required autofocus />
+            </div>
             <button class="btn-primary w100" type="submit">
-                <i class="fa-solid fa-sync"></i> Mettre à jour la date et heure du serveur
+                <i class="fa-solid fa-sync"></i> Update Sentinel's time
             </button>
         </form>
 
-        {# <button class="btn-primary w100" type="button"
-            hx-get="{{ path('app_settings_sync_time') }}"
-            hx-target="#serverTime"
-            hx-swap="outerHTML">
-            <i class="fa-solid fa-sync"></i> Mettre à jour la date et heure du serveur
-        </button> #}
+        <form>
+            <h2>Activation time</h2>
+            <h3>Monday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="monBeginTime">From</label>
+                    <input type="time" id="monBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="monEndTime">To</label>
+                    <input type="time" id="monEndTime" />
+                </div>
+            </div>
+            <h3>Tuesday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="tueBeginTime">From</label>
+                    <input type="time" id="tueBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="tueEndTime">To</label>
+                    <input type="time" id="tueEndTime" />
+                </div>
+            </div>
+            <h3>Wednesday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="wedBeginTime">From</label>
+                    <input type="time" id="wedBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="wedEndTime">To</label>
+                    <input type="time" id="wedEndTime" />
+                </div>
+            </div>
+            <h3>Thursday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="thuBeginTime">From</label>
+                    <input type="time" id="thuBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="thuEndTime">To</label>
+                    <input type="time" id="thuEndTime" />
+                </div>
+            </div>
+            <h3>Friday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="friBeginTime">From</label>
+                    <input type="time" id="friBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="friEndTime">To</label>
+                    <input type="time" id="friEndTime" />
+                </div>
+            </div>
+            <h3>Saturday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="satBeginTime">From</label>
+                    <input type="time" id="satBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="satEndTime">To</label>
+                    <input type="time" id="satEndTime" />
+                </div>
+            </div>
+            <h3>Sunday</h3>
+            <div class="row w100">
+                <div class="form-control w100">
+                    <label for="sunBeginTime">From</label>
+                    <input type="time" id="sunBeginTime" />
+                </div>
+                <div class="form-control w100">
+                    <label for="sunEndTime">To</label>
+                    <input type="time" id="sunEndTime" />
+                </div>
+            </div>
+
+            <button class="btn-primary w100" type="submit">
+                <i class="fa-solid fa-sync"></i> Update activation time
+            </button>
+        </form>
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
             function updateClientTime() {
-                const now = new Date();
-                document.getElementById('clientTime').value = now.toISOString();
+                document.getElementById('clientTime').value = getNowStandardDate();
             }
+
+            function getNowStandardDate() {
+                const datetime = new Date();
+                let d = datetime.getDate();
+                let m = datetime.getMonth() + 1; //Month from 0 to 11
+                let y = datetime.getFullYear();
+                let h = datetime.getHours();
+                let min = datetime.getMinutes();
+
+                const formattedDate = `${y}-${m<=9 ? '0' + m : m}-${d <= 9 ? '0' + d : d}`;
+                const formattedTime = `${h<=9 ? '0' + h : h}:${min<=9 ? '0' + min : min}`;
+
+                return formattedDate + " " + formattedTime;
+            }
+
 
             // On exécute au chargement, puis on met à jour toutes les secondes
             window.addEventListener('load', () => {
