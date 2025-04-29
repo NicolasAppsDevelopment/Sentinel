@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 final class CoupleController extends AbstractController {
 
@@ -384,11 +385,15 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $toggleBuzzerPath = $request->getSchemeAndHttpHost() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $toggleBuzzerPath =  $request->getSchemeAndHttpHost() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+
+        dd($toggleBuzzerPath);
+        die();
 
         $client = HttpClient::create();
         try {
-            $response = $client->request('GET', $toggleBuzzerPath);
+            $response = $client->request('GET', $request->getSchemeAndHttpHost(), [
+            ]);
 
             if ($response->getStatusCode() !== 200) {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
@@ -396,6 +401,7 @@ final class CoupleController extends AbstractController {
         } catch (Exception $e) {
             $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
             return $this->redirectToRoute('app_couples');
+        } catch (TransportExceptionInterface $e) {
         }
 
         return $this->redirectToRoute('app_couples_view', [
