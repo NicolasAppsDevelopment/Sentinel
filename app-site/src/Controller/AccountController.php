@@ -22,14 +22,14 @@ class AccountController extends AbstractController
     ) {}
 
     #[Route(path: '/remove', name: 'app_account_remove', methods: ['GET','POST'])]
-    public function remove(TokenStorageInterface $tokenStorage, RequestStack $requestStack): Response
+    public function remove(UserInterface $loginUser, TokenStorageInterface $tokenStorage, RequestStack $requestStack): Response
     {
-        if (!$this->getUser()) {
+        if (!$loginUser) {
             $this->addFlash('error', 'You need to sign in to remove an account !');
             return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
         }
 
-        $this->entityManager->remove($this->getUser());
+        $this->entityManager->remove($loginUser);
         $this->entityManager->flush();
 
         // Clear the security token (logout manually)
