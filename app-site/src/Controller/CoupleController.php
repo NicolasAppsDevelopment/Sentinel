@@ -415,12 +415,11 @@ final class CoupleController extends AbstractController {
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        // 2. Send internal redirect
-        $toggleBuzzerPath =  '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
+        $client = HttpClient::create();
 
         try {
-            $request = Request::create($toggleBuzzerPath);
-            $response = $this->container->get('http_kernel')->handle($request, HttpKernelInterface::SUB_REQUEST);
+            $url = 'http://' . $actionDevice->getIp() . '/' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '_buzzer';
+            $response = $client->request('GET', $url);
 
             if ($response->getStatusCode() !== 200) {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
