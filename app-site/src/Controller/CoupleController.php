@@ -385,14 +385,14 @@ final class CoupleController extends AbstractController {
         }
 
         // 2. Send internal redirect
-        $toggleBuzzerPath =  $request->getSchemeAndHttpHost() . '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
-
-        dd($toggleBuzzerPath);
-        die();
+        $toggleBuzzerPath =  '/protected-' . ($couple->actionStatus->buzzerEnabled ? 'disable' : 'enable') . '-buzzer/?ip=' . $actionDevice->getIp();
 
         $client = HttpClient::create();
         try {
             $response = $client->request('GET', $request->getSchemeAndHttpHost(), [
+                'headers' => [
+                    'X-Accel-Redirect' => $toggleBuzzerPath,
+                ]
             ]);
 
             if ($response->getStatusCode() !== 200) {
@@ -401,7 +401,6 @@ final class CoupleController extends AbstractController {
         } catch (Exception $e) {
             $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
             return $this->redirectToRoute('app_couples');
-        } catch (TransportExceptionInterface $e) {
         }
 
         return $this->redirectToRoute('app_couples_view', [
