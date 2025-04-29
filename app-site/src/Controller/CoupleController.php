@@ -425,6 +425,9 @@ final class CoupleController extends AbstractController {
                 ]
             ]);
 
+            dd($response);
+            die();
+
             if ($response->getStatusCode() !== 200) {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
             }
