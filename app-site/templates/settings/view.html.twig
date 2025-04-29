@@ -26,9 +26,6 @@
                     value="{{ serverTime }}"
                     required
                     autofocus
-                    hx-get="{{ path('app_settings_server_time') }}"
-                    hx-trigger="load"
-                    hx-swap="outerHTML"
                 />
             </div>
 
@@ -47,9 +44,23 @@
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
             function updateClientTime() {
-                const now = new Date();
-                document.getElementById('clientTime').value = now.toISOString();
+                document.getElementById('clientTime').value = getNowStandardDate();
             }
+
+            function getNowStandardDate() {
+                const datetime = new Date();
+                let d = datetime.getDate();
+                let m = datetime.getMonth() + 1; //Month from 0 to 11
+                let y = datetime.getFullYear();
+                let h = datetime.getHours();
+                let min = datetime.getMinutes();
+
+                const formattedDate = `${y}-${m<=9 ? '0' + m : m}-${d <= 9 ? '0' + d : d}`;
+                const formattedTime = `${h<=9 ? '0' + h : h}:${min<=9 ? '0' + min : min}`;
+
+                return formattedDate + " " + formattedTime;
+            }
+
 
             // On exécute au chargement, puis on met à jour toutes les secondes
             window.addEventListener('load', () => {
