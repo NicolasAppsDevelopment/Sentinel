@@ -73,6 +73,11 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
 
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
+        }
+
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to see this alarm !');
@@ -80,11 +85,6 @@ final class CoupleController extends AbstractController {
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to see this alarm !');
-            return $this->redirectToRoute('app_couples');
-        }
-
-        if ($couple === null) {
-            $this->addFlash('error', 'Alarm not found');
             return $this->redirectToRoute('app_couples');
         }
 
@@ -114,21 +114,22 @@ final class CoupleController extends AbstractController {
     {
         $couple = $form->getData();
 
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
+        }
+
         // Check authorization
         if (!$userInDB) {
-            return $this->apiResponseService->error('You need to sign in to edit this alarm !');
+            $this->addFlash('error', 'You need to sign in to edit this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
         if ($couple->getUser()) {
             if ($userInDB->getUserIdentifier() != $couple->getUser()->getUsername()) {
-                return $this->apiResponseService->error('You are not authorized to edit this alarm !');
+                $this->addFlash('error', 'You are not authorized to edit this alarm !');
+                return $this->redirectToRoute('app_couples');
             }
         }
-
-
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
-        }
-
 
         $couple->setUser($userInDB);
         $couple->setAssociationDate(new DateTime());
@@ -157,16 +158,19 @@ final class CoupleController extends AbstractController {
 
         $couple = $this->coupleService->getCoupleById($id);
 
-        // Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to enabled/disabled this alarm !');
-        }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to enabled/disabled this alarm !');
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to enabled/disabled this alarm !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to enabled/disabled this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $couple->setEnabled(!$couple->isEnabled());
@@ -184,21 +188,25 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
 
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
+        }
+
         // Check authorization
         if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to delete this alarm !');
+            $this->addFlash('error', 'You need to sign in to delete this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
         if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to delete this alarm !');
+            $this->addFlash('error', 'You are not authorized to delete this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple) {
-            $this->entityManager->remove($couple);
-            $this->entityManager->flush();
+        $this->entityManager->remove($couple);
+        $this->entityManager->flush();
 
-            $this->addFlash('success', 'Alarm deleted successfully!');
-        }
-
+        $this->addFlash('success', 'Alarm deleted successfully!');
         return $this->redirectToRoute('app_couples');
     }
 
@@ -207,28 +215,32 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
 
-        // 1. Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to access this stream!');
-        }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to access this stream!');
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        // 2. Lookup couple info from database
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to access this stream !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to access this stream !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $cameraDevice = $couple->getCameraDevice();
-        if ($cameraDevice === null) {
-            return $this->apiResponseService->error('Camera not found');
+        if (!$cameraDevice) {
+            $this->addFlash('error', 'Camera not found');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
-        if ($cameraDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Camera not paired');
+        if (!$cameraDevice->isPaired()) {
+            $this->addFlash('error', 'Camera not paired');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        // 3. Send internal redirect
+        // Send internal redirect
         $streamPath = '/protected-stream/?ip=' . $cameraDevice->getIp();
 
         return new Response('', 200, [
@@ -242,24 +254,29 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
 
-        // Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error("You need to sign in to set this stream's quality !");
-        }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error("You are not authorized to set this stream's quality !");
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to set the quality of this stream !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to set the quality of this stream !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $cameraDevice = $couple->getCameraDevice();
-        if ($cameraDevice === null) {
-            return $this->apiResponseService->error('Camera not found');
+        if (!$cameraDevice) {
+            $this->addFlash('error', 'Camera not found');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
-        if ($cameraDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Camera not paired');
+        if (!$cameraDevice->isPaired()) {
+            $this->addFlash('error', 'Camera not paired');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
         $client = HttpClient::create();
@@ -269,14 +286,16 @@ final class CoupleController extends AbstractController {
             $response = $client->request('GET', $url);
 
             if ($response->getStatusCode() !== 200) {
-                return $this->apiResponseService->error('Unable to set stream quality: ' . $response->getStatusCode());
+                $this->addFlash('error', 'Unable to set stream quality: ' . $response->getStatusCode());
+                return $this->redirectToRoute('app_couples_view', array('id' => $id));
             }
 
             return new StreamedResponse(function () use ($response) {
                 echo $response->getContent();
             }, 200);
         } catch (\Exception $e) {
-            return $this->apiResponseService->error('Unable set stream quality: ' . $e->getMessage());
+            $this->addFlash('error', 'Unable set stream quality: ' . $e->getMessage());
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
     }
 
@@ -285,24 +304,29 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleById($id);
 
-        // Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to take a capture !');
-        }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to take a capture !');
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to take a capture !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to take a capture !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $cameraDevice = $couple->getCameraDevice();
         if ($cameraDevice === null) {
-            return $this->apiResponseService->error('Camera not found');
+            $this->addFlash('error', 'Camera not found');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
         if ($cameraDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Camera not paired');
+            $this->addFlash('error', 'Camera not paired');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
         $client = HttpClient::create();
@@ -312,7 +336,8 @@ final class CoupleController extends AbstractController {
             $response = $client->request('GET', $url);
 
             if ($response->getStatusCode() !== 200) {
-                return $this->apiResponseService->error('Unable to capture image: ' . $response->getStatusCode());
+                $this->addFlash('error', 'Unable to capture image: ' . $response->getStatusCode());
+                return $this->redirectToRoute('app_couples_view', array('id' => $id));
             }
 
             $contentType = $response->getHeaders()['content-type'][0] ?? 'image/jpg';
@@ -323,34 +348,38 @@ final class CoupleController extends AbstractController {
                 'Content-Type' => $contentType,
             ]);
         } catch (\Exception $e) {
-            return $this->apiResponseService->error('Unable fetching image: ' . $e->getMessage());
+            $this->addFlash('error', 'Unable fetching image: ' . $e->getMessage());
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
     }
 
-    #[Route('/couple/{id}/update', name: 'app_couple_update_name', methods: ['POST'])]
+    #[Route('/couples/{id}/update', name: 'app_couple_update_name', methods: ['POST'])]
     public function update(Request $request, int $id, UserInterface $user): RedirectResponse | Response
     {
         $couple = $this->coupleService->getCoupleById($id);
 
-        // Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to update this alarm !');
-        }
-        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to update this alarm !');
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to update this alarm !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to update this alarm !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $newTitle = $request->request->get('title', '');
 
         $couple->setTitle($newTitle);
 
-        return $this->redirectToRoute('app_couples_view', [
-            'id' => $id,
-        ]);
+
+        $this->addFlash('success', 'Alarm updated successfully!');
+        return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 
     #[Route('/couples/{id}/enable-disable-buzzer', name: 'app_couples_enable_disable_buzzer')]
@@ -358,24 +387,29 @@ final class CoupleController extends AbstractController {
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
 
-        // Check authorization
-        if (!$user) {
-            return $this->apiResponseService->error('You need to sign in to toggle this buzzer !');
-        }
-        if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
-            return $this->apiResponseService->error('You are not authorized to toggle this buzzer !');
+        if (!$couple) {
+            $this->addFlash('error', 'Alarm not found');
+            return $this->redirectToRoute('app_couples');
         }
 
-        if ($couple === null) {
-            return $this->apiResponseService->error('Couple not found');
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
+            $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
+            return $this->redirectToRoute('app_couples');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
         if ($actionDevice === null) {
-            return $this->apiResponseService->error('Action module not found');
+            $this->addFlash('error', 'Action module not found');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
         if ($actionDevice->isPaired() === false) {
-            return $this->apiResponseService->error('Action module not paired');
+            $this->addFlash('error', 'Action module not paired');
+            return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
         // 2. Send internal redirect
