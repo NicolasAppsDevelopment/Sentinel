@@ -9,6 +9,7 @@ use App\Service\CoupleService;
 use App\Service\DetectionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
@@ -357,6 +358,10 @@ final class CoupleController extends AbstractController {
     public function enableDisableBuzzer(string $id, UserInterface $user): Response
     {
         $couple = $this->coupleService->getCoupleWithStatusById($id);
+        if ($couple === null) {
+            $this->addFlash('error', 'Alarm not found !');
+            return $this->redirectToRoute('app_couples');
+        }
 
         // Check authorization
         if (!$user) {
@@ -366,11 +371,6 @@ final class CoupleController extends AbstractController {
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
             return $this->redirectToRoute('app_login');
-        }
-
-        if ($couple === null) {
-            $this->addFlash('error', 'Alarm not found !');
-            return $this->redirectToRoute('app_couples');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
@@ -391,9 +391,9 @@ final class CoupleController extends AbstractController {
             $response = $client->request('GET', $toggleBuzzerPath);
 
             if ($response->getStatusCode() !== 200) {
-                throw new \Exception('Bad status code response: ' . $response->getStatusCode());
+                throw new Exception('Bad status code response: ' . $response->getStatusCode());
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
             return $this->redirectToRoute('app_couples');
         }
