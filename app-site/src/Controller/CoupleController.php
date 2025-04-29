@@ -29,7 +29,6 @@ final class CoupleController extends AbstractController {
         private readonly CoupleService $coupleService,
         private readonly DetectionService $detectionService,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ApiResponseService $apiResponseService
     ) {}
 
 
@@ -180,7 +179,7 @@ final class CoupleController extends AbstractController {
         $this->entityManager->persist($couple);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Alarm updated successfully!');
+        $this->addFlash('success', 'Alarm enabled/disabled successfully!');
         return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 
@@ -399,11 +398,11 @@ final class CoupleController extends AbstractController {
         // Check authorization
         if (!$user) {
             $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_couples');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
             $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_couples');
         }
 
         $actionDevice = $couple->coupleEntity->getActionDevice();
