@@ -25,6 +25,7 @@ class AccountController extends AbstractController
     public function remove(TokenStorageInterface $tokenStorage, RequestStack $requestStack): Response
     {
         if (!$this->getUser()) {
+            $this->addFlash('error', 'You need to sign in to remove an account !');
             return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -38,12 +39,23 @@ class AccountController extends AbstractController
         $session = $requestStack->getSession();
         $session->invalidate();
 
+        $this->addFlash('success', 'Account deleted successfully !');
         return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route(path: '/edit/{id}', name: 'app_account_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, int $id): Response
     {
+        // Check authorization
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to edit this account !');
+            return $this->redirectToRoute('app_couples');
+        }
+        if ($user->getId() != $id) {
+            $this->addFlash('error', 'You are not authorized to edit this account !');
+            return $this->redirectToRoute('app_couples');
+        }
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -59,7 +71,8 @@ class AccountController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_account_edit', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Account edited successfully !');
+            return $this->redirectToRoute('app_account_edit', array('id' => $user->getId()), Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('account/edit.html.twig', [

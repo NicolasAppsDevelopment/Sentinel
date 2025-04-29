@@ -429,7 +429,7 @@ final class CoupleController extends AbstractController {
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        $this->addFlash('success', 'Buzzer enabled/disabled successfully!');
+        $this->addFlash('success', 'Buzzer enabled/disabled successfully !');
         return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 }
