@@ -397,11 +397,11 @@ final class CoupleController extends AbstractController {
 
         // Check authorization
         if (!$user) {
-            $this->addFlash('error', 'You need to sign in to toggle this buzzer !');
+            $this->addFlash('error', 'You need to sign in to enabled/disabled this buzzer !');
             return $this->redirectToRoute('app_couples');
         }
         if ($user->getUserIdentifier() != $couple->coupleEntity->getUser()->getUsername()) {
-            $this->addFlash('error', 'You are not authorized to toggle this buzzer !');
+            $this->addFlash('error', 'You are not authorized to enabled/disabled this buzzer !');
             return $this->redirectToRoute('app_couples');
         }
 
@@ -425,11 +425,11 @@ final class CoupleController extends AbstractController {
                 throw new Exception('Bad status code response: ' . $response->getStatusCode());
             }
         } catch (Exception $e) {
-            $this->addFlash('error', 'Unable to toggle buzzer: ' . $e->getMessage());
+            $this->addFlash('error', 'Unable to enabled/disabled buzzer: ' . $e->getMessage());
             return $this->redirectToRoute('app_couples_view', array('id' => $id));
         }
 
-        $this->addFlash('success', 'Buzzer toggled successfully!');
+        $this->addFlash('success', 'Buzzer enabled/disabled successfully!');
         return $this->redirectToRoute('app_couples_view', array('id' => $id));
     }
 }
