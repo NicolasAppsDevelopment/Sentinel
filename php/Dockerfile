@@ -4,9 +4,19 @@ ENV GIT_USER_EMAIL="you@example.com"
 ENV GIT_USER_NAME="Your Name"
 RUN apt-get update && apt-get install -y \
     git \
+    sudo \
     supervisor \
     mariadb-client \
-    && docker-php-ext-install pdo pdo_mysql
+    ssmtp \
+    && docker-php-ext-install pdo pdo_mysql \
+    && mkdir -p /etc/sudoers.d \
+    && echo "www-data ALL=(ALL) NOPASSWD: /bin/date" > /etc/sudoers.d/www-data-date \
+    && chmod 440 /etc/sudoers.d/www-data-date
+
+
+# Autoriser www-data à utiliser sudo date sans mot de passe
+RUN echo "www-data ALL=(ALL) NOPASSWD: /bin/date" > /etc/sudoers.d/www-data-date && \
+    chmod 440 /etc/sudoers.d/www-data-date
 
 RUN apt-get update && apt-get install -y ssmtp
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf

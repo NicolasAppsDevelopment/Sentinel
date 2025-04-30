@@ -25,21 +25,23 @@ final class SettingsController extends AbstractController
     #[Route('/settings/sync-time', name: 'app_settings_sync_time', methods: ['POST'])]
     public function syncTime(Request $request): Response
     {
-        // Validate the date format (Y-m-d H:i:s)
         $datetime = $request->request->get('server-time'); 
         if ($datetime) {
-            // Formater correctement la date pour la commande `date`
             $dateFormatted = date('Y-m-d H:i:s', strtotime($datetime));
-            $process = new Process(['sudo', 'date', '-s', $dateFormatted]);
-            $process->run();
+            // Construire la commande shell
+            $cmd = sprintf('sudo date -s "%s"', escapeshellcmd($dateFormatted));
 
+            // Exécuter la commande (attention à la sécurité)
+            $output = shell_exec($cmd);
+            dd($output);
 
+            if (!$output) {
+                return new Response('Erreur lors de la synchronisation de l\'heure.', Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
 
-        if (!$process->isSuccessful()) {
-            return new Response('Erreur lors de la synchronisation de l\'heure : ' . $process->getErrorOutput(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return new Response('Heure synchronisée avec succès.');
+            return $this->render('settings/form_view.html.twig', [
+                    'serverTime' => $datetime,
+            ]);
         }  
         return new Response('Date invalide.');
 
