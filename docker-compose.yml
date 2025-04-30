@@ -1,6 +1,7 @@
 services:
   php:
     container_name: sentinel-php
+    user: "33:33" 
     env_file: ".env"
     restart: always
     build:
@@ -8,6 +9,8 @@ services:
     volumes:
       - ./app-site:/var/www/app-site
       - ./camera_pictures:/camera_pictures
+      - /etc/hostapd/hostapd.conf:/etc/hostapd/hostapd.conf
+      - /usr/local/bin/reload-hostapd.sh:/usr/local/bin/reload-hostapd.sh
     networks:
       - default
   nginx:

@@ -83,6 +83,21 @@ wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
 EOF
 
+# Make hostapd.conf writable by www-data to allow the web site container to modify raspberry pi acces point
+sudo chown root:www-data    /etc/hostapd/hostapd.conf
+sudo chmod 664              /etc/hostapd/hostapd.conf
+
+
+# Create reload-hostapd service
+cat <<EOF > /usr/local/bin/reload-hostapd.sh
+#!/bin/sh
+systemctl restart hostapd
+EOF
+
+# Make reload-hostapd.sh executable by www-data to allow the web site container to modify raspberry pi acces point
+sudo chown root:www-data    /usr/local/bin/reload-hostapd.sh
+sudo chmod 750              /usr/local/bin/reload-hostapd.sh
+
 # Update hostapd default config
 sed -i 's|#DAEMON_CONF="".*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 

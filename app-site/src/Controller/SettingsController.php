@@ -55,4 +55,49 @@ final class SettingsController extends AbstractController
             'serverTime' => $serverTime,
         ]);
     }
+
+    #[Route("/hostapd/update", name="hostapd_update", methods={"POST"})]
+    public function updateConfig(Request $request): Response
+    {
+        //TODO use a form to create the new config
+        // 1) Retrieve the new config content (from POST form field "config" or JSON)
+        $newConfig = $request->request->get('config');
+        if (empty($newConfig)) {
+            return $this->json([
+                'status'  => 'error',
+                'message' => 'No hostapd configuration provided.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $configPath = '/etc/hostapd/hostapd.conf';
+
+        //TODO change how we modify the file
+        // Modify hostapd.conf
+        if (false === @file_put_contents($configPath, $newConfig)) {
+            return $this->json([
+                'status'  => 'error',
+                'message' => sprintf('Failed to write to %s', $configPath),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Reload hostapd service via your sudo wrapper
+        //    Capture output & return code for logging/debug if needed.
+        $output     = [];
+        $returnCode = 0;
+        exec('sudo /usr/local/bin/reload-hostapd.sh 2>&1', $output, $returnCode);
+
+        if (0 !== $returnCode) {
+            return $this->json([
+                'status'  => 'error',
+                'message' => 'hostapd reload failed',
+                'output'  => $output,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // 5) Success response
+        return $this->json([
+            'status'  => 'success',
+            'message' => 'hostapd.conf updated and service reloaded.',
+        ], Response::HTTP_OK);
+    }
 }
