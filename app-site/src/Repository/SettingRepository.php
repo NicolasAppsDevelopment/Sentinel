@@ -16,15 +16,12 @@ class SettingRepository extends ServiceEntityRepository
         parent::__construct($registry, Setting::class);
     }
 
-    /**
-     * Get all couples for a given user ID.
-     */
     public function findByUserId(int $userId): ?Setting
     {
         return $this->createQueryBuilder('s')
             ->where('s.user = :user')
             ->setParameter('user', $userId)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 }
