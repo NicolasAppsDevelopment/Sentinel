@@ -19,58 +19,142 @@ class Setting
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Assert\When(
+        expression: "this.getMondayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The monday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "mondayTo", message: "The monday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $mondayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getMondayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The monday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "mondayFrom", message: "The monday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $mondayTo = null;
 
+    #[Assert\When(
+        expression: "this.getTuesdayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The tuesday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "tuesdayTo", message: "The tuesday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $tuesdayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getTuesdayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The tuesday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "tuesdayFrom", message: "The tuesday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $tuesdayTo = null;
 
+    #[Assert\When(
+        expression: "this.getWednesdayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The wednesday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "wednesdayTo", message: "The wednesday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $wednesdayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getWednesdayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The wednesday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "wednesdayFrom", message: "The wednesday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $wednesdayTo = null;
 
+    #[Assert\When(
+        expression: "this.getThursdayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The thursday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "thursdayTo", message: "The thursday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $thursdayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getThursdayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The thursday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "thursdayFrom", message: "The thursday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $thursdayTo = null;
 
+    #[Assert\When(
+        expression: "this.getFridayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The friday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "fridayTo", message: "The friday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $fridayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getFridayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The friday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "fridayFrom", message: "The friday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $fridayTo = null;
 
+    #[Assert\When(
+        expression: "this.getSaturdayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The saturday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "saturdayTo", message: "The saturday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $saturdayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getSaturdayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The saturday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "saturdayFrom", message: "The saturday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $saturdayTo = null;
 
+    #[Assert\When(
+        expression: "this.getSundayTo() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The sunday 'from' time must be set."),
+        ]
+    )]
     #[Assert\LessThanOrEqual(propertyPath: "sundayTo", message: "The sunday 'from' time must be before the 'to' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $sundayFrom = null;
 
+    #[Assert\When(
+        expression: "this.getSundayFrom() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "The sunday 'to' time must be set."),
+        ]
+    )]
     #[Assert\GreaterThanOrEqual(propertyPath: "sundayFrom", message: "The sunday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $sundayTo = null;
