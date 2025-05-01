@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Setting;
+use App\Form\AccessPointFormType;
 use App\Form\SettingFormType;
 use App\Service\SettingService;
 use DateTime;
@@ -42,7 +43,7 @@ final class SettingsController extends AbstractController
             // Construire la commande shell
             $cmd = sprintf('sudo date -s "%s"', escapeshellcmd($dateFormatted));
 
-    // Exécuter la commande (attention à la sécurité)
+            // Exécuter la commande (attention à la sécurité)
             $output = shell_exec($cmd);
             dd($output);
 
@@ -66,51 +67,6 @@ final class SettingsController extends AbstractController
         return $this->render('settings/inputserver.html.twig', [
             'serverTime' => $serverTime,
         ]);
-    }
-
-    #[Route('/settings/hostapd/update', name: 'settings_hostapd_update', methods: ['POST'])]
-    public function updateConfig(Request $request): Response
-    {
-        //TODO use a form to create the new config
-        // 1) Retrieve the new config content (from POST form field "config" or JSON)
-        $newConfig = $request->request->get('config');
-        if (empty($newConfig)) {
-            return $this->json([
-                'status'  => 'error',
-                'message' => 'No hostapd configuration provided.',
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $configPath = '/etc/hostapd/hostapd.conf';
-
-        //TODO change how we modify the file
-        // Modify hostapd.conf
-        if (false === @file_put_contents($configPath, $newConfig)) {
-            return $this->json([
-                'status'  => 'error',
-                'message' => sprintf('Failed to write to %s', $configPath),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        // Reload hostapd service via your sudo wrapper
-        //    Capture output & return code for logging/debug if needed.
-        $output     = [];
-        $returnCode = 0;
-        exec('sudo /usr/local/bin/reload-hostapd.sh 2>&1', $output, $returnCode);
-
-        if (0 !== $returnCode) {
-            return $this->json([
-                'status'  => 'error',
-                'message' => 'hostapd reload failed',
-                'output'  => $output,
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        // 5) Success response
-        return $this->json([
-            'status'  => 'success',
-            'message' => 'hostapd.conf updated and service reloaded.',
-        ], Response::HTTP_OK);
     }
 
     #[Route('/settings/deactivation-range/update', name: 'settings_deactivation_range_update', methods: ['POST'])]
@@ -162,6 +118,92 @@ final class SettingsController extends AbstractController
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Settings saved successfully!');
+        return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/access-point/update', name: 'access_point_update', methods: ['POST'])]
+    public function updateAccessPoint(Request $request, UserInterface $user): Response
+    {
+        if (!$user) {
+            $this->addFlash('error', 'You are not authorized to edit the access point! Sign in first!');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $form = $this->createForm(AccessPointFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->saveAccessPointConfigForm($form, $user);
+        }
+
+        foreach ($form->getErrors(true) as $error) {
+            $this->addFlash('error', $error->getMessage());
+        }
+
+        return $this->redirectToRoute('app_settings');
+    }
+
+    public function saveAccessPointConfigForm(FormInterface $form, UserInterface $userInDB): RedirectResponse | Response
+    {
+        $accessPointConfig = $form->getData();
+
+        if (!$accessPointConfig) {
+            $this->addFlash('error', 'Settings not found');
+            return $this->redirectToRoute('app_settings');
+        }
+
+        // Check authorization
+        if (!$userInDB) {
+            $this->addFlash('error', 'You need to sign in to edit the access point !');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $ssid     = $accessPoint['accessPointName'] ?? '';
+        $password = $accessPoint['accessPointPassword'] ?? '';
+        $configPath = '/etc/hostapd/hostapd.conf';
+
+        // Load existing access point config
+        $content = @file_get_contents($configPath);
+        if (!$content) {
+            return new Response(
+                'Failed to read the access point configuration.',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        // Replace only ssid and wpa_passphrase
+        $patterns = [
+            '/^ssid=.*$/m',
+            '/^wpa_passphrase=.*$/m',
+        ];
+        $replacements = [
+            "ssid={$ssid}",
+            "wpa_passphrase={$password}",
+        ];
+        $newContent = preg_replace($patterns, $replacements, $content);
+
+        if (!$newContent) {
+            return new Response('Error processing the access point configuration.',Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Modify hostapd.conf
+        if (!@file_put_contents($configPath, $newContent)) {
+            return new Response('Failed to modify the access point configuration.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Reload hostapd
+        $output     = [];
+        $returnCode = 0;
+        exec('sudo /usr/local/bin/reload-hostapd.sh 2>&1', $output, $returnCode);
+
+        if (0 !== $returnCode) {
+            return new Response(
+                'Failed to reload hostapd: ' . implode("\n", $output),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        $this->addFlash('success', 'Access point configuration saved successfully!');
         return $this->redirectToRoute('app_settings');
     }
 }
