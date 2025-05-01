@@ -995,7 +995,7 @@ body > div.content {
     gap: 1rem;
 }
 
-.pagination-controls .pagination a {
+.pagination-controls .pagination a, .pagination-controls .pagination .current {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1007,6 +1007,7 @@ body > div.content {
     font-weight: 500;
     font-size: 1rem;
     padding: .5rem .75rem;
+    text-decoration: none;
 }
 
 .pagination-controls .pagination a:hover {
@@ -1014,7 +1015,7 @@ body > div.content {
     border: 1px solid var(--button-border-hover-color);
 }
 
-.pagination-controls .pagination .current a {
+.pagination-controls .pagination .current {
     background-color: var(--button-cta-background-color);
     border: 1px solid var(--button-cta-border-color);
     color: var(--button-cta-color);
