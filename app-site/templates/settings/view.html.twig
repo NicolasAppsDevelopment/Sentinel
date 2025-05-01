@@ -18,90 +18,104 @@
             </button>
         </form>
 
-        <form action="{{ path('settings_deactivation_range_update') }}" method="post">
+        {{ form_start(deactivationRangeForm) }}
             <h2>Deactivation range</h2>
+
+            {% for error in errors %}
+                <div class="form-message error">
+                    <img src="{{ asset('icons/info.svg') }}" alt="Error">
+                    <p>{{ error }}</p>
+                </div>
+            {% endfor %}
+
             <h3>Monday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="mondayFrom">From</label>
-                    <input type="time" id="mondayFrom" value="{{ activationPlanning.mondayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.mondayFrom) }}" value="{{ field_value(deactivationRangeForm.mondayFrom) }}" id="mondayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="mondayTo">To</label>
-                    <input type="time" id="mondayTo" value="{{ activationPlanning.mondayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.mondayTo) }}" value="{{ field_value(deactivationRangeForm.mondayTo) }}" id="mondayTo">
                 </div>
             </div>
+
             <h3>Tuesday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="tuesdayFrom">From</label>
-                    <input type="time" id="tuesdayFrom" value="{{ activationPlanning.tuesdayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.tuesdayFrom) }}" value="{{ field_value(deactivationRangeForm.tuesdayFrom) }}" id="tuesdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="tuesdayTo">To</label>
-                    <input type="time" id="tuesdayTo" value="{{ activationPlanning.tuesdayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.tuesdayTo) }}" value="{{ field_value(deactivationRangeForm.tuesdayTo) }}" id="tuesdayTo">
                 </div>
             </div>
+
             <h3>Wednesday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="wednesdayFrom">From</label>
-                    <input type="time" id="wednesdayFrom" value="{{ activationPlanning.wednesdayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.wednesdayFrom) }}" value="{{ field_value(deactivationRangeForm.wednesdayFrom) }}" id="wednesdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="wednesdayTo">To</label>
-                    <input type="time" id="wednesdayTo" value="{{ activationPlanning.wednesdayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.wednesdayTo) }}" value="{{ field_value(deactivationRangeForm.wednesdayTo) }}" id="wednesdayTo">
                 </div>
             </div>
+
             <h3>Thursday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="thursdayFrom">From</label>
-                    <input type="time" id="thursdayFrom" value="{{ activationPlanning.thursdayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.thursdayFrom) }}" value="{{ field_value(deactivationRangeForm.thursdayFrom) }}" id="thursdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="thursdayTo">To</label>
-                    <input type="time" id="thursdayTo" value="{{ activationPlanning.thursdayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.thursdayTo) }}" value="{{ field_value(deactivationRangeForm.thursdayTo) }}" id="thursdayTo">
                 </div>
             </div>
+
             <h3>Friday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="fridayFrom">From</label>
-                    <input type="time" id="fridayFrom" value="{{ activationPlanning.fridayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.fridayFrom) }}" value="{{ field_value(deactivationRangeForm.fridayFrom) }}" id="fridayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="fridayTo">To</label>
-                    <input type="time" id="fridayTo" value="{{ activationPlanning.fridayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.fridayTo) }}" value="{{ field_value(deactivationRangeForm.fridayTo) }}" id="fridayTo">
                 </div>
             </div>
+
             <h3>Saturday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="saturdayFrom">From</label>
-                    <input type="time" id="saturdayFrom" value="{{ activationPlanning.saturdayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.saturdayFrom) }}" value="{{ field_value(deactivationRangeForm.saturdayFrom) }}" id="saturdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="saturdayTo">To</label>
-                    <input type="time" id="saturdayTo" value="{{ activationPlanning.saturdayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.saturdayTo) }}" value="{{ field_value(deactivationRangeForm.saturdayTo) }}" id="saturdayTo">
                 </div>
             </div>
+
             <h3>Sunday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="sundayFrom">From</label>
-                    <input type="time" id="sundayFrom" value="{{ activationPlanning.sundayFrom ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.sundayFrom) }}" value="{{ field_value(deactivationRangeForm.sundayFrom) }}" id="sundayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="sundayTo">To</label>
-                    <input type="time" id="sundayTo" value="{{ activationPlanning.sundayTo ?? "" }}" />
+                    <input type="time" name="{{ field_name(deactivationRangeForm.sundayTo) }}" value="{{ field_value(deactivationRangeForm.sundayTo) }}" id="sundayTo">
                 </div>
             </div>
 
             <button class="btn-primary w100" type="submit">
                 <i class="fa-solid fa-sync"></i> Update activation time
             </button>
-        </form>
+        {{ form_end(deactivationRangeForm) }}
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
@@ -124,7 +138,7 @@
             }
 
             window.addEventListener('load', () => {
-                setInterval(updateClientTime, 1000);
+                setInterval(updateClientTime, 10000);
             });
         </script>
     </div>

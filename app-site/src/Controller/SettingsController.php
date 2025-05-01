@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Couple;
 use App\Entity\Setting;
+use App\Form\CoupleFormType;
 use App\Form\SettingFormType;
 use App\Service\SettingService;
+use App\Service\UserService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,16 +23,36 @@ final class SettingsController extends AbstractController
     public function __construct(
         private readonly SettingService $settingService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly UserService $userService,
     ) {}
 
     #[Route('/settings', name: 'app_settings')]
-    public function index(UserInterface $user): Response
+    public function index(Request $request, UserInterface $user): Response
     {
-        $serverTime = (new DateTime())->format('Y-m-d H:i:s');
+        if (!$user) {
+            $this->addFlash('error', 'You are not authorized to edit settings! Sign in first!');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $setting = $this->settingService->getSettingByUser($user->getId()) ?? new Setting();
+        $form = $this->createForm(SettingFormType::class, $setting);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->saveSettingForm($form, $user);
+        }
+
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        $serverTime = (new DateTime())->format('Y-m-d H:i');
 
         return $this->render('settings/view.html.twig', [
             'serverTime' => $serverTime,
-            'activationPlanning' => $this->settingService->getSettingByUser($user->getId()),
+            'errors' => $errors,
+            'deactivationRangeForm' => $form,
         ]);
     }
 
@@ -113,29 +136,6 @@ final class SettingsController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/settings/deactivation-range/update', name: 'settings_deactivation_range_update', methods: ['POST'])]
-    public function updateDeactivationRange(Request $request, UserInterface $user): Response
-    {
-        if (!$user) {
-            $this->addFlash('error', 'You are not authorized to add an alarm! Sign in first!');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $setting = new Setting();
-        $form = $this->createForm(SettingFormType::class, $setting);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveSettingForm($form, $user);
-        }
-
-        foreach ($form->getErrors(true) as $error) {
-            $this->addFlash('error', $error->getMessage());
-        }
-
-        return $this->redirectToRoute('app_settings');
-    }
-
     public function saveSettingForm(FormInterface $form, UserInterface $userInDB): RedirectResponse | Response
     {
         $setting = $form->getData();
@@ -143,18 +143,6 @@ final class SettingsController extends AbstractController
         if (!$setting) {
             $this->addFlash('error', 'Settings not found');
             return $this->redirectToRoute('app_settings');
-        }
-
-        // Check authorization
-        if (!$userInDB) {
-            $this->addFlash('error', 'You need to sign in to edit this alarm !');
-            return $this->redirectToRoute('app_login');
-        }
-        if ($setting->getUser()) {
-            if ($userInDB->getUserIdentifier() != $setting->getUser()->getUsername()) {
-                $this->addFlash('error', 'You are not authorized to edit this settings !');
-                return $this->redirectToRoute('app_settings');
-            }
         }
 
         $setting->setUser($userInDB);
