@@ -9,12 +9,17 @@ use App\Entity\Device;
 use App\Service\ApiResponseService;
 use App\Service\CoupleService;
 use App\Service\ImageManagerService;
+use App\Service\SettingService;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\DeviceService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 final class DeviceController extends AbstractController {
     public function __construct(
@@ -23,6 +28,7 @@ final class DeviceController extends AbstractController {
         private readonly DeviceService $deviceService,
         private readonly CoupleService $coupleService,
         private readonly ImageManagerService $imageManagerService,
+        private readonly SettingService $settingService,
     ) {}
 
     #[Route('/devices/discover', name: 'app_devices_discover', methods: 'POST')]
@@ -54,7 +60,8 @@ final class DeviceController extends AbstractController {
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
+     * @throws TransportExceptionInterface
      */
     #[Route(path: '/devices/triggered', name: 'action_device_trigger', methods: 'POST')]
     public function deviceTriggered(#[MapRequestPayload] TriggeredDeviceDto $deviceDto, EntityManagerInterface $entityManager): Response
@@ -69,7 +76,7 @@ final class DeviceController extends AbstractController {
             return $this->apiResponseService->error('Failed to retrieve couple.');
         }
 
-        if (!$couple->isEnabled()) {
+        if (!$couple->isEnabled() || !$this->settingService->isInsideActivationPlanning($couple->getUser()->getId())) {
             return $this->apiResponseService->error('Couple is disabled.');
         }
 

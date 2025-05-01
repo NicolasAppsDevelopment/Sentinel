@@ -18,83 +18,83 @@
             </button>
         </form>
 
-        <form>
+        <form action="{{ path('settings_activation_time_update') }}" method="post">
             <h2>Activation time</h2>
             <h3>Monday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="monBeginTime">From</label>
-                    <input type="time" id="monBeginTime" />
+                    <label for="mondayFrom">From</label>
+                    <input type="time" id="mondayFrom" value="{{ activationPlanning.mondayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="monEndTime">To</label>
-                    <input type="time" id="monEndTime" />
+                    <label for="mondayTo">To</label>
+                    <input type="time" id="mondayTo" value="{{ activationPlanning.mondayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Tuesday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="tueBeginTime">From</label>
-                    <input type="time" id="tueBeginTime" />
+                    <label for="tuesdayFrom">From</label>
+                    <input type="time" id="tuesdayFrom" value="{{ activationPlanning.tuesdayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="tueEndTime">To</label>
-                    <input type="time" id="tueEndTime" />
+                    <label for="tuesdayTo">To</label>
+                    <input type="time" id="tuesdayTo" value="{{ activationPlanning.tuesdayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Wednesday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="wedBeginTime">From</label>
-                    <input type="time" id="wedBeginTime" />
+                    <label for="wednesdayFrom">From</label>
+                    <input type="time" id="wednesdayFrom" value="{{ activationPlanning.wednesdayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="wedEndTime">To</label>
-                    <input type="time" id="wedEndTime" />
+                    <label for="wednesdayTo">To</label>
+                    <input type="time" id="wednesdayTo" value="{{ activationPlanning.wednesdayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Thursday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="thuBeginTime">From</label>
-                    <input type="time" id="thuBeginTime" />
+                    <label for="thursdayFrom">From</label>
+                    <input type="time" id="thursdayFrom" value="{{ activationPlanning.thursdayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="thuEndTime">To</label>
-                    <input type="time" id="thuEndTime" />
+                    <label for="thursdayTo">To</label>
+                    <input type="time" id="thursdayTo" value="{{ activationPlanning.thursdayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Friday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="friBeginTime">From</label>
-                    <input type="time" id="friBeginTime" />
+                    <label for="fridayFrom">From</label>
+                    <input type="time" id="fridayFrom" value="{{ activationPlanning.fridayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="friEndTime">To</label>
-                    <input type="time" id="friEndTime" />
+                    <label for="fridayTo">To</label>
+                    <input type="time" id="fridayTo" value="{{ activationPlanning.fridayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Saturday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="satBeginTime">From</label>
-                    <input type="time" id="satBeginTime" />
+                    <label for="saturdayFrom">From</label>
+                    <input type="time" id="saturdayFrom" value="{{ activationPlanning.saturdayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="satEndTime">To</label>
-                    <input type="time" id="satEndTime" />
+                    <label for="saturdayTo">To</label>
+                    <input type="time" id="saturdayTo" value="{{ activationPlanning.saturdayTo ?? "" }}" />
                 </div>
             </div>
             <h3>Sunday</h3>
             <div class="row w100">
                 <div class="form-control w100">
-                    <label for="sunBeginTime">From</label>
-                    <input type="time" id="sunBeginTime" />
+                    <label for="sundayFrom">From</label>
+                    <input type="time" id="sundayFrom" value="{{ activationPlanning.sundayFrom ?? "" }}" />
                 </div>
                 <div class="form-control w100">
-                    <label for="sunEndTime">To</label>
-                    <input type="time" id="sunEndTime" />
+                    <label for="sundayTo">To</label>
+                    <input type="time" id="sundayTo" value="{{ activationPlanning.sundayTo ?? "" }}" />
                 </div>
             </div>
 
@@ -123,10 +123,8 @@
                 return formattedDate + " " + formattedTime;
             }
 
-
-            // On exécute au chargement, puis on met à jour toutes les secondes
             window.addEventListener('load', () => {
-                updateClientTime();
+                setInterval(updateClientTime, 1000);
             });
         </script>
     </div>
