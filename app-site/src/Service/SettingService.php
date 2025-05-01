@@ -22,7 +22,7 @@ class SettingService
         return $this->settingRepository->findByUserId($userId);
     }
 
-    public function isInsideActivationPlanning(int $userId): bool {
+    public function isInsideDeactivationRange(int $userId): bool {
         $settings = $this->getSettingByUser($userId);
         if ($settings) {
             $dayOfWeek = date('w');
@@ -64,15 +64,19 @@ class SettingService
                     );
             }
         }
-        return true;
+        return false;
     }
 
     private function isCurrentTimeBetween(?DateTimeInterface $start, ?DateTimeInterface $end): bool
     {
+        if (null === $start || null === $end) {
+            return false;
+        }
+
         $now = new DateTimeImmutable('now');
 
-        $startTime = $start ? $start->format('H:i:s') : '00:00:00.000';
-        $endTime = $end ? $end->format('H:i:s') : '23:59:59.999';
+        $startTime = $start->format('H:i:s');
+        $endTime = $end->format('H:i:s');
         $currentTime = $now->format('H:i:s');
 
         return $currentTime >= $startTime && $currentTime <= $endTime;

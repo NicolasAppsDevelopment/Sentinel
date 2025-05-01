@@ -76,7 +76,7 @@ final class DeviceController extends AbstractController {
             return $this->apiResponseService->error('Failed to retrieve couple.');
         }
 
-        if (!$couple->isEnabled() || !$this->settingService->isInsideActivationPlanning($couple->getUser()->getId())) {
+        if (!$couple->isEnabled() || $this->settingService->isInsideDeactivationRange($couple->getUser()->getId())) {
             return $this->apiResponseService->error('Couple is disabled.');
         }
 

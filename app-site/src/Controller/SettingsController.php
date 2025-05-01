@@ -113,8 +113,8 @@ final class SettingsController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/settings/activation-planning/update', name: 'settings_activation_planning_update', methods: ['POST'])]
-    public function updateActivationPlanning(Request $request, UserInterface $user): Response
+    #[Route('/settings/deactivation-range/update', name: 'settings_deactivation_range_update', methods: ['POST'])]
+    public function updateDeactivationRange(Request $request, UserInterface $user): Response
     {
         if (!$user) {
             $this->addFlash('error', 'You are not authorized to add an alarm! Sign in first!');
