@@ -7,6 +7,7 @@ use App\Entity\Setting;
 use App\Form\AccessPointFormType;
 use App\Form\CoupleFormType;
 use App\Form\SettingFormType;
+use App\Service\DetectionService;
 use App\Service\SettingService;
 use App\Service\UserService;
 use DateTime;
@@ -25,6 +26,7 @@ final class SettingsController extends AbstractController
         private readonly SettingService $settingService,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserService $userService,
+        private readonly DetectionService $detectionService,
     ) {}
 
     #[Route('/settings', name: 'app_settings')]
@@ -241,5 +243,26 @@ final class SettingsController extends AbstractController
 
         $this->addFlash('success', 'Access point configuration saved successfully!');
         return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/detections/delete', name: 'user_detections_delete', methods: ['POST'])]
+    public function deleteAllUserDetection(Request $request, UserInterface $user): Response
+    {
+        if (!$user) {
+            $this->addFlash('error', 'You need to sign in to remove all detections of a user !');
+            return $this->redirectToRoute('app_register', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $userId = $user->getId();
+        $this->detectionService->deleteAllDetectionsByUser($userId);
+
+        if (!empty($this->detectionService->getAllDetectionsByUser($userId))) {
+            $this->addFlash('error', 'The delete have failed !');
+            return $this->redirectToRoute('app_settings');
+        }
+
+        $this->addFlash('success', 'All your detections have been deleted successfully !');
+        return $this->redirectToRoute('app_settings', [], Response::HTTP_SEE_OTHER);
+
     }
 }

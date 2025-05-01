@@ -49,4 +49,17 @@ class DetectionRepository extends ServiceEntityRepository
             ->orderBy('d.triggeredAt', 'DESC')
             ->getQuery();
     }
+
+    public function deleteAllByUserId(int $userId)
+    {
+        return $this->createQueryBuilder('d')
+            ->delete()
+            ->innerJoin('d.couple', 'c')
+            ->where('c.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->execute();
+
+    }
+
 }

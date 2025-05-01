@@ -18,6 +18,11 @@
             </button>
         </form>
 
+        <h2>Your Detections</h2>
+        <a href="{{ path('user_detections_delete') }}" class="card action">
+            <span class="fa-solid fa-trash red"></span>
+             <p class="desc">Remove all </p>
+        </a>
 
         {{ form_start(accessPointForm) }}
             <h2>Access Point Configuration</h2>
