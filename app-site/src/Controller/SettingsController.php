@@ -35,16 +35,30 @@ final class SettingsController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Create and handle settings form
         $setting = $this->settingService->getSettingByUser($user->getId()) ?? new Setting();
-        $form = $this->createForm(SettingFormType::class, $setting);
-        $form->handleRequest($request);
+        $deactivationRangeForm = $this->createForm(SettingFormType::class, $setting);
+        $deactivationRangeForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            return $this->saveSettingForm($form, $user);
+        if ($deactivationRangeForm->isSubmitted() && $deactivationRangeForm->isValid()) {
+            return $this->saveSettingForm($deactivationRangeForm, $user);
         }
 
         $errors = [];
-        foreach ($form->getErrors(true) as $error) {
+        foreach ($deactivationRangeForm->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        // Create and handle Access Point form
+        $accessPointForm = $this->createForm(AccessPointFormType::class);
+        $accessPointForm->handleRequest($request);
+
+        if ($accessPointForm->isSubmitted() && $accessPointForm->isValid()) {
+            return $this->saveAccessPointConfigForm($accessPointForm, $user);
+        }
+
+        $errors = [];
+        foreach ($accessPointForm->getErrors(true) as $error) {
             $errors[] = $error->getMessage();
         }
 
@@ -53,7 +67,8 @@ final class SettingsController extends AbstractController
         return $this->render('settings/view.html.twig', [
             'serverTime' => $serverTime,
             'errors' => $errors,
-            'deactivationRangeForm' => $form,
+            'deactivationRangeForm' => $deactivationRangeForm,
+            'accessPointForm' => $accessPointForm,
         ]);
     }
 
@@ -169,36 +184,46 @@ final class SettingsController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $ssid     = $accessPoint['accessPointName'] ?? '';
-        $password = $accessPoint['accessPointPassword'] ?? '';
+        $ssid     = trim($accessPointConfig['accessPointName']);
+        $password = trim($accessPointConfig['accessPointPassword']);
+
+        if (!$ssid and !$password){
+            $this->addFlash('error', 'You need to define a new password and/or name to update the access point !');
+            return $this->redirectToRoute('app_settings');
+        }
+
         $configPath = '/etc/hostapd/hostapd.conf';
 
         // Load existing access point config
-        $content = @file_get_contents($configPath);
-        if (!$content) {
+        $fileContent = @file_get_contents($configPath);
+        if ($fileContent === false) {
             return new Response(
                 'Failed to read the access point configuration.',
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
-        // Replace only ssid and wpa_passphrase
-        $patterns = [
-            '/^ssid=.*$/m',
-            '/^wpa_passphrase=.*$/m',
-        ];
-        $replacements = [
-            "ssid={$ssid}",
-            "wpa_passphrase={$password}",
-        ];
-        $newContent = preg_replace($patterns, $replacements, $content);
+        if ($password){
+            if ($password != $accessPointConfig['accessPointPasswordVerify']) {
+                $this->addFlash('error', 'The password and confirmation password must be the same');
+                return $this->redirectToRoute('app_settings');
+            }
 
-        if (!$newContent) {
+            $fileContent = preg_replace('/^wpa_passphrase=.*$/m', "wpa_passphrase={$password}", $fileContent);
+
+        }
+
+        if ($ssid){
+            $fileContent = preg_replace('/^ssid=.*$/m', "ssid={$ssid}", $fileContent);
+        }
+
+
+        if ($fileContent === false) {
             return new Response('Error processing the access point configuration.',Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         // Modify hostapd.conf
-        if (!@file_put_contents($configPath, $newContent)) {
+        if (!@file_put_contents($configPath, $fileContent)) {
             return new Response('Failed to modify the access point configuration.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

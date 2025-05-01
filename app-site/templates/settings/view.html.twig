@@ -18,6 +18,35 @@
             </button>
         </form>
 
+
+        {{ form_start(accessPointForm) }}
+            <h2>Access Point Configuration</h2>
+
+            {% for error in errors %}
+                <div class="form-message error">
+                    <img src="{{ asset('icons/info.svg') }}" alt="Error">
+                    <p>{{ error }}</p>
+                </div>
+            {% endfor %}
+
+            <div class="form-control">
+                <label for="accessPointName">Name</label>
+                <input type="text" name="{{ field_name(accessPointForm.accessPointName) }}" value="{{ field_value(accessPointForm.accessPointName) }}" id="accessPointName" autocomplete="accessPointName">
+            </div>
+            <div class="form-control">
+                <label for="accessPointPassword">Password</label>
+                <input type="password" name="{{ field_name(accessPointForm.accessPointPassword) }}" value="{{ field_value(accessPointForm.accessPointPassword) }}" id="accessPointPassword" autocomplete="accessPointPassword">
+            </div>
+            <div class="form-control">
+                <label for="accessPointPasswordVerify">Password Confirmation</label>
+                <input type="password" name="{{ field_name(accessPointForm.accessPointPasswordVerify) }}" value="{{ field_value(accessPointForm.accessPointPasswordVerify) }}" id="accessPointPassword" autocomplete="accessPointPassword">
+            </div>
+
+            <button class="btn-primary w100" type="submit">
+                <i class="fa-solid fa-sync"></i> Update access point Configuration
+            </button>
+        {{ form_end(accessPointForm) }}
+
         {{ form_start(deactivationRangeForm) }}
             <h2>Deactivation range</h2>
 

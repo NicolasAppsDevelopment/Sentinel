@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +20,11 @@ class AccessPointFormType extends AbstractType
                 'attr' => ['placeholder' => 'Name'],
                 'required' => false,
             ])
-            ->add('accessPointPassword', TextType::class, [
+            ->add('accessPointPassword', PasswordType::class, [
+                'attr' => ['placeholder' => 'Password'],
+                'required' => false,
+            ])
+            ->add('accessPointPasswordVerify', PasswordType::class, [
                 'attr' => ['placeholder' => 'Password'],
                 'required' => false,
             ])
