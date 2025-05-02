@@ -87,7 +87,7 @@ final class DeviceController extends AbstractController {
         $userSettings = $this->settingService->getSettingByUser($couple->getUser()->getId());
 
         if ($userSettings->isSendMail() && ($userSettings->getLastEmailSentAt() ?? new \DateTime('@0')) < new \DateTime('-1 hour')) {
-            $userMail = $this->getUser()->getEmail();
+            $userMail = $couple->getUser()->getEmail();
 
             // send email to user in controller
             $headers = "From: Sentinel <noreply@sentinel.fr>" . "\r\n" .
