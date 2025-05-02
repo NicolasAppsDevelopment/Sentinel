@@ -24,6 +24,38 @@ echo \
 sudo apt update
 sudo apt upgrade -y
 
+# Create hostapd config
+cat <<EOF > /etc/hostapd/hostapd.conf
+interface=wlan0
+driver=nl80211
+ssid=Sentinel
+hw_mode=g
+channel=7
+wmm_enabled=0
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=Sentinel2025
+wpa_key_mgmt=WPA-PSK
+rsn_pairwise=CCMP
+EOF
+
+# Make hostapd.conf writable by www-data to allow the web site container to modify raspberry pi acces point
+sudo chown root:www-data    /etc/hostapd/hostapd.conf
+sudo chmod 664              /etc/hostapd/hostapd.conf
+
+
+# Create reload-hostapd service
+cat <<EOF > /usr/local/bin/reload-hostapd.sh
+#!/bin/sh
+systemctl restart hostapd
+EOF
+
+# Make reload-hostapd.sh executable by www-data to allow the web site container to modify raspberry pi acces point
+sudo chown root:www-data    /usr/local/bin/reload-hostapd.sh
+sudo chmod 750              /usr/local/bin/reload-hostapd.sh
+
 # Install Docker
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
 
@@ -65,38 +97,6 @@ sudo apt install -y hostapd dnsmasq
 # Disable NetworkManager
 systemctl disable NetworkManager
 systemctl stop NetworkManager
-
-# Create hostapd config
-cat <<EOF > /etc/hostapd/hostapd.conf
-interface=wlan0
-driver=nl80211
-ssid=Sentinel
-hw_mode=g
-channel=7
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_passphrase=Sentinel2025
-wpa_key_mgmt=WPA-PSK
-rsn_pairwise=CCMP
-EOF
-
-# Make hostapd.conf writable by www-data to allow the web site container to modify raspberry pi acces point
-sudo chown root:www-data    /etc/hostapd/hostapd.conf
-sudo chmod 664              /etc/hostapd/hostapd.conf
-
-
-# Create reload-hostapd service
-cat <<EOF > /usr/local/bin/reload-hostapd.sh
-#!/bin/sh
-systemctl restart hostapd
-EOF
-
-# Make reload-hostapd.sh executable by www-data to allow the web site container to modify raspberry pi acces point
-sudo chown root:www-data    /usr/local/bin/reload-hostapd.sh
-sudo chmod 750              /usr/local/bin/reload-hostapd.sh
 
 # Update hostapd default config
 sed -i 's|#DAEMON_CONF="".*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
