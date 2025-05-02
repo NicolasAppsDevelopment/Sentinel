@@ -67,8 +67,15 @@ final class SettingsController extends AbstractController
             return $this->redirectToRoute('app_settings');
         }
 
-        $this->settingService->setServerTime($setting->getServerTime());
-        $this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword());
+        if (!$this->settingService->setServerTime($setting->getServerTime())) {
+            $this->addFlash('error', 'Failed to set server time');
+            return $this->redirectToRoute('app_settings');
+        }
+
+        if (!$this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword())) {
+            $this->addFlash('error', 'Failed to set access point configuration');
+            return $this->redirectToRoute('app_settings');
+        }
 
         $setting->setUser($userInDB);
         $setting->setLastEmailSentAt(null);

@@ -88,6 +88,10 @@ class SettingService
 
     public function setAccessPointConfig(?string $ssid, ?string $password): bool
     {
+        if (!$ssid && !$password) {
+            return true;
+        }
+
         $configPath = '/etc/hostapd/hostapd.conf';
 
         // Load existing access point config
