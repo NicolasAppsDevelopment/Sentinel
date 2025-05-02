@@ -11,10 +11,12 @@
         {% endfor %}
 
         <h2>Your Detections</h2>
-        <a href="{{ path('user_detections_delete') }}" class="card action">
-            <span class="fa-solid fa-trash red"></span>
-             <p class="desc">Remove all </p>
-        </a>
+        <div class="camera-actions">
+            <a href="{{ path('user_detections_delete') }}" class="card action">
+                <span class="fa-solid fa-trash red"></span>
+                 <p class="desc">Remove all </p>
+            </a>
+        </div>
 
         {{ form_start(settingsForm) }}
             <h2>Sync server time</h2>

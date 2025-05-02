@@ -91,7 +91,7 @@ class SettingService
         $configPath = '/etc/hostapd/hostapd.conf';
 
         // Load existing access point config
-        $fileContent = @file_get_contents($configPath);
+        $fileContent = file_get_contents($configPath);
         if ($fileContent === false) {
             return false;
         }
@@ -109,7 +109,7 @@ class SettingService
         }
 
         // Modify hostapd.conf
-        if (!@file_put_contents($configPath, $fileContent)) {
+        if (!file_put_contents($configPath, $fileContent)) {
             return false;
         }
 
