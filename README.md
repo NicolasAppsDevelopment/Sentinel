@@ -12,7 +12,7 @@ If the Raspberry Pi propose an update, do it.
 
 ## Script for setup
 If you use ssh for this step don't forget to **enable ssh in** the configuration of the Raspberry Pi : 
-`sudo rasp-config` -> "Interface Otpions" -> "SSH" -> Enable -> Yes -> OK
+`sudo raspi-config` -> "Interface Opiions" -> "SSH" -> Enable -> Yes -> OK
 
 Be in root user to do the script : `su -`
 
