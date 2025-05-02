@@ -106,7 +106,7 @@ final class DeviceController extends AbstractController {
             );
 
             if ($send) {
-                $userSettings->setLastEmailSentAt($userSettings->getId());
+                $userSettings->setLastEmailSentAt($detection->getTriggeredAt());;
                 $entityManager->persist($userSettings);
             }
         }
