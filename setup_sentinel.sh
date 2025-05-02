@@ -24,6 +24,9 @@ echo \
 sudo apt update
 sudo apt upgrade -y
 
+# Install WiFi AP services
+sudo apt install -y hostapd dnsmasq
+
 # Create hostapd config
 cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
@@ -90,9 +93,6 @@ EOF
 # Enable and restart systemd-networkd
 systemctl enable systemd-networkd
 systemctl restart systemd-networkd
-
-# Install WiFi AP services
-sudo apt install -y hostapd dnsmasq
 
 # Disable NetworkManager
 systemctl disable NetworkManager
