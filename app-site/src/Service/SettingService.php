@@ -127,7 +127,7 @@ class SettingService
 
     public function setServerTime(\DateTime $newDateTime): bool
     {
-        $dateFormatted = date('Y-m-d H:i:s', $newDateTime);
+        $dateFormatted = $newDateTime->format('Y-m-d H:i:s');
 
         // Construire la commande shell
         $cmd = sprintf('sudo date -s "%s"', escapeshellcmd($dateFormatted));
