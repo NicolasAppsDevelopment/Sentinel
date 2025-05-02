@@ -2,6 +2,12 @@
 
 {% block body %}
     {{ component('navigation', {index: 2}) }}
+    {{ component('confirmdialog', {
+        title: 'Remove all detections',
+        message: 'Are you sure you want to remove all your stored detections? This action is irreversible.',
+        confirmUrl: path('user_detections_delete'),
+    }) }}
+
     <div class="content">
         {% for error in errors %}
             <div class="form-message error">
@@ -12,10 +18,10 @@
 
         <h2>Your Detections</h2>
         <div class="camera-actions">
-            <a href="{{ path('user_detections_delete') }}" class="card action">
+            <button onclick="document.getElementById('confirm-modal').showModal()" class="card action w100">
                 <span class="fa-solid fa-trash red"></span>
-                 <p class="desc">Remove all </p>
-            </a>
+                 <p class="desc">Remove all detections</p>
+            </button>
         </div>
 
         {{ form_start(settingsForm) }}
