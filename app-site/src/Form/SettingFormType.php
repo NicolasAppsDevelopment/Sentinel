@@ -4,6 +4,10 @@ namespace App\Form;
 
 use App\Entity\Setting;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,6 +18,18 @@ class SettingFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('serverTime', DateTimeType::class, [
+                'required' => false,
+            ])
+            ->add('accessPointName', TextType::class, [
+                'required' => false,
+            ])
+            ->add('accessPointPassword', PasswordType::class, [
+                'required' => false,
+            ])
+            ->add('accessPointPasswordConfirm', PasswordType::class, [
+                'required' => false,
+            ])
             ->add('mondayFrom', TimeType::class, [
                 'required' => false,
             ])
@@ -55,6 +71,10 @@ class SettingFormType extends AbstractType
             ])
             ->add('sundayTo', TimeType::class, [
                 'required' => false,
+            ])
+            ->add('sendMail', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Send you mail on new detection (1 per hour max)',
             ]);
     }
 

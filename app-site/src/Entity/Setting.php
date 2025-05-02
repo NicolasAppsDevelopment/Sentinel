@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CoupleRepository;
+use App\Repository\SettingRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CoupleRepository::class)]
+#[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
 {
     #[ORM\Id]
@@ -158,6 +159,28 @@ class Setting
     #[Assert\GreaterThanOrEqual(propertyPath: "sundayFrom", message: "The sunday 'to' time must be after the 'from' time.")]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     public ?\DateTimeInterface $sundayTo = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    public bool $sendMail = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
+    public ?\DateTimeInterface $lastEmailSentAt = null;
+
+    #[Assert\Length(max: 255, maxMessage: "The access point name must be at most {{ limit }} characters long.")]
+    public ?string $accessPointName = null;
+
+    public ?string $accessPointPassword = null;
+
+    #[Assert\When(
+        expression: "this.getAccessPointPassword() !== null",
+        constraints: [
+            new Assert\NotBlank(message: "You must confirm the password to change it."),
+            new Assert\EqualTo(propertyPath: "accessPointPassword", message: "The passwords must match."),
+        ]
+    )]
+    public ?string $accessPointPasswordConfirm = null;
+
+    public ?DateTime $serverTime = null;
 
     public function getId(): ?int
     {
@@ -317,5 +340,65 @@ class Setting
     public function setSundayTo(?\DateTimeInterface $sundayTo): void
     {
         $this->sundayTo = $sundayTo;
+    }
+
+    public function isSendMail(): bool
+    {
+        return $this->sendMail;
+    }
+
+    public function setSendMail(bool $sendMail): void
+    {
+        $this->sendMail = $sendMail;
+    }
+
+    public function getLastEmailSentAt(): ?\DateTimeInterface
+    {
+        return $this->lastEmailSentAt;
+    }
+
+    public function setLastEmailSentAt(?\DateTimeInterface $lastEmailSentAt): void
+    {
+        $this->lastEmailSentAt = $lastEmailSentAt;
+    }
+
+    public function getAccessPointName(): ?string
+    {
+        return $this->accessPointName;
+    }
+
+    public function setAccessPointName(?string $accessPointName): void
+    {
+        $this->accessPointName = $accessPointName;
+    }
+
+    public function getAccessPointPassword(): ?string
+    {
+        return $this->accessPointPassword;
+    }
+
+    public function setAccessPointPassword(?string $accessPointPassword): void
+    {
+        $this->accessPointPassword = $accessPointPassword;
+    }
+
+    public function getAccessPointPasswordConfirm(): ?string
+    {
+        return $this->accessPointPasswordConfirm;
+    }
+
+    public function setAccessPointPasswordConfirm(?string $accessPointPasswordConfirm): void
+    {
+        $this->accessPointPasswordConfirm = $accessPointPasswordConfirm;
+    }
+
+    public function getServerTime(): ?DateTime
+    {
+        return $this->serverTime;
+    }
+
+    public function setServerTime(?DateTime $serverTime): void
+    {
+        $this->serverTime = $serverTime;
     }
 }

@@ -3,20 +3,12 @@
 {% block body %}
     {{ component('navigation', {index: 2}) }}
     <div class="content">
-        <form>
-            <h2>Sync server time</h2>
-            <div class="form-control" id="serverTimeContainer">
-                <label>You device time</label>
-                <input type="datetime-local" id="clientTime" readonly />
+        {% for error in errors %}
+            <div class="form-message error">
+                <img src="{{ asset('icons/info.svg') }}" alt="Error">
+                <p>{{ error }}</p>
             </div>
-            <div class="form-control" id="serverTimeContainer">
-                <label for="serverTime">Sentinel's time</label>
-                <input type="datetime-local" name="server-time" id="serverTime" value="{{ serverTime }}" required autofocus />
-            </div>
-            <button class="btn-primary w100" type="submit">
-                <i class="fa-solid fa-sync"></i> Update Sentinel's time
-            </button>
-        </form>
+        {% endfor %}
 
         <h2>Your Detections</h2>
         <a href="{{ path('user_detections_delete') }}" class="card action">
@@ -24,53 +16,44 @@
              <p class="desc">Remove all </p>
         </a>
 
-        {{ form_start(accessPointForm) }}
+        {{ form_start(settingsForm) }}
+            <h2>Sync server time</h2>
+            <div class="form-control" id="serverTimeContainer">
+                <label>You device time</label>
+                <input type="datetime-local" id="clientTime" readonly />
+            </div>
+            <div class="form-control" id="serverTimeContainer">
+                <label for="serverTime">Sentinel's time</label>
+                <input type="datetime-local" name="{{ field_name(settingsForm.serverTime) }}" id="serverTime" value="{{ field_value(settingsForm.serverTime) }}" />
+            </div>
+
             <h2>Access Point Configuration</h2>
-
-            {% for error in errors %}
-                <div class="form-message error">
-                    <img src="{{ asset('icons/info.svg') }}" alt="Error">
-                    <p>{{ error }}</p>
-                </div>
-            {% endfor %}
-
             <div class="form-control">
                 <label for="accessPointName">Name</label>
-                <input type="text" name="{{ field_name(accessPointForm.accessPointName) }}" value="{{ field_value(accessPointForm.accessPointName) }}" id="accessPointName" autocomplete="accessPointName">
+                <input type="text" name="{{ field_name(settingsForm.accessPointName) }}" value="{{ field_value(settingsForm.accessPointName) }}" id="accessPointName">
             </div>
             <div class="form-control">
                 <label for="accessPointPassword">Password</label>
-                <input type="password" name="{{ field_name(accessPointForm.accessPointPassword) }}" value="{{ field_value(accessPointForm.accessPointPassword) }}" id="accessPointPassword" autocomplete="accessPointPassword">
+                <input type="password" name="{{ field_name(settingsForm.accessPointPassword) }}" value="{{ field_value(settingsForm.accessPointPassword) }}" id="accessPointPassword">
             </div>
             <div class="form-control">
-                <label for="accessPointPasswordVerify">Password Confirmation</label>
-                <input type="password" name="{{ field_name(accessPointForm.accessPointPasswordVerify) }}" value="{{ field_value(accessPointForm.accessPointPasswordVerify) }}" id="accessPointPassword" autocomplete="accessPointPassword">
+                <label for="accessPointPasswordConfirm">Password Confirmation</label>
+                <input type="password" name="{{ field_name(settingsForm.accessPointPasswordConfirm) }}" value="{{ field_value(settingsForm.accessPointPasswordConfirm) }}" id="accessPointPasswordConfirm">
             </div>
 
-            <button class="btn-primary w100" type="submit">
-                <i class="fa-solid fa-sync"></i> Update access point Configuration
-            </button>
-        {{ form_end(accessPointForm) }}
+            <h2>Notification</h2>
+            {{ form_row(settingsForm.sendMail) }}
 
-        {{ form_start(deactivationRangeForm) }}
             <h2>Deactivation range</h2>
-
-            {% for error in errors %}
-                <div class="form-message error">
-                    <img src="{{ asset('icons/info.svg') }}" alt="Error">
-                    <p>{{ error }}</p>
-                </div>
-            {% endfor %}
-
             <h3>Monday</h3>
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="mondayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.mondayFrom) }}" value="{{ field_value(deactivationRangeForm.mondayFrom) }}" id="mondayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.mondayFrom) }}" value="{{ field_value(settingsForm.mondayFrom) }}" id="mondayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="mondayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.mondayTo) }}" value="{{ field_value(deactivationRangeForm.mondayTo) }}" id="mondayTo">
+                    <input type="time" name="{{ field_name(settingsForm.mondayTo) }}" value="{{ field_value(settingsForm.mondayTo) }}" id="mondayTo">
                 </div>
             </div>
 
@@ -78,11 +61,11 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="tuesdayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.tuesdayFrom) }}" value="{{ field_value(deactivationRangeForm.tuesdayFrom) }}" id="tuesdayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.tuesdayFrom) }}" value="{{ field_value(settingsForm.tuesdayFrom) }}" id="tuesdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="tuesdayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.tuesdayTo) }}" value="{{ field_value(deactivationRangeForm.tuesdayTo) }}" id="tuesdayTo">
+                    <input type="time" name="{{ field_name(settingsForm.tuesdayTo) }}" value="{{ field_value(settingsForm.tuesdayTo) }}" id="tuesdayTo">
                 </div>
             </div>
 
@@ -90,11 +73,11 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="wednesdayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.wednesdayFrom) }}" value="{{ field_value(deactivationRangeForm.wednesdayFrom) }}" id="wednesdayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.wednesdayFrom) }}" value="{{ field_value(settingsForm.wednesdayFrom) }}" id="wednesdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="wednesdayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.wednesdayTo) }}" value="{{ field_value(deactivationRangeForm.wednesdayTo) }}" id="wednesdayTo">
+                    <input type="time" name="{{ field_name(settingsForm.wednesdayTo) }}" value="{{ field_value(settingsForm.wednesdayTo) }}" id="wednesdayTo">
                 </div>
             </div>
 
@@ -102,11 +85,11 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="thursdayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.thursdayFrom) }}" value="{{ field_value(deactivationRangeForm.thursdayFrom) }}" id="thursdayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.thursdayFrom) }}" value="{{ field_value(settingsForm.thursdayFrom) }}" id="thursdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="thursdayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.thursdayTo) }}" value="{{ field_value(deactivationRangeForm.thursdayTo) }}" id="thursdayTo">
+                    <input type="time" name="{{ field_name(settingsForm.thursdayTo) }}" value="{{ field_value(settingsForm.thursdayTo) }}" id="thursdayTo">
                 </div>
             </div>
 
@@ -114,11 +97,11 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="fridayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.fridayFrom) }}" value="{{ field_value(deactivationRangeForm.fridayFrom) }}" id="fridayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.fridayFrom) }}" value="{{ field_value(settingsForm.fridayFrom) }}" id="fridayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="fridayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.fridayTo) }}" value="{{ field_value(deactivationRangeForm.fridayTo) }}" id="fridayTo">
+                    <input type="time" name="{{ field_name(settingsForm.fridayTo) }}" value="{{ field_value(settingsForm.fridayTo) }}" id="fridayTo">
                 </div>
             </div>
 
@@ -126,11 +109,11 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="saturdayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.saturdayFrom) }}" value="{{ field_value(deactivationRangeForm.saturdayFrom) }}" id="saturdayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.saturdayFrom) }}" value="{{ field_value(settingsForm.saturdayFrom) }}" id="saturdayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="saturdayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.saturdayTo) }}" value="{{ field_value(deactivationRangeForm.saturdayTo) }}" id="saturdayTo">
+                    <input type="time" name="{{ field_name(settingsForm.saturdayTo) }}" value="{{ field_value(settingsForm.saturdayTo) }}" id="saturdayTo">
                 </div>
             </div>
 
@@ -138,18 +121,18 @@
             <div class="row w100">
                 <div class="form-control w100">
                     <label for="sundayFrom">From</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.sundayFrom) }}" value="{{ field_value(deactivationRangeForm.sundayFrom) }}" id="sundayFrom">
+                    <input type="time" name="{{ field_name(settingsForm.sundayFrom) }}" value="{{ field_value(settingsForm.sundayFrom) }}" id="sundayFrom">
                 </div>
                 <div class="form-control w100">
                     <label for="sundayTo">To</label>
-                    <input type="time" name="{{ field_name(deactivationRangeForm.sundayTo) }}" value="{{ field_value(deactivationRangeForm.sundayTo) }}" id="sundayTo">
+                    <input type="time" name="{{ field_name(settingsForm.sundayTo) }}" value="{{ field_value(settingsForm.sundayTo) }}" id="sundayTo">
                 </div>
             </div>
 
             <button class="btn-primary w100" type="submit">
-                <i class="fa-solid fa-sync"></i> Update activation time
+                <i class="fa-solid fa-save"></i>&nbsp;Save
             </button>
-        {{ form_end(deactivationRangeForm) }}
+        {{ form_end(settingsForm) }}
 
         <script>
             // Met à jour l'affichage de l'heure locale du navigateur
@@ -172,6 +155,7 @@
             }
 
             window.addEventListener('load', () => {
+                updateClientTime();
                 setInterval(updateClientTime, 10000);
             });
         </script>

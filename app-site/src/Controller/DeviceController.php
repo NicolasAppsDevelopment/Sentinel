@@ -10,8 +10,6 @@ use App\Service\ApiResponseService;
 use App\Service\CoupleService;
 use App\Service\ImageManagerService;
 use App\Service\SettingService;
-use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\DeviceService;
 use Exception;
@@ -85,10 +83,36 @@ final class DeviceController extends AbstractController {
         $detection = new Detection();
         $detection->setCouple($couple);
         $detection->setImageFilename($filename);
+
+        $userSettings = $this->settingService->getSettingByUser($couple->getUser()->getId());
+
+        if (($userSettings->getLastEmailSentAt() ?? new \DateTime(0)) < new \DateTime('-1 hour')) {
+            $userMail = $this->getUser()->getEmail();
+
+            // send email to user in controller
+            $headers = "From: Sentinel <noreply@sentinel.fr>" . "\r\n" .
+                "MIME-Version: 1.0\r\n" .
+                "Content-Type: text/html; charset=UTF-8\r\n" .
+                "X-Mailer: PHP/" . phpversion();
+            $send = mail(
+                $userMail,
+                "Mouvement détecté sur votre caméra !",
+                "
+                <h1>Mouvement détecté sur votre caméra</h1>
+                <p>Nous avons détecté un mouvement sur votre caméra " . $couple->getTitle() . " à " . $detection->getTriggeredAt()->format("d/m/Y H:i") . ".</p>
+                <p>Pour plus d'informations, veuillez vous connecter à votre compte.</p>
+                ",
+                $headers
+            );
+
+            if ($send) {
+                $userSettings->setLastEmailSentAt($userSettings->getId());
+            }
+        }
+
+        $entityManager->persist($userSettings);
         $entityManager->persist($detection);
-
         $entityManager->flush();
-
 
         return $this->apiResponseService->ok(null);
     }
