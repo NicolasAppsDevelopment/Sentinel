@@ -7,8 +7,11 @@ RUN apt-get update && apt-get install -y \
     sudo \
     supervisor \
     mariadb-client \
+    zip \
+    libzip-dev \
     ssmtp \
-    && docker-php-ext-install pdo pdo_mysql \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip pdo pdo_mysql \
     && mkdir -p /etc/sudoers.d \
     && echo "www-data ALL=(ALL) NOPASSWD: /bin/date" > /etc/sudoers.d/www-data-date \
     && chmod 440 /etc/sudoers.d/www-data-date
