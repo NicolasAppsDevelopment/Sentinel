@@ -1,7 +1,6 @@
 services:
   php:
     container_name: sentinel-php
-    user: "33:33" 
     env_file: ".env"
     restart: always
     build:
