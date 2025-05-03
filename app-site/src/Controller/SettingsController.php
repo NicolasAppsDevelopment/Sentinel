@@ -86,7 +86,7 @@ final class SettingsController extends AbstractController
         return $this->redirectToRoute('app_settings');
     }
 
-    #[Route('/settings/detections/delete', name: 'user_detections_delete', methods: ['POST'])]
+    #[Route('/settings/detections/delete', name: 'user_detections_delete')]
     public function deleteAllUserDetection(Request $request, UserInterface $user): Response
     {
         if (!$user) {
