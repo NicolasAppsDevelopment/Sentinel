@@ -53,13 +53,12 @@ class DetectionRepository extends ServiceEntityRepository
     public function deleteAllByUserId(int $userId)
     {
         return $this->createQueryBuilder('d')
-            ->delete()
             ->innerJoin('d.couple', 'c')
             ->where('c.user = :userId')
             ->setParameter('userId', $userId)
+            ->delete()
             ->getQuery()
             ->execute();
-
     }
 
 }
