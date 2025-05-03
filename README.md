@@ -22,4 +22,5 @@ Execute the script :
 `sudo bash setup_sentinel.sh`
 
 # Note :
-You will be ask to enter you login and password for the git clone
+At one moment you will be in the root user. You must type "exit".
+After that, you will be ask to enter you login and password for the git clone
