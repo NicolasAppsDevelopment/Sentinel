@@ -52,23 +52,19 @@ class DetectionRepository extends ServiceEntityRepository
 
     public function deleteAllByUserId(int $userId)
     {
+        $entityManager = $this->getEntityManager();
+
         $qb = $this->createQueryBuilder('d')
-            ->select('d.id')
             ->innerJoin('d.couple', 'c')
             ->where('c.user = :userId')
             ->setParameter('userId', $userId);
 
-        $ids = array_column($qb->getQuery()->getScalarResult(), 'id');
+        $entities = $qb->getQuery()->getResult();
 
-        if (empty($ids)) {
-            return 0;
+        foreach ($entities as $entity) {
+            $entityManager->remove($entity);
         }
 
-        return $this->createQueryBuilder('d')
-            ->delete()
-            ->where('d.id IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->getQuery()
-            ->execute();
+        $entityManager->flush();
     }
 }
