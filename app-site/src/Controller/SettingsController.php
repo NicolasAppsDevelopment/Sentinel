@@ -33,8 +33,6 @@ final class SettingsController extends AbstractController
         }
 
         $setting = $this->settingService->getSettingByUser($user->getId()) ?? new Setting();
-        $setting->setServerTime(new DateTime());
-
         // TODO: set access point name here like this \/
         //$setting->setAccessPointName($this->settingService->getAccessPointName());
 
@@ -63,11 +61,6 @@ final class SettingsController extends AbstractController
 
         if (!$setting) {
             $this->addFlash('error', 'Settings not found');
-            return $this->redirectToRoute('app_settings');
-        }
-
-        if (!$this->settingService->setServerTime($setting->getServerTime())) {
-            $this->addFlash('error', 'Failed to set server time');
             return $this->redirectToRoute('app_settings');
         }
 

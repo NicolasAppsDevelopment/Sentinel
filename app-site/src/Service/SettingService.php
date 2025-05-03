@@ -128,20 +128,4 @@ class SettingService
 
         return true;
     }
-
-    public function setServerTime(\DateTime $newDateTime): bool
-    {
-        $dateFormatted = $newDateTime->format('Y-m-d H:i:s');
-
-        // Construire la commande shell
-        $cmd = sprintf('sudo date -s "%s"', escapeshellcmd($dateFormatted));
-
-        // Exécuter la commande (attention à la sécurité)
-        $output = shell_exec($cmd);
-
-        if (!$output) {
-            return false;
-        }
-        return true;
-    }
 }
