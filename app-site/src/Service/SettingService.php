@@ -120,7 +120,7 @@ class SettingService
         // Reload hostapd
         $output     = [];
         $returnCode = 0;
-        exec('sudo /usr/local/bin/reload-hostapd.sh 2>&1', $output, $returnCode);
+        exec('sudo nsenter --target 1 --mount --pid --uts /usr/local/bin/reload-hostapd.sh', $output, $returnCode);
 
         if (0 !== $returnCode) {
             return false;
