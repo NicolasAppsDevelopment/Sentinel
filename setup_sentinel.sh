@@ -44,14 +44,7 @@ wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
 EOF
 
-# Create reload-hostapd service
-cat <<EOF > /usr/local/bin/reload-hostapd.sh
-#!/bin/sh
-systemctl restart hostapd
-EOF
-
 sudo chmod 777 /etc/hostapd/hostapd.conf
-sudo chmod 755 /usr/local/bin/reload-hostapd.sh
 
 # Install Docker
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 

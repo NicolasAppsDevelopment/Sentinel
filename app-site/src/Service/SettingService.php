@@ -86,10 +86,10 @@ class SettingService
         return $currentTime >= $startTime && $currentTime <= $endTime;
     }
 
-    public function setAccessPointConfig(?string $ssid, ?string $password): bool
+    public function setAccessPointConfig(?string $ssid, ?string $password): ?bool
     {
         if (!$ssid && !$password) {
-            return true;
+            return null;
         }
 
         $configPath = '/etc/hostapd/hostapd.conf';
@@ -114,15 +114,6 @@ class SettingService
 
         // Modify hostapd.conf
         if (!file_put_contents($configPath, $fileContent)) {
-            return false;
-        }
-
-        // Reload hostapd
-        $output     = [];
-        $returnCode = 0;
-        exec('sudo nsenter --target 1 --mount --pid --uts /usr/local/bin/reload-hostapd.sh', $output, $returnCode);
-
-        if (0 !== $returnCode) {
             return false;
         }
 

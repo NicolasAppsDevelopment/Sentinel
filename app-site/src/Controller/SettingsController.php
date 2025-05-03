@@ -63,8 +63,12 @@ final class SettingsController extends AbstractController
             return $this->redirectToRoute('app_settings');
         }
 
-        if (!$this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword())) {
+        $result = $this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword())
+        if ($result === false) {
             $this->addFlash('error', 'Failed to set access point configuration');
+            return $this->redirectToRoute('app_settings');
+        } elseif ($result === true) {
+             $this->addFlash('success', 'Restart your the raspberry pi to take in count the new access configuration');
             return $this->redirectToRoute('app_settings');
         }
 
