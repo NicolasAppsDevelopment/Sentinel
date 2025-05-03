@@ -29,7 +29,6 @@ class DetectionService
     public function deleteAllDetectionsByUser(int $userId)
     {
         return $this->detectionRepository->deleteAllByUserId($userId);
-
     }
 
     public function getDetectionById(int $id)
