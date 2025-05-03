@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Setting;
-use App\Form\AccessPointFormType;
 use App\Form\SettingFormType;
 use App\Service\DetectionService;
 use App\Service\SettingService;
