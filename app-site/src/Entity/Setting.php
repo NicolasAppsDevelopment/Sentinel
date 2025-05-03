@@ -167,7 +167,7 @@ class Setting
 
     #[Assert\Length(min: 8, max: 32, minMessage: "The access point name must be at least 8 characters long.", maxMessage: "The access point name must be at most 32 characters long.")]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z0-9]+$/',
+        pattern: '/[^a-zA-Z0-9]/',
         message: 'Your name cannot contain a special character.',
         match: false,
     )]

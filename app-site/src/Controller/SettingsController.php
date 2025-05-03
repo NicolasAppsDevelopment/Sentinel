@@ -6,7 +6,6 @@ use App\Entity\Setting;
 use App\Form\SettingFormType;
 use App\Service\DetectionService;
 use App\Service\SettingService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
