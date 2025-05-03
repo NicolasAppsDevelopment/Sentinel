@@ -23,7 +23,7 @@ fi
 echo "Detected timezone: $TZ"
 
 # Apply it to php.ini
-PHP_INI_PATH=$(php --ini | grep "Loaded Configuration" | awk '{print $4}')
+PHP_INI_PATH=/usr/local/etc/php/conf.d/confphp.ini
 if [ -n "$PHP_INI_PATH" ]; then
     echo "Setting date.timezone in $PHP_INI_PATH"
     sed -i "s|^;*date.timezone =.*|date.timezone = \"$TZ\"|g" "$PHP_INI_PATH"
