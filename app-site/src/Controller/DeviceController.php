@@ -86,7 +86,7 @@ final class DeviceController extends AbstractController {
 
         $userSettings = $this->settingService->getSettingByUser($couple->getUser()->getId());
 
-        if ($userSettings->isSendMail() && ($userSettings->getLastEmailSentAt() ?? new \DateTime('@0')) < new \DateTime('-1 hour')) {
+        if ($userSettings && $userSettings->isSendMail() && ($userSettings->getLastEmailSentAt() ?? new \DateTime('@0')) < new \DateTime('-1 hour')) {
             $userMail = $couple->getUser()->getEmail();
 
             // send email to user in controller
@@ -106,7 +106,7 @@ final class DeviceController extends AbstractController {
             );
 
             if ($send) {
-                $userSettings->setLastEmailSentAt($detection->getTriggeredAt());;
+                $userSettings->setLastEmailSentAt($detection->getTriggeredAt());
                 $entityManager->persist($userSettings);
             }
         }
