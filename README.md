@@ -14,8 +14,6 @@ If the Raspberry Pi propose an update, do it.
 If you use ssh for this step don't forget to **enable ssh in** the configuration of the Raspberry Pi : 
 `sudo raspi-config` -> "Interface Opiions" -> "SSH" -> Enable -> Yes -> OK
 
-Be in root user to do the script : `su -`
-
 ### Here the script and how to execute it :
 `sudo nano setup_sentinel.sh`
 Add the content of "setup_sentinel.sh" (in git) into the file in the Raspberry Pi
