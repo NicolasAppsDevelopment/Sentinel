@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\SettingRepository;
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -166,9 +165,15 @@ class Setting
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => null])]
     public ?\DateTimeInterface $lastEmailSentAt = null;
 
-    #[Assert\Length(max: 255, maxMessage: "The access point name must be at most {{ limit }} characters long.")]
+    #[Assert\Length(min: 8, max: 32, minMessage: "The access point name must be at least 8 characters long.", maxMessage: "The access point name must be at most 32 characters long.")]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9]+$/',
+        message: 'Your name cannot contain a special character.',
+        match: false,
+    )]
     public ?string $accessPointName = null;
 
+    #[Assert\Length(min: 8, max: 32, minMessage: "The access point password must be at least 8 characters long.", maxMessage: "The access point password must be at most 32 characters long.")]
     public ?string $accessPointPassword = null;
 
     #[Assert\When(
@@ -179,8 +184,6 @@ class Setting
         ]
     )]
     public ?string $accessPointPasswordConfirm = null;
-
-    public ?DateTime $serverTime = null;
 
     public function getId(): ?int
     {
@@ -390,15 +393,5 @@ class Setting
     public function setAccessPointPasswordConfirm(?string $accessPointPasswordConfirm): void
     {
         $this->accessPointPasswordConfirm = $accessPointPasswordConfirm;
-    }
-
-    public function getServerTime(): ?DateTime
-    {
-        return $this->serverTime;
-    }
-
-    public function setServerTime(?DateTime $serverTime): void
-    {
-        $this->serverTime = $serverTime;
     }
 }
