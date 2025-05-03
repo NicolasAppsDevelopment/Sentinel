@@ -18,9 +18,6 @@ class SettingFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('serverTime', DateTimeType::class, [
-                'required' => false,
-            ])
             ->add('accessPointName', TextType::class, [
                 'required' => false,
             ])
