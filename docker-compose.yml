@@ -5,6 +5,9 @@ services:
     restart: always
     build:
       context: ./php
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
     volumes:
       - ./app-site:/var/www/app-site
       - ./camera_pictures:/camera_pictures

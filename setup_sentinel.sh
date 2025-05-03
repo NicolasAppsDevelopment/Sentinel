@@ -122,5 +122,9 @@ systemctl restart systemd-networkd
 systemctl restart hostapd
 systemctl restart dnsmasq
 
+# Enable NetworkManager
+systemctl enable NetworkManager
+systemctl start NetworkManager
+
 # Final reboot
 reboot
