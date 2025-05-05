@@ -63,7 +63,7 @@ final class SettingsController extends AbstractController
             return $this->redirectToRoute('app_settings');
         }
 
-        $result = $this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword())
+        $result = $this->settingService->setAccessPointConfig($setting->getAccessPointName(), $setting->getAccessPointPassword());
         if ($result === false) {
             $this->addFlash('error', 'Failed to set access point configuration');
             return $this->redirectToRoute('app_settings');
