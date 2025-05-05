@@ -10,7 +10,7 @@ class ActionDeviceStatusDto {
     public readonly bool $buzzerEnabled;
     public function __construct(
         ?int $rssiValue,
-        string $buzzerEnabled,
+        ?string $buzzerEnabled,
     ) {
         $this->rssi = new Rssi($rssiValue);
         $this->buzzerEnabled = $buzzerEnabled === 'on';
