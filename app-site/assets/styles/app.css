@@ -46,6 +46,7 @@
     --red: #ff0033;
     --orange: #ff8c00;
     --green: #29bc86;
+    --gray: #94a0b8;
 }
 
 @font-face {
@@ -581,6 +582,9 @@ body > div.content {
 }
 .fa-solid.green {
     color: var(--green) !important;
+}
+.fa-solid.gray {
+    color: var(--gray) !important;
 }
 
 

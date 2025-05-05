@@ -6,7 +6,7 @@ use App\Entity\Custom\Rssi;
 class CameraDeviceStatusDto {
     public readonly Rssi $rssi;
     public function __construct(
-        int $rssiValue,
+        ?int $rssiValue,
     ) {
         $this->rssi = new Rssi($rssiValue);
     }

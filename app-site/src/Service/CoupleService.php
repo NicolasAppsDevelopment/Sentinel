@@ -85,18 +85,31 @@ class CoupleService
 
     private function getActionDeviceStatus(Couple $couple): ActionDeviceStatusDto
     {
-        $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
-        return new ActionDeviceStatusDto(
-            rssiValue: $data['rssi'],
-            buzzerEnabled: $data['buzzer']
-        );
+        try {
+            $data = $this->deviceService->getStatus($couple->getActionDevice()->getIp());
+            return new ActionDeviceStatusDto(
+                rssiValue: $data['rssi'],
+                buzzerEnabled: $data['buzzer']
+            );
+        } catch (\Exception $e) {
+            return new ActionDeviceStatusDto(
+                rssiValue: null,
+                buzzerEnabled: null
+            );
+        }
     }
 
     private function getCameraDeviceStatus(Couple $couple): CameraDeviceStatusDto
     {
-        $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
-        return new CameraDeviceStatusDto(
-            rssiValue: $data['rssi'],
-        );
+        try {
+            $data = $this->deviceService->getStatus($couple->getCameraDevice()->getIp());
+            return new CameraDeviceStatusDto(
+                rssiValue: $data['rssi'],
+            );
+        } catch (\Exception $e) {
+            return new CameraDeviceStatusDto(
+                rssiValue: null,
+            );
+        }
     }
 }

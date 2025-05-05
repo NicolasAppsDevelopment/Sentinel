@@ -8,9 +8,14 @@ class Rssi
     public string $state;
     public string $color;
 
-    public function __construct(int $rssiValue)
+    public function __construct(?int $rssiValue)
     {
-        $this->value = $rssiValue;
+        if (null === $rssiValue) {
+            $this->value = -999;
+            $this->state = 'Unknown';
+            $this->color = 'gray';
+            return;
+        }
 
         if ($rssiValue > -50) {
             $this->state = 'Excellent';
@@ -22,5 +27,7 @@ class Rssi
             $this->state = 'Weak';
             $this->color = 'red';
         }
+
+        $this->value = $rssiValue;
     }
 }

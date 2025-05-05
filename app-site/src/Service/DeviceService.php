@@ -55,7 +55,9 @@ class DeviceService
         $url = 'http://' . $ip . '/status';
 
         $client = HttpClient::create();
-        $actionDeviceResponse = $client->request('GET', $url);
+        $actionDeviceResponse = $client->request('GET', $url, [
+            'timeout' => 3
+        ]);
 
         if ($actionDeviceResponse->getStatusCode() !== 200) {
             throw new Exception('Unable to get action status: ' . $actionDeviceResponse->getStatusCode());
