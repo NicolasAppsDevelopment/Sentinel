@@ -1,6 +1,10 @@
 # Présentation
 This Readme explain how to setup this project on a **Raspberry Pi 3B+**.
 
+# Missing elements
+Raspi setup missing to handle correctly wifi and Ethernet.
+Sentinel AP config part not finished.
+
 # Requirement for setup
 
 ## WIFI
