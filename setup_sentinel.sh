@@ -36,14 +36,6 @@ git clone https://forge.univ-lyon1.fr/WOT_BUT3WWW_2025/groupe-10/sentinel.git
 cd sentinel
 docker compose up -d
 
-
-#Loop to wait for docker container to be ready
-until curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/login | grep -q "200"
-do
-  echo "Waiting for the web site to be setup and ready to be used"
-  sleep 5
-done
-
 #Setup Acces Point
 sudo nmcli con add con-name hotspot ifname wlan0 type wifi ssid "Sentinel" #access point name
 sudo nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
@@ -52,6 +44,3 @@ sudo nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ip
 
 #Unblock the wlan0 if there is a lack of power
 sudo rfkill unblock all
-
-# Final reboot
-reboot
