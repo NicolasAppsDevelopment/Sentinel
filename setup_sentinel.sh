@@ -24,30 +24,8 @@ echo \
 sudo apt update
 sudo apt upgrade -y
 
-# Install WiFi AP services
-sudo apt install -y hostapd dnsmasq
-
-# Create hostapd config
-cat <<EOF > /etc/hostapd/hostapd.conf
-interface=wlan0
-driver=nl80211
-ssid=Sentinel
-hw_mode=g
-channel=7
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_passphrase=Sentinel2025
-wpa_key_mgmt=WPA-PSK
-rsn_pairwise=CCMP
-EOF
-
-sudo chmod 777 /etc/hostapd/hostapd.conf
-
 # Install Docker
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Add user to docker group
 sudo usermod -aG docker $USER
@@ -66,54 +44,14 @@ do
   sleep 5
 done
 
-
-# Configure static IP for wlan0
-cat <<EOF > /etc/systemd/network/10-wlan0.network
-[Match]
-Name=wlan0
-
-[Network]
-Address=192.168.4.1/24
-DHCPServer=yes
-EOF
-
-# Enable and restart systemd-networkd
-systemctl enable systemd-networkd
-systemctl restart systemd-networkd
-
-# Disable NetworkManager
-systemctl disable NetworkManager
-systemctl stop NetworkManager
-
-# Update hostapd default config
-sed -i 's|#DAEMON_CONF="".*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
+#Setup Acces Point
+sudo nmcli con add con-name hotspot ifname wlan0 type wifi ssid "Sentinel" #access point name
+sudo nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
+sudo nmcli con modify hotspot wifi-sec.psk "Sentinel2025" #access point password
+sudo nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
 
 #Unblock the wlan0 if there is a lack of power
-sudo rfkill unblock all 
-
-# Enable and start hostapd
-systemctl unmask hostapd
-systemctl enable hostapd
-systemctl start hostapd
-
-# Backup and create dnsmasq config
-mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
-
-#Note you will be ask a question, answer it with Y
-cat <<EOF > /etc/dnsmasq.conf
-interface=wlan0
-bind-interfaces
-dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
-EOF
-
-# Enable and start dnsmasq
-systemctl enable dnsmasq
-systemctl start dnsmasq
-
-# Restart all services
-systemctl restart systemd-networkd
-systemctl restart hostapd
-systemctl restart dnsmasq
+sudo rfkill unblock all
 
 # Final reboot
 reboot

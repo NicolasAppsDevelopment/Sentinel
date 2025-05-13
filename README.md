@@ -8,8 +8,13 @@ Sentinel AP config part not finished.
 # Requirement for setup
 
 ## WIFI
-Set the Wifi country 
-Connect the Raspberry Pi to a Wifi
+Set the Wifi country :
+- Execute `sudo raspi-config`
+- Go in « Localisation Options » then « WLAN country »
+- Select your country.
+- Confirm and quit.
+
+Connect the Raspberry Pi to your router with an Ethernet cable.
 
 ## Mail
 Config the mail server by providing the SMTP server, the port, the login and the password into the file `php/ssmtp.conf`.

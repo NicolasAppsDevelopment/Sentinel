@@ -92,31 +92,14 @@ class SettingService
             return null;
         }
 
-        $configPath = '/etc/hostapd/hostapd.conf';
-
-        // Load existing access point config
-        $fileContent = file_get_contents($configPath);
-        if ($fileContent === false) {
-            return false;
-        }
-
         if ($password){
-            $fileContent = preg_replace('/^wpa_passphrase=.*$/m', "wpa_passphrase={$password}", $fileContent);
+            if (!exec("sudo nmcli con modify hotspot ssid \"{$ssid}\"")) return false;
         }
         if ($ssid){
-            $fileContent = preg_replace('/^ssid=.*$/m', "ssid={$ssid}", $fileContent);
+            if (!exec("sudo nmcli con modify hotspot ssid \"{$ssid}\"")) return false;
         }
 
-
-        if ($fileContent === false) {
-            return false;
-        }
-
-        // Modify hostapd.conf
-        if (!file_put_contents($configPath, $fileContent)) {
-            return false;
-        }
-
+        exec("reboot");
         return true;
     }
 }
