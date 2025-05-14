@@ -68,7 +68,7 @@ final class SettingsController extends AbstractController
             $this->addFlash('error', 'Failed to set access point configuration');
             return $this->redirectToRoute('app_settings');
         } elseif ($result === true) {
-             $this->addFlash('success', 'Restart your the raspberry pi to take in count the new access configuration');
+             $this->addFlash('success', 'Restart your Raspberry Pi to take into account the new Wi-Fi configuration');
             return $this->redirectToRoute('app_settings');
         }
 
