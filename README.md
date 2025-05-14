@@ -1,13 +1,10 @@
 # Présentation
 This Readme explain how to setup this project on a **Raspberry Pi 3B+**.
 
-# Missing elements
-Raspi setup missing to handle correctly wifi and Ethernet.
-Sentinel AP config part not finished.
-
 # Requirement for setup
 
 ## WIFI
+
 Set the Wifi country :
 - Execute `sudo raspi-config`
 - Go in « Localisation Options » then « WLAN country »
@@ -16,15 +13,12 @@ Set the Wifi country :
 
 Connect the Raspberry Pi to your router with an Ethernet cable.
 
-## Mail
-Config the mail server by providing the SMTP server, the port, the login and the password into the file `php/ssmtp.conf`.
-
 ## Update
 If the Raspberry Pi propose an update, do it.
 
 ## Script for setup
-If you use ssh for this step don't forget to **enable ssh in** the configuration of the Raspberry Pi : 
-`sudo raspi-config` -> "Interface Options" -> "SSH" -> Enable -> Yes -> OK
+If you use ssh for this step don't forget to **enable ssh** in the configuration of the Raspberry Pi : 
+`sudo raspi-config` -> "Interface Opiions" -> "SSH" -> Enable -> Yes -> OK
 
 ### Here the script and how to execute it :
 `sudo nano setup_sentinel.sh`
@@ -36,3 +30,8 @@ Execute the script :
 # Note :
 At one moment you will be in the root user. You must type "exit".
 After that, you will be ask to enter you login and password for the git clone
+
+To access the website, type “ip a” and then search for the ip for eth0 (if you are connected on your router's wifi connection) or wlan0 (if you are connected on the Raspberry Pi's access point).
+While connected to the raspberry Pi access point, type the url “the ip you found:8081”.
+
+In order to use the action or camera modules, connect them to the Raspberry Pi's access point.
