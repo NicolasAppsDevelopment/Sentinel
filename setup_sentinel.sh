@@ -38,8 +38,8 @@ cat > /usr/local/bin/host_listener.sh <<EOF
 #!/bin/bash
 while true; do
   if read -r cmd < /tmp/host_command_pipe; then
-    echo "Executing: $cmd"
-    bash -c "$cmd"
+    echo "Executing: \$cmd"
+    bash -c "\$cmd"
   fi
 done
 EOF
