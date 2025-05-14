@@ -31,6 +31,37 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 sudo usermod -aG docker $USER
 newgrp docker
 
+# Host-container communication pipe for bash commands
+mkfifo /tmp/host_command_pipe
+chmod 666 /tmp/host_command_pipe
+cat > /usr/local/bin/host_listener.sh <<EOF
+#!/bin/bash
+while true; do
+  if read -r cmd < /tmp/host_command_pipe; then
+    echo "Executing: $cmd"
+    bash -c "$cmd"
+  fi
+done
+EOF
+sudo chmod +x host_listener.sh
+cat > /etc/systemd/system/host_listener.service <<EOF
+[Unit]
+Description=Host Command Listener for Docker Container
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/host_listener.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable host_listener.service
+sudo systemctl start host_listener.service
+
 # Clone the repo and start Docker Compose
 git clone https://forge.univ-lyon1.fr/WOT_BUT3WWW_2025/groupe-10/sentinel.git
 cd sentinel

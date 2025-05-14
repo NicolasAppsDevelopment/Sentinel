@@ -93,13 +93,13 @@ class SettingService
         }
 
         if ($password){
-            if (!exec("sudo nmcli con modify hotspot ssid \"{$ssid}\"")) return false;
+            if (!file_put_contents("/container_pipe", "sudo nmcli con modify hotspot wifi-sec.psk \"{$password}\"")) return false;
         }
         if ($ssid){
-            if (!exec("sudo nmcli con modify hotspot ssid \"{$ssid}\"")) return false;
+            if (!file_put_contents("/container_pipe", "sudo nmcli con modify hotspot ssid \"{$ssid}\"")) return false;
         }
 
-        exec("reboot");
+        file_put_contents("/container_pipe", "sudo reboot");
         return true;
     }
 }

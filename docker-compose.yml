@@ -1,7 +1,6 @@
 services:
   php:
     container_name: sentinel-php
-    privileged: true
     env_file: ".env"
     restart: always
     build:
@@ -11,6 +10,7 @@ services:
       - ./camera_pictures:/camera_pictures
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - /tmp/host_command_pipe:/container_pipe
     networks:
       - default
   nginx:
