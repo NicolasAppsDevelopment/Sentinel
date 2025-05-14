@@ -32,10 +32,13 @@ sudo usermod -aG docker $USER
 newgrp docker
 
 # Host-container communication pipe for bash commands
-mkfifo /tmp/host_command_pipe
-chmod 666 /tmp/host_command_pipe
 cat > /usr/local/bin/host_listener.sh <<EOF
 #!/bin/bash
+
+sudo rm -rf /tmp/host_command_pipe
+mkfifo /tmp/host_command_pipe
+chmod 666 /tmp/host_command_pipe
+
 while true; do
   if read -r cmd < /tmp/host_command_pipe; then
     echo "Executing: \$cmd"
