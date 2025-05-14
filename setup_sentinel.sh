@@ -63,7 +63,7 @@ sudo systemctl enable host_listener.service
 sudo systemctl start host_listener.service
 
 # Clone the repo and start Docker Compose
-git clone https://forge.univ-lyon1.fr/WOT_BUT3WWW_2025/groupe-10/sentinel.git
+git clone https://github.com/NicolasAppsDevelopment/Sentinel.git
 cd sentinel
 docker compose up -d
 
