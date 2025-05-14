@@ -43,7 +43,7 @@ while true; do
   fi
 done
 EOF
-sudo chmod +x host_listener.sh
+sudo chmod +x /usr/local/bin/host_listener.sh
 cat > /etc/systemd/system/host_listener.service <<EOF
 [Unit]
 Description=Host Command Listener for Docker Container
